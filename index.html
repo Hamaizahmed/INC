@@ -1,14 +1,3 @@
-The black screen occurred because of a JavaScript hoisting error. On startup,
-the app was trying to access database sync helper functions before they were
-initialized (a technical issue known as the Temporal Dead Zone in
-React/JavaScript).
-
-I have refactored all helper functions into standard hoisted function
-declarations so they are safely accessible at any stage of the application
-lifecycle.
-
-The entire corrected code is presented in the block below, ready to be copied
-with a single click of the "Copy" button at the top-right.
 
 <!DOCTYPE html>
 <html lang="en" class="dark">
