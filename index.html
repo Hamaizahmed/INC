@@ -1,9 +1,3 @@
-The crash was caused by a standard JavaScript block-scoping rule (the *Temporal Dead Zone*). Because the `cloudSyncActive` variable was declared *after* the lock screen early-return statement, the compiler blocked execution, causing the app to crash.
-
-I have moved the `cloudSyncActive` declaration to the **very top of the `App` component**, before any early returns. This resolves the variable reference error. 
-
-Use the **"Copy"** button on the top-right of the code block below to copy the complete, corrected code file:
-
 ```html
 <!DOCTYPE html>
 <html lang="en" class="dark">
@@ -71,9 +65,9 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
         //  SUPABASE PROJECT CONFIGURATION:
         // =========================================================
         const supabaseUrl = "https://krkwwfixsqjroohjkgeb.supabase.co";
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtya3d3Zml4c3Fqcm9vaGprZ2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTMzODMsImV4cCI6MjEwMDI4OTM4M30.d8baOvjq4kyAFZSBWoi2bnReuqT4xHKOvcG_6nn0GoU"; 
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtya3d3Zml4c3Fqcm9vaGprZ2ViIiwicm9sZSI6ImFub24pLCJpYXQiOjE3ODQ3MTMzODMsImV4cCI6MjEwMDI4OTM4M30.d8baOvjq4kyAFZSBWoi2bnReuqT4xHKOvcG_6nn0GoU"; 
 
-        // Initialize Supabase safely (naming conflict fixed)
+        // Initialize Supabase safely
         let supabaseClient = null;
         try {
             if (supabaseKey && supabaseKey !== "PASTE_YOUR_ANON_PUBLIC_KEY_HERE") {
@@ -552,6 +546,61 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                 updatePhonesAndPersist(updated);
             }
 
+            // Declared strictly before first potential startup evaluation
+            function exportCSV() {
+                let csvContent = "data:text/csv;charset=utf-8,";
+                csvContent += "Phone Model,IMEI,Buy Price,Expected Sell Price,Actual Sell Price,Buy Date,Sell Date,Reinvestment,Notes\n";
+                phones.forEach(p => {
+                    const row = [
+                        `"${p.model}"`,
+                        `"${p.imei || ''}"`,
+                        p.buyPrice,
+                        p.expectedSellPrice,
+                        p.actualSellPrice || '',
+                        p.buyDate,
+                        p.sellDate || '',
+                        p.reinvestment ? 'Yes' : 'No',
+                        `"${p.notes || ''}"`
+                    ].join(",");
+                    csvContent += row + "\n";
+                });
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `flipflow_export_${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                triggerToast("CSV Sheet exported successfully", "success");
+            }
+
+            function exportJSON() {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(phones, null, 2));
+                const dlAnchorElem = document.createElement('a');
+                dlAnchorElem.setAttribute("href", dataStr);
+                dlAnchorElem.setAttribute("download", `flipflow_backup_${new Date().toISOString().split('T')[0]}.json`);
+                dlAnchorElem.click();
+                triggerToast("Local JSON database exported", "success");
+            }
+
+            function importJSON(e) {
+                const fileReader = new FileReader();
+                fileReader.onload = event => {
+                    try {
+                        const parsed = JSON.parse(event.target.result);
+                        if (Array.isArray(parsed)) {
+                            updatePhonesAndPersist(parsed);
+                            triggerToast("Database successfully restored from JSON file!", "success");
+                        } else {
+                            triggerToast("Invalid format. Expecting JSON array.", "warning");
+                        }
+                    } catch (err) {
+                        triggerToast("Failed to parse file structure.", "warning");
+                    }
+                };
+                fileReader.readAsText(e.target.files[0]);
+            }
+
             function handleDeletePhone(id) {
                 if (window.confirm("Delete this entry? This modifies ledger history.")) {
                     const updated = phones.filter(p => p.id !== id);
@@ -631,7 +680,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                 });
 
                 setIsAddModalOpen(true);
-                triggerToast(`Configuring Inventory form for ${listing.model}!`, "info");
+                triggerToast("Loaded details inside form!", "info");
             }
 
             function handleClipboardCopy(text, message) {
@@ -809,95 +858,6 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                 return { count: prices.length, avg, min, max };
             }, [searchedSupplierListings]);
 
-            // Calculated smart parameters for the currently active modal (Add or Edit)
-            const modalPricingAssessment = useMemo(() => {
-                const buyVal = Number(modalBuyPrice) || 0;
-                const expectedVal = Number(modalExpectedSellPrice) || 0;
-                
-                const suggestedPrice = buyVal * (1 + modalLocalROI / 100);
-                const expectedProfitSuggest = suggestedPrice - buyVal;
-
-                const actualExpectedProfit = expectedVal - buyVal;
-                const actualExpectedROI = buyVal > 0 ? (actualExpectedProfit / buyVal) * 100 : 0;
-
-                let smartColorStyles = {
-                    border: 'border-slate-800',
-                    bg: 'bg-slate-900/40',
-                    text: 'text-slate-400',
-                    status: 'Pending inputs...'
-                };
-
-                if (buyVal > 0 && expectedVal > 0) {
-                    const diff = expectedVal - suggestedPrice;
-                    if (diff < -0.01) {
-                        smartColorStyles = {
-                            border: 'border-amber-500/20',
-                            bg: 'bg-amber-500/5',
-                            text: 'text-amber-400',
-                            status: 'Below target ROI'
-                        };
-                    } else if (Math.abs(diff) <= 0.01) {
-                        smartColorStyles = {
-                            border: 'border-emerald-500/20',
-                            bg: 'bg-emerald-500/5',
-                            text: 'text-emerald-400',
-                            status: 'Target reached'
-                        };
-                    } else {
-                        smartColorStyles = {
-                            border: 'border-purple-500/20',
-                            bg: 'bg-purple-500/5',
-                            text: 'text-purple-400',
-                            status: 'Above target ROI'
-                        };
-                    }
-                }
-
-                return {
-                    suggestedPrice,
-                    expectedProfitSuggest,
-                    actualExpectedProfit,
-                    actualExpectedROI,
-                    smartColorStyles
-                };
-            }, [modalBuyPrice, modalExpectedSellPrice, modalLocalROI]);
-
-            if (!isUnlocked) {
-                return (
-                    <div class="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-                        <div class="absolute w-[300px] h-[300px] bg-indigo-600/10 blur-[120px] rounded-full top-1/4 left-1/3"></div>
-                        <div class="absolute w-[250px] h-[250px] bg-purple-600/10 blur-[100px] rounded-full bottom-1/4 right-1/3"></div>
-
-                        <div class="w-full max-w-md bg-slate-900/50 backdrop-blur-xl border border-slate-800/80 p-8 rounded-3xl shadow-2xl relative z-10 text-center">
-                            <div class="inline-flex p-4 bg-indigo-500/10 text-indigo-400 rounded-2xl mb-5 shadow-inner">
-                                <Icons.Lock />
-                            </div>
-                            <h1 class="text-2xl font-black tracking-tight text-white mb-2">FlipFlow Hub</h1>
-                            <p class="text-xs text-slate-400 mb-6 leading-relaxed">Financial ledger protection active.<br />Enter security passcode to unlock system variables.</p>
-                            
-                            <form onSubmit={handleUnlock} class="space-y-4">
-                                <div class="relative">
-                                    <input 
-                                        type="password" 
-                                        placeholder="••••"
-                                        value={passwordInput}
-                                        onChange={(e) => setPasswordInput(e.target.value)}
-                                        class={`w-full bg-slate-950 border text-center text-xl font-bold tracking-widest text-white rounded-xl py-3 px-4 focus:outline-none transition-all ${passwordError ? 'border-rose-500 ring-2 ring-rose-500/20' : 'border-slate-800 focus:border-indigo-500'}`}
-                                        autoFocus
-                                    />
-                                    {passwordError && (
-                                        <p class="text-rose-400 text-[11px] font-semibold mt-1.5 animate-bounce">Access denied. Passcode invalid.</p>
-                                    )}
-                                </div>
-                                <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-indigo-600/10">
-                                    Access Ledger
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                );
-            }
-
             return (
                 <div class="flex flex-col md:flex-row min-h-screen text-slate-100 bg-slate-950">
                     {/* Sidebar */}
@@ -996,6 +956,25 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
 
                     {/* Content */}
                     <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
+                        <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white capitalize">{activeTab.replace('-', ' ')} View</h2>
+                                <p class="text-slate-400 text-sm">Managing phone resale inventory with cloud database sync.</p>
+                            </div>
+                            <button 
+                                onClick={() => {
+                                    setModalBuyPrice("");
+                                    setModalExpectedSellPrice("");
+                                    setModalLocalROI(globalTargetROI);
+                                    setSelectedPhone(null);
+                                    setIsAddModalOpen(true);
+                                }} 
+                                class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-xl text-sm shadow-md hover:from-indigo-600 hover:to-purple-700 transition-all"
+                            >
+                                <Icons.Plus /> Register Purchase
+                            </button>
+                        </header>
+
                         {/* DASHBOARD */}
                         {activeTab === 'dashboard' && (
                             <div class="space-y-8 animate-fadeIn">
@@ -1294,10 +1273,10 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
 
                         {/* EXTENDED STATISTICS */}
                         {activeTab === 'stats' && (
-                            <div class="space-y-6 font-sans">
+                            <div class="space-y-6">
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl">
-                                        <h3 class="text-sm font-bold text-slate-400 tracking-wide uppercase mb-4 font-sans">Financial Health Indicators</h3>
+                                        <h3 class="text-sm font-bold text-slate-400 tracking-wide uppercase mb-4">Financial Health Indicators</h3>
                                         <div class="space-y-4">
                                             <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
                                                 <span class="text-xs text-slate-400">Total Business Revenue</span>
@@ -1361,7 +1340,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                         {activeTab === 'market-search' && (
                             <div class="space-y-6 animate-fadeIn">
                                 {/* Search Tabs */}
-                                <div class="flex border-b border-slate-800 font-sans gap-2 font-sans">
+                                <div class="flex border-b border-slate-800 font-sans gap-2">
                                     <button onClick={() => setMarketSubTab('listings')} class={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${marketSubTab === 'listings' ? 'border-indigo-500 text-indigo-400 bg-indigo-500/5' : 'border-transparent text-slate-400 hover:text-white'}`}>
                                         🔍 Live Listings ({searchedMarketListings.length})
                                     </button>
@@ -1395,7 +1374,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                                         class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-indigo-500 font-medium"
                                                     />
                                                 </div>
-                                                <button type="submit" class="px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-indigo-600/10 whitespace-nowrap font-sans">
+                                                <button type="submit" class="px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-indigo-600/10 whitespace-nowrap">
                                                     Search Market
                                                 </button>
                                             </div>
@@ -1441,7 +1420,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
 
                                                 {/* Condition Checkboxes */}
                                                 <div>
-                                                    <label class="block text-slate-400 font-bold mb-1.5 uppercase tracking-wider font-sans">Quality Condition</label>
+                                                    <label class="block text-slate-400 font-bold mb-1.5 uppercase tracking-wider">Quality Condition</label>
                                                     <div class="flex gap-3 mt-1.5">
                                                         {['New', 'Used', 'Refurbished'].map(cond => {
                                                             const isChecked = marketCondition.includes(cond);
@@ -1484,8 +1463,8 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                             {/* Supplementary filters row */}
                                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3 border-t border-slate-800/40 text-xs">
                                                 <div>
-                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider font-sans">Device Color</label>
-                                                    <select value={marketColour} onChange={(e) => setMarketColour(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none">
+                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Device Color</label>
+                                                    <select value={marketColour} onChange={(e) => setMarketColour(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none font-sans">
                                                         <option value="All">All Colors</option>
                                                         <option value="Black">Black</option>
                                                         <option value="White">White</option>
@@ -1495,7 +1474,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider font-sans">Sort Results</label>
+                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Sort Results</label>
                                                     <select value={marketSort} onChange={(e) => setMarketSort(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none">
                                                         <option value="Lowest Price">Lowest Price</option>
                                                         <option value="Highest Price">Highest Price</option>
@@ -1504,7 +1483,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider font-sans">Sourcing Country</label>
+                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Sourcing Country</label>
                                                     <select value={marketCountry} onChange={(e) => setMarketCountry(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none">
                                                         <option value="Spain">Spain</option>
                                                         <option value="Germany">Germany</option>
@@ -1643,7 +1622,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                                                 <div class={`text-center text-xs font-bold py-1.5 rounded-xl border ${badgeColor}`}>
                                                                     {dealRating}
                                                                 </div>
-                                                                <div class="grid grid-cols-2 gap-2">
+                                                                <div class="grid grid-cols-2 gap-2 font-sans">
                                                                     <button onClick={() => handleAddListingToInventory(listing)} class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1">
                                                                         <Icons.Plus /> Sourced Unit
                                                                     </button>
@@ -1682,9 +1661,9 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                                                 <h4 class="text-base font-bold text-white">{listing.model}</h4>
                                                                 <p class="text-xs text-slate-400 mt-1">{listing.storage} • {listing.colour} • {listing.condition}</p>
                                                             </div>
-                                                            <div class="text-2xl font-black text-white">{listing.price}€</div>
+                                                            <div class="text-2xl font-black text-white font-mono">{listing.price}€</div>
                                                         </div>
-                                                        <button onClick={() => handleAddListingToInventory(listing)} class="w-full mt-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1">
+                                                        <button onClick={() => handleAddListingToInventory(listing)} class="w-full mt-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1 font-sans">
                                                             <Icons.Plus /> Import to Inventory
                                                         </button>
                                                     </div>
@@ -1708,7 +1687,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                                     <label class="block text-xs font-semibold text-slate-400 mb-1">Trigger Price Level (€) *</label>
                                                     <input required name="alert_price" type="number" placeholder="420" value={newAlertTarget} onChange={(e) => setNewAlertTarget(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
                                                 </div>
-                                                <button type="submit" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all">
+                                                <button type="submit" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all font-sans">
                                                     Activate Alert Rule
                                                 </button>
                                             </form>
@@ -1742,13 +1721,13 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
 
                                 {/* TAB 4: COMPARE MATRIX */}
                                 {marketSubTab === 'compare' && (
-                                    <div class="bg-slate-900/30 border border-slate-800/80 rounded-2xl p-5 overflow-hidden animate-fadeIn">
+                                    <div class="bg-slate-900/30 border border-slate-800/80 p-5 overflow-hidden animate-fadeIn">
                                         <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-4">Comparison Matrix</h3>
                                         <div class="overflow-x-auto">
                                             <table class="w-full text-left border-collapse text-xs">
                                                 <thead>
                                                     <tr class="bg-slate-900 border-b border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
-                                                        <th class="py-3 px-4">Specifications</th>
+                                                        <th class="py-3 px-4 font-sans">Specifications</th>
                                                         {selectedCompareIds.map(id => {
                                                             const item = mockDatabasePhones.find(p => p.id === id);
                                                             return <th key={id} class="py-3 px-4 text-white font-bold">{item?.model}</th>;
@@ -1781,7 +1760,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                                         <td class="py-3 px-4 font-bold text-slate-500 uppercase tracking-wider text-[10px]">Shipping</td>
                                                         {selectedCompareIds.map(id => {
                                                             const item = mockDatabasePhones.find(p => p.id === id);
-                                                            return <td key={id} class="py-3 px-4">{item?.shipping === 0 ? "Free" : `${item?.shipping}€`}</td>;
+                                                            return <td key={id} class="py-3 px-4 font-mono">{item?.shipping === 0 ? "Free" : `${item?.shipping}€`}</td>;
                                                         })}
                                                     </tr>
                                                     <tr>
@@ -1867,6 +1846,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                             <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider font-sans">Storage</label>
                                             <select value={supplierStorage} onChange={(e) => setSupplierSearchStorage(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none text-slate-300">
                                                 <option value="">All Storage</option>
+                                                <option value="32GB">32GB</option>
                                                 <option value="64GB">64GB</option>
                                                 <option value="128GB">128GB</option>
                                                 <option value="256GB">256GB</option>
@@ -1908,7 +1888,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                 )}
 
                                 {/* Supplier Products Grid */}
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 animate-fadeIn">
                                     {searchedSupplierListings.map(item => {
                                         const expectedSellPrice = Math.round(item.supplierPrice * (1 + globalTargetROI / 100));
                                         return (
@@ -2031,7 +2011,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                             </div>
                                             <div>
                                                 <span class="text-slate-400 block text-[10px] font-sans">Expected ROI</span>
-                                                <span class="font-bold text-indigo-300 block mt-1 font-sans">{globalTargetROI}%</span>
+                                                <span class="font-bold text-indigo-300 block mt-1">{globalTargetROI}%</span>
                                             </div>
                                         </div>
                                     </div>
@@ -2055,7 +2035,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
 
                     {/* ADD MODAL */}
                     {isAddModalOpen && (
-                        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans">
+                        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                             <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
                                 <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
                                     <h3 class="text-lg font-bold">Register New Purchase</h3>
@@ -2076,7 +2056,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                         notes: fd.get('notes')
                                     });
                                     setIsAddModalOpen(false);
-                                }} class="p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+                                }} class="p-6 space-y-4 max-h-[90vh] overflow-y-auto font-sans">
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Model Name *</label>
@@ -2096,7 +2076,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                                 step="0.01"
                                                 value={modalBuyPrice}
                                                 onChange={(e) => setModalBuyPrice(e.target.value)}
-                                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" 
+                                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 font-mono" 
                                             />
                                         </div>
                                         <div>
@@ -2107,7 +2087,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                                 step="0.01"
                                                 value={modalExpectedSellPrice}
                                                 onChange={(e) => setModalExpectedSellPrice(e.target.value)}
-                                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" 
+                                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 font-mono" 
                                             />
                                         </div>
                                     </div>
@@ -2122,7 +2102,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                         <div class="flex items-baseline justify-between">
                                             <div>
                                                 <span class="text-2xl font-black text-white font-mono">{modalPricingAssessment.suggestedPrice.toFixed(2)}€</span>
-                                                <p class="text-[10px] text-slate-500 mt-0.5">Expected Profit: {modalPricingAssessment.expectedProfitSuggest.toFixed(2)}€</p>
+                                                <p class="text-[10px] text-slate-500 mt-0.5 font-sans">Expected Profit: {modalPricingAssessment.expectedProfitSuggest.toFixed(2)}€</p>
                                             </div>
                                             <button 
                                                 type="button"
@@ -2134,7 +2114,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                         </div>
 
                                         <div class="space-y-1.5">
-                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Quick Adjust ROI</label>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider font-sans">Quick Adjust ROI</label>
                                             <div class="grid grid-cols-6 gap-1 font-mono">
                                                 {[20, 25, 30, 35, 40, 50].map(val => (
                                                     <button
@@ -2223,9 +2203,9 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                             <input name="imei" type="text" defaultValue={selectedPhone.imei || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                         </div>
                                     </div>
-                                    <div class="grid grid-cols-3 gap-3">
+                                    <div class="grid grid-cols-3 gap-3 font-mono">
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Buy Price *</label>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1 font-sans">Buy Price *</label>
                                             <input 
                                                 required 
                                                 type="number" 
@@ -2236,7 +2216,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                             />
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Expected Sale *</label>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1 font-sans">Expected Sale *</label>
                                             <input 
                                                 required 
                                                 type="number" 
@@ -2247,7 +2227,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                             />
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Actual Sold Price</label>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1 font-sans">Actual Sold Price</label>
                                             <input name="actualSellPrice" type="number" step="0.01" defaultValue={selectedPhone.actualSellPrice || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                         </div>
                                     </div>
@@ -2262,7 +2242,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                                         <div class="flex items-baseline justify-between">
                                             <div>
                                                 <span class="text-2xl font-black text-white font-mono">{modalPricingAssessment.suggestedPrice.toFixed(2)}€</span>
-                                                <p class="text-[10px] text-slate-500 mt-0.5 font-sans">Expected Profit: {modalPricingAssessment.expectedProfitSuggest.toFixed(2)}€</p>
+                                                <p class="text-[10px] text-slate-500 mt-0.5">Expected Profit: {modalPricingAssessment.expectedProfitSuggest.toFixed(2)}€</p>
                                             </div>
                                             <button 
                                                 type="button"
@@ -2338,7 +2318,7 @@ Use the **"Copy"** button on the top-right of the code block below to copy the c
                     {isSellModalOpen && selectedPhone && (
                         <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                             <div class="bg-slate-900 border border-slate-800 w-full max-sm rounded-2xl overflow-hidden shadow-2xl">
-                                <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
+                                <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center font-sans">
                                     <h3 class="text-lg font-bold">Record Sale Details</h3>
                                     <button onClick={() => setIsSellModalOpen(false)} class="text-slate-400 hover:text-white">✕</button>
                                 </header>
