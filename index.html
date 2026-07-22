@@ -66,6 +66,1181 @@
         const supabaseUrl = "https://krkwwfixsqjroohjkgeb.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtya3d3Zml4c3Fqcm9vaGprZ2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTMzODMsImV4cCI6MjEwMDI4OTM4M30.d8baOvjq4kyAFZSBWoi2bnReuqT4xHKOvcG_6nn0GoU"; 
 
+        // Initialize Supabase safely (naming conflict fixed)
+        let supabaseClient = null;
+        try {
+            if (supabaseKey && supabaseKey !== "PASTE_YOUR_ANON_PUBLIC_KEY_HERE") {
+                supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+            }
+        } catch (err) {
+            console.error("Supabase failed to initialize:", err);
+        }
+
+        const Icons = {
+            TrendingUp: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
+            TrendingDown: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>,
+            Euro: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/></svg>,
+            Layers: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polygon points="2 17 12 22 22 17"/><polygon points="2 12 12 17 22 12"/></svg>,
+            ShoppingCart: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>,
+            History: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>,
+            BarChart: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>,
+            Search: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
+            Plus: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>,
+            Download: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>,
+            Upload: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>,
+            Trash: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>,
+            Edit: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>,
+            Info: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>,
+            Lock: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+            Cloud: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-2.54-4.5-5-4.5-.42-1.89-1.74-3.5-4-3.5-2.65 0-4.5 2.24-4.5 5 0 .26.01.52.03.77A4.47 4.47 0 0 0 2 17.5 4.5 4.5 0 0 0 6.5 22h11Z"/></svg>
+        };
+
+        const defaultPhones = [
+            {
+                id: '1',
+                model: 'Note 14',
+                imei: '358912345678901',
+                buyPrice: 103,
+                expectedSellPrice: 149,
+                actualSellPrice: 149,
+                buyDate: '2025-07-04',
+                sellDate: '2025-07-11',
+                reinvestment: false,
+                notes: 'Part of initial 314€ Capital investment',
+                buySequence: 1720051200000,
+                sellSequence: 1720656000000
+            },
+            {
+                id: '2',
+                model: 'Galaxy A07',
+                imei: '358912345678902',
+                buyPrice: 92,
+                expectedSellPrice: 125,
+                actualSellPrice: 125,
+                buyDate: '2025-07-04',
+                sellDate: '2025-07-11',
+                reinvestment: false,
+                notes: 'Part of initial 314€ Capital investment',
+                buySequence: 1720051200001,
+                sellSequence: 1720656000001
+            },
+            {
+                id: '3',
+                model: 'Galaxy A17',
+                imei: '358912345678903',
+                buyPrice: 119,
+                expectedSellPrice: 169,
+                actualSellPrice: null,
+                buyDate: '2025-07-04',
+                sellDate: null, 
+                reinvestment: false,
+                notes: 'Part of initial 314€ Capital investment',
+                buySequence: 1720051200002,
+                sellSequence: null
+            },
+            {
+                id: '4',
+                model: 'Galaxy A07',
+                imei: '358912345678904',
+                buyPrice: 96,
+                expectedSellPrice: 129,
+                actualSellPrice: null,
+                buyDate: '2025-07-16',
+                sellDate: null, 
+                reinvestment: true, 
+                notes: 'Reinvestment purchase',
+                buySequence: 1721088000000,
+                sellSequence: null
+            }
+        ];
+
+        function App() {
+            // Unlocked State (Passcode '314')
+            const [isUnlocked, setIsUnlocked] = useState(() => sessionStorage.getItem('flipflow_unlocked') === 'true');
+            const [passwordInput, setPasswordInput] = useState('');
+            const [passwordError, setPasswordError] = useState(false);
+
+            const [phones, setPhones] = useState(() => {
+                const local = localStorage.getItem('flipflow_inventory');
+                return local ? JSON.parse(local) : defaultPhones;
+            });
+
+            const [toasts, setToasts] = useState([]);
+            const [activeTab, setActiveTab] = useState('dashboard');
+            const [syncLoading, setSyncLoading] = useState(false);
+            
+            const [searchTerm, setSearchTerm] = useState('');
+            const [filterModel, setFilterModel] = useState('');
+            const [filterStatus, setFilterStatus] = useState('all');
+            const [filterReinvestment, setFilterReinvestment] = useState('all');
+
+            const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+            const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+            const [isSellModalOpen, setIsSellModalOpen] = useState(false);
+            const [selectedPhone, setSelectedPhone] = useState(null);
+
+            const triggerToast = (message, type = 'info') => {
+                const id = Date.now();
+                setToasts(prev => [...prev, { id, message, type }]);
+                setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
+            };
+
+            // Fetch Cloud Data from Supabase on App Startup
+            useEffect(() => {
+                if (supabaseClient) {
+                    setSyncLoading(true);
+                    supabaseClient
+                        .from('ledger_store')
+                        .select('phones')
+                        .eq('id', 'main_inventory')
+                        .single()
+                        .then(({ data, error }) => {
+                            if (!error && data && data.phones) {
+                                setPhones(data.phones);
+                                localStorage.setItem('flipflow_inventory', JSON.stringify(data.phones));
+                                triggerToast("Cloud Sync: Loaded latest data successfully!", "success");
+                            } else {
+                                pushToCloud(phones);
+                            }
+                        })
+                        .catch(() => triggerToast("Cloud Sync Offline. Using Local Storage.", "warning"))
+                        .finally(() => setSyncLoading(false));
+                }
+            }, []);
+
+            // Helper to upload data to Supabase
+            const pushToCloud = (dataToPush) => {
+                if (!supabaseClient) return;
+                setSyncLoading(true);
+                supabaseClient
+                    .from('ledger_store')
+                    .upsert({ id: 'main_inventory', phones: dataToPush })
+                    .then(({ error }) => {
+                        if (error) throw error;
+                        triggerToast("Synced successfully with Supabase Cloud!", "success");
+                    })
+                    .catch(() => triggerToast("Failed to write to Cloud. Queue saved locally.", "warning"))
+                    .finally(() => setSyncLoading(false));
+            };
+
+            const updatePhonesAndPersist = (newPhones) => {
+                setPhones(newPhones);
+                localStorage.setItem('flipflow_inventory', JSON.stringify(newPhones));
+                pushToCloud(newPhones);
+            };
+
+            const handleForceRefresh = () => {
+                if (!supabaseClient) {
+                    triggerToast("Supabase is not configured.", "warning");
+                    return;
+                }
+                setSyncLoading(true);
+                supabaseClient
+                    .from('ledger_store')
+                    .select('phones')
+                    .eq('id', 'main_inventory')
+                    .single()
+                    .then(({ data, error }) => {
+                        if (!error && data && data.phones) {
+                            setPhones(data.phones);
+                            localStorage.setItem('flipflow_inventory', JSON.stringify(data.phones));
+                            triggerToast("Pulled latest cloud data successfully!", "success");
+                        }
+                    })
+                    .catch(() => triggerToast("Failed to fetch cloud database.", "warning"))
+                    .finally(() => setSyncLoading(false));
+            };
+
+            const handleUnlock = (e) => {
+                e.preventDefault();
+                if (passwordInput === '314') {
+                    setIsUnlocked(true);
+                    sessionStorage.setItem('flipflow_unlocked', 'true');
+                    setPasswordError(false);
+                    triggerToast("System unlocked.", "success");
+                } else {
+                    setPasswordError(true);
+                    setPasswordInput('');
+                }
+            };
+
+            // Dynamic Ledger Sequence Balance Builder
+            const ledger = useMemo(() => {
+                let list = [];
+                phones.forEach(p => {
+                    list.push({
+                        id: `${p.id}-buy`,
+                        phoneId: p.id,
+                        date: p.buyDate,
+                        sequence: p.buySequence || Date.now(),
+                        model: p.model,
+                        type: p.reinvestment ? 'REINVEST_BUY' : 'INITIAL_BUY',
+                        amount: p.reinvestment ? -Number(p.buyPrice) : 0,
+                        description: p.reinvestment 
+                            ? `Reinvestment Purchase — ${p.model}` 
+                            : `Initial Inventory — ${p.model}`
+                    });
+
+                    if (p.sellDate) {
+                        list.push({
+                            id: `${p.id}-sell`,
+                            phoneId: p.id,
+                            date: p.sellDate,
+                            sequence: p.sellSequence || Date.now() + 1,
+                            model: p.model,
+                            type: 'SELL',
+                            amount: Number(p.actualSellPrice || p.expectedSellPrice),
+                            description: `Sold — ${p.model}`
+                        });
+                    }
+                });
+
+                list.sort((a, b) => {
+                    const diff = new Date(a.date) - new Date(b.date);
+                    if (diff !== 0) return diff;
+                    return a.sequence - b.sequence;
+                });
+
+                let running = 0;
+                return list.map(item => {
+                    running += item.amount;
+                    return { ...item, balance: running };
+                });
+            }, [phones]);
+
+            const stats = useMemo(() => {
+                const availableCash = ledger.length > 0 ? ledger[ledger.length - 1].balance : 0;
+                
+                let inventoryCost = 0;
+                let inventoryMarketValue = 0;
+                let totalSales = 0;
+                let totalProfit = 0;
+                let phonesSold = 0;
+                let phonesInStock = 0;
+                let totalDaysToSell = 0;
+                let soldBuyPriceSum = 0;
+                let potentialSalesRevenue = 0;
+
+                let highestProfit = -Infinity;
+                let lowestProfit = Infinity;
+                let highestProfitPhone = null;
+                let lowestProfitPhone = null;
+
+                let fastestSale = Infinity;
+                let slowestSale = -Infinity;
+
+                phones.forEach(p => {
+                    const isSold = !!p.sellDate;
+                    const buyVal = Number(p.buyPrice);
+                    const expectedVal = Number(p.expectedSellPrice);
+                    const actualVal = Number(p.actualSellPrice || p.expectedSellPrice);
+
+                    if (!isSold) {
+                        inventoryCost += buyVal;
+                        inventoryMarketValue += expectedVal;
+                        phonesInStock++;
+                        potentialSalesRevenue += expectedVal;
+                    } else {
+                        const profit = actualVal - buyVal;
+                        totalSales += actualVal;
+                        totalProfit += profit;
+                        phonesSold++;
+                        soldBuyPriceSum += buyVal;
+                        potentialSalesRevenue += actualVal;
+
+                        const days = Math.max(0, Math.round((new Date(p.sellDate) - new Date(p.buyDate)) / 86400000));
+                        totalDaysToSell += days;
+
+                        if (days < fastestSale) fastestSale = days;
+                        if (days > slowestSale) slowestSale = days;
+
+                        if (profit > highestProfit) {
+                            highestProfit = profit;
+                            highestProfitPhone = p;
+                        }
+                        if (profit < lowestProfit) {
+                            lowestProfit = profit;
+                            lowestProfitPhone = p;
+                        }
+                    }
+                });
+
+                return {
+                    availableCash,
+                    inventoryCost,
+                    inventoryMarketValue,
+                    totalSales,
+                    totalProfit,
+                    phonesSold,
+                    phonesInStock,
+                    avgProfit: phonesSold > 0 ? totalProfit / phonesSold : 0,
+                    avgDays: phonesSold > 0 ? totalDaysToSell / phonesSold : 0,
+                    roi: soldBuyPriceSum > 0 ? (totalProfit / soldBuyPriceSum) * 100 : 0,
+                    highestProfit: highestProfit === -Infinity ? 0 : highestProfit,
+                    highestProfitPhone,
+                    lowestProfit: lowestProfit === Infinity ? 0 : lowestProfit,
+                    lowestProfitPhone,
+                    fastestSale: fastestSale === Infinity ? 0 : fastestSale,
+                    slowestSale: slowestSale === -Infinity ? 0 : slowestSale,
+                    potentialSalesRevenue,
+                    soldBuyPriceSum
+                };
+            }, [phones, ledger]);
+
+            const filteredPhones = useMemo(() => {
+                return phones.filter(p => {
+                    const matchesSearch = p.model.toLowerCase().includes(searchTerm.toLowerCase()) || (p.imei && p.imei.includes(searchTerm));
+                    const matchesModel = filterModel ? p.model === filterModel : true;
+                    const matchesStatus = filterStatus === 'all' ? true : (filterStatus === 'sold' ? !!p.sellDate : !p.sellDate);
+                    const matchesReinvest = filterReinvestment === 'all' ? true : (filterReinvestment === 'yes' ? p.reinvestment : !p.reinvestment);
+                    return matchesSearch && matchesModel && matchesStatus && matchesReinvest;
+                });
+            }, [phones, searchTerm, filterModel, filterStatus, filterReinvestment]);
+
+            const uniqueModels = useMemo(() => {
+                return [...new Set(phones.map(p => p.model))];
+            }, [phones]);
+
+            const handleToggleStatus = (phone, targetStatus) => {
+                if (targetStatus === 'sold') {
+                    setSelectedPhone(phone);
+                    setIsSellModalOpen(true);
+                } else {
+                    const updated = phones.map(p => {
+                        if (p.id === phone.id) {
+                            return { ...p, sellDate: null, actualSellPrice: null, sellSequence: null };
+                        }
+                        return p;
+                    });
+                    updatePhonesAndPersist(updated);
+                    triggerToast(`${phone.model} marked back to Unsold`, 'warning');
+                }
+            };
+
+            const handleAddPhone = (formData) => {
+                const newPhone = {
+                    ...formData,
+                    id: 'phone-' + Date.now(),
+                    buySequence: Date.now(),
+                    sellSequence: formData.sellDate ? Date.now() + 1 : null
+                };
+                updatePhonesAndPersist([...phones, newPhone]);
+            };
+
+            const handleEditPhone = (updatedPhone) => {
+                const updated = phones.map(p => {
+                    if (p.id === updatedPhone.id) {
+                        return {
+                            ...updatedPhone,
+                            sellSequence: updatedPhone.sellDate && !p.sellDate ? Date.now() : p.sellSequence
+                        };
+                    }
+                    return p;
+                });
+                updatePhonesAndPersist(updated);
+            };
+
+            const handleDeletePhone = (id) => {
+                if (window.confirm("Delete this entry? This modifies ledger history.")) {
+                    const updated = phones.filter(p => p.id !== id);
+                    updatePhonesAndPersist(updated);
+                }
+            };
+
+            const exportCSV = () => {
+                let csvContent = "data:text/csv;charset=utf-8,";
+                csvContent += "Phone Model,IMEI,Buy Price,Expected Sell Price,Actual Sell Price,Buy Date,Sell Date,Reinvestment,Notes\n";
+                phones.forEach(p => {
+                    const row = [
+                        `"${p.model}"`,
+                        `"${p.imei || ''}"`,
+                        p.buyPrice,
+                        p.expectedSellPrice,
+                        p.actualSellPrice || '',
+                        p.buyDate,
+                        p.sellDate || '',
+                        p.reinvestment ? 'Yes' : 'No',
+                        `"${p.notes || ''}"`
+                    ].join(",");
+                    csvContent += row + "\n";
+                });
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `flipflow_export_${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                triggerToast("CSV Sheet exported successfully", "success");
+            };
+
+            const exportJSON = () => {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(phones, null, 2));
+                const dlAnchorElem = document.createElement('a');
+                dlAnchorElem.setAttribute("href", dataStr);
+                dlAnchorElem.setAttribute("download", `flipflow_backup_${new Date().toISOString().split('T')[0]}.json`);
+                dlAnchorElem.click();
+                triggerToast("Local JSON database exported", "success");
+            };
+
+            const importJSON = (e) => {
+                const fileReader = new FileReader();
+                fileReader.onload = event => {
+                    try {
+                        const parsed = JSON.parse(event.target.result);
+                        if (Array.isArray(parsed)) {
+                            updatePhonesAndPersist(parsed);
+                            triggerToast("Database successfully restored from JSON file!", "success");
+                        } else {
+                            triggerToast("Invalid format. Expecting JSON array.", "warning");
+                        }
+                    } catch (err) {
+                        triggerToast("Failed to parse file structure.", "warning");
+                    }
+                };
+                fileReader.readAsText(e.target.files[0]);
+            };
+
+            if (!isUnlocked) {
+                return (
+                    <div class="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+                        <div class="absolute w-[300px] h-[300px] bg-indigo-600/10 blur-[120px] rounded-full top-1/4 left-1/3"></div>
+                        <div class="absolute w-[250px] h-[250px] bg-purple-600/10 blur-[100px] rounded-full bottom-1/4 right-1/3"></div>
+
+                        <div class="w-full max-w-md bg-slate-900/50 backdrop-blur-xl border border-slate-800/80 p-8 rounded-3xl shadow-2xl relative z-10 text-center">
+                            <div class="inline-flex p-4 bg-indigo-500/10 text-indigo-400 rounded-2xl mb-5 shadow-inner">
+                                <Icons.Lock />
+                            </div>
+                            <h1 class="text-2xl font-black tracking-tight text-white mb-2">FlipFlow Hub</h1>
+                            <p class="text-xs text-slate-400 mb-6 leading-relaxed">Financial ledger protection active.<br />Enter security passcode to unlock system variables.</p>
+                            
+                            <form onSubmit={handleUnlock} class="space-y-4">
+                                <div class="relative">
+                                    <input 
+                                        type="password" 
+                                        placeholder="••••"
+                                        value={passwordInput}
+                                        onChange={(e) => setPasswordInput(e.target.value)}
+                                        class={`w-full bg-slate-950 border text-center text-xl font-bold tracking-widest text-white rounded-xl py-3 px-4 focus:outline-none transition-all ${passwordError ? 'border-rose-500 ring-2 ring-rose-500/20' : 'border-slate-800 focus:border-indigo-500'}`}
+                                        autoFocus
+                                    />
+                                    {passwordError && (
+                                        <p class="text-rose-400 text-[11px] font-semibold mt-1.5 animate-bounce">Access denied. Passcode invalid.</p>
+                                    )}
+                                </div>
+                                <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-indigo-600/10">
+                                    Access Ledger
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                );
+            }
+
+            const cloudSyncActive = supabaseKey && supabaseKey !== "PASTE_YOUR_ANON_PUBLIC_KEY_HERE" && supabaseClient !== null;
+
+            return (
+                <div class="flex flex-col md:flex-row min-h-screen text-slate-100 bg-slate-950">
+                    {/* Sidebar */}
+                    <aside class="w-full md:w-64 bg-slate-900 border-b md:border-b-0 md:border-r border-slate-800 p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-8">
+                                <div class="bg-indigo-600 p-2.5 rounded-xl">
+                                    <Icons.Euro />
+                                </div>
+                                <div>
+                                    <h1 class="text-xl font-bold tracking-tight">FlipFlow</h1>
+                                    <div class="flex items-center gap-1.5 mt-0.5">
+                                        <span class="text-xs text-indigo-400 font-semibold tracking-wider uppercase">Flipping Engine</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <nav class="space-y-1.5">
+                                <button onClick={() => setActiveTab('dashboard')} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}>
+                                    <Icons.BarChart /> Dashboard
+                                </button>
+                                <button onClick={() => setActiveTab('inventory')} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'inventory' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}>
+                                    <Icons.Layers /> Inventory Manager
+                                </button>
+                                <button onClick={() => setActiveTab('ledger')} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'ledger' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}>
+                                    <Icons.History /> Cash Flow Ledger
+                                </button>
+                                <button onClick={() => setActiveTab('stats')} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'stats' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}>
+                                    <Icons.TrendingUp /> Business Metrics
+                                </button>
+                            </nav>
+                        </div>
+
+                        {/* Direct Cloud Settings Bar */}
+                        <div class="mt-8 pt-6 border-t border-slate-800/60 space-y-3">
+                            <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800/60">
+                                <div class="flex items-center justify-between text-xs font-semibold text-slate-400">
+                                    <span>CLOUD STATUS</span>
+                                    <span class={`w-2.5 h-2.5 rounded-full ${cloudSyncActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-600'}`} title={cloudSyncActive ? "Synced with Supabase Cloud" : "Running Locally"}></span>
+                                </div>
+                                <div class="mt-2 flex flex-col gap-1.5">
+                                    <span class="text-[10px] text-slate-400 leading-relaxed font-medium">
+                                        {cloudSyncActive ? "Connected to Supabase DB" : "No Cloud Configured"}
+                                    </span>
+                                    {cloudSyncActive && (
+                                        <button onClick={handleForceRefresh} disabled={syncLoading} class="w-full text-center text-[10px] py-1 bg-slate-900 border border-slate-800 rounded hover:bg-slate-800 transition-colors font-bold text-indigo-400 flex items-center justify-center gap-1">
+                                            <Icons.Cloud /> {syncLoading ? "Syncing..." : "Sync Now"}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            <button onClick={exportCSV} class="w-full flex items-center justify-center gap-2 px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-300 transition-colors">
+                                <Icons.Download /> Export CSV Sheet
+                            </button>
+                            <button onClick={exportJSON} class="w-full flex items-center justify-center gap-2 px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-300 transition-colors">
+                                <Icons.Download /> Backup JSON
+                            </button>
+                            <label class="w-full flex items-center justify-center gap-2 px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-300 cursor-pointer transition-colors">
+                                <Icons.Upload /> Restore Backup
+                                <input type="file" accept=".json" onChange={importJSON} class="hidden" />
+                            </label>
+                        </div>
+                    </aside>
+
+                    {/* Content */}
+                    <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
+                        <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white capitalize">{activeTab} View</h2>
+                                <p class="text-slate-400 text-sm">Managing phone resale inventory with cloud database sync.</p>
+                            </div>
+                            <button onClick={() => setIsAddModalOpen(true)} class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-xl text-sm shadow-md hover:from-indigo-600 hover:to-purple-700 transition-all">
+                                <Icons.Plus /> Register Purchase
+                            </button>
+                        </header>
+
+                        {/* DASHBOARD */}
+                        {activeTab === 'dashboard' && (
+                            <div class="space-y-8">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                                    <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl">
+                                        <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
+                                            <span>AVAILABLE CASH</span>
+                                            <span class="text-emerald-400 p-1 bg-emerald-500/10 rounded-md"><Icons.Euro /></span>
+                                        </div>
+                                        <h3 class="text-3xl font-black text-emerald-400 mt-3">{stats.availableCash}€</h3>
+                                        <p class="text-[10px] text-slate-500 mt-1">Reflects current business bank roll</p>
+                                    </div>
+
+                                    <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl">
+                                        <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
+                                            <span>REVENUE AT COMPLETION</span>
+                                            <span class="text-indigo-400 p-1 bg-indigo-500/10 rounded-md"><Icons.TrendingUp /></span>
+                                        </div>
+                                        <h3 class="text-3xl font-black text-indigo-400 mt-3">{stats.potentialSalesRevenue}€</h3>
+                                        <p class="text-[10px] text-slate-500 mt-1">Target sales volume (Includes unsold items)</p>
+                                    </div>
+
+                                    <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl">
+                                        <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
+                                            <span>FROZEN CAPITAL (COST)</span>
+                                            <span class="text-amber-400 p-1 bg-amber-500/10 rounded-md"><Icons.Layers /></span>
+                                        </div>
+                                        <h3 class="text-3xl font-black text-white mt-3">{stats.inventoryCost}€</h3>
+                                        <p class="text-[10px] text-slate-500 mt-1">Cost of current items in stock</p>
+                                    </div>
+
+                                    <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl">
+                                        <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
+                                            <span>REALIZED PROFITS</span>
+                                            <span class="text-teal-400 p-1 bg-teal-500/10 rounded-md"><Icons.TrendingUp /></span>
+                                        </div>
+                                        <h3 class="text-3xl font-black text-teal-400 mt-3">{stats.totalProfit}€</h3>
+                                        <p class="text-[10px] text-slate-500 mt-1">Completed unit differences</p>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl">
+                                        <p class="text-xs text-slate-400 font-medium">ROI % (Sold)</p>
+                                        <p class="text-lg font-bold mt-1 text-indigo-400">{stats.roi.toFixed(1)}%</p>
+                                    </div>
+                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl">
+                                        <p class="text-xs text-slate-400 font-medium">Units Sold</p>
+                                        <p class="text-lg font-bold mt-1 text-white">{stats.phonesSold}</p>
+                                    </div>
+                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl">
+                                        <p class="text-xs text-slate-400 font-medium">In Stock</p>
+                                        <p class="text-lg font-bold mt-1 text-white">{stats.phonesInStock}</p>
+                                    </div>
+                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl">
+                                        <p class="text-xs text-slate-400 font-medium">Avg Profit/Unit</p>
+                                        <p class="text-lg font-bold mt-1 text-emerald-400">{stats.avgProfit.toFixed(1)}€</p>
+                                    </div>
+                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl col-span-2 md:col-span-1">
+                                        <p class="text-xs text-slate-400 font-medium">Avg Days to Sell</p>
+                                        <p class="text-lg font-bold mt-1 text-white">{stats.avgDays.toFixed(1)} Days</p>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl">
+                                        <h4 class="text-sm font-semibold text-slate-300 mb-4">Financial Ledger Flow Visualization</h4>
+                                        <div class="h-48 flex items-end gap-1.5 pt-4">
+                                            {ledger.length === 0 ? (
+                                                <div class="w-full text-center text-slate-500 text-sm pb-16">No transactions logged yet.</div>
+                                            ) : (
+                                                <svg class="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none">
+                                                    {(() => {
+                                                        const points = ledger.map((item, index) => {
+                                                            const x = (index / (ledger.length - 1 || 1)) * 100;
+                                                            const maxVal = Math.max(...ledger.map(i => i.balance), 100);
+                                                            const minVal = Math.min(...ledger.map(i => i.balance), 0);
+                                                            const y = 35 - ((item.balance - minVal) / (maxVal - minVal || 1)) * 30;
+                                                            return `${x},${y}`;
+                                                        }).join(' ');
+                                                        return (
+                                                            <React.Fragment>
+                                                                <polyline fill="none" stroke="#4f46e5" strokeWidth="1.5" points={points} />
+                                                                {ledger.map((item, index) => {
+                                                                    const x = (index / (ledger.length - 1 || 1)) * 100;
+                                                                    const maxVal = Math.max(...ledger.map(i => i.balance), 100);
+                                                                    const minVal = Math.min(...ledger.map(i => i.balance), 0);
+                                                                    const y = 35 - ((item.balance - minVal) / (maxVal - minVal || 1)) * 30;
+                                                                    return (
+                                                                        <circle key={index} cx={x} cy={y} r="1.5" fill="#10b981" />
+                                                                    );
+                                                                })}
+                                                            </React.Fragment>
+                                                        );
+                                                    })()}
+                                                </svg>
+                                            )}
+                                        </div>
+                                        <p class="text-[11px] text-slate-500 mt-2 text-center">Progress line plotting running cash balance (X-Axis: Sequential Activity)</p>
+                                    </div>
+
+                                    <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl flex flex-col justify-between">
+                                        <h4 class="text-sm font-semibold text-slate-300 mb-4">Core Ledger Analytics Highlights</h4>
+                                        <div class="space-y-4">
+                                            <div class="flex justify-between items-center bg-slate-800/40 p-3.5 rounded-xl border border-slate-800/60">
+                                                <div>
+                                                    <span class="text-xs text-slate-400">Highest Margin Sale</span>
+                                                    <p class="text-sm font-bold mt-0.5 text-white">{stats.highestProfitPhone ? stats.highestProfitPhone.model : 'None yet'}</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <span class="text-xs text-emerald-400 font-semibold">+{stats.highestProfit}€</span>
+                                                    <p class="text-[10px] text-slate-500 mt-0.5">Absolute profit</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="flex justify-between items-center bg-slate-800/40 p-3.5 rounded-xl border border-slate-800/60">
+                                                <div>
+                                                    <span class="text-xs text-slate-400">Lowest Margin Sale</span>
+                                                    <p class="text-sm font-bold mt-0.5 text-white">{stats.lowestProfitPhone ? stats.lowestProfitPhone.model : 'None yet'}</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <span class="text-xs text-rose-400 font-semibold">+{stats.lowestProfit}€</span>
+                                                    <p class="text-[10px] text-slate-500 mt-0.5">Absolute profit</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div class="bg-slate-800/30 border border-slate-800/60 p-3 rounded-xl">
+                                                    <span class="text-[10px] text-slate-500 uppercase tracking-wider">Fastest Turnaround</span>
+                                                    <p class="text-sm font-extrabold text-white mt-1">{stats.fastestSale} Days</p>
+                                                </div>
+                                                <div class="bg-slate-800/30 border border-slate-800/60 p-3 rounded-xl">
+                                                    <span class="text-[10px] text-slate-500 uppercase tracking-wider">Slowest Turnaround</span>
+                                                    <p class="text-sm font-extrabold text-white mt-1">{stats.slowestSale} Days</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* INVENTORY */}
+                        {activeTab === 'inventory' && (
+                            <div class="space-y-6">
+                                <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col md:flex-row gap-3">
+                                    <div class="flex-1 relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><Icons.Search /></span>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Search model, imei, details..." 
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 pl-9 pr-4 text-sm text-white focus:outline-none focus:border-indigo-500"
+                                        />
+                                    </div>
+                                    <select 
+                                        value={filterModel} 
+                                        onChange={(e) => setFilterModel(e.target.value)}
+                                        class="bg-slate-950 border border-slate-800 text-sm text-slate-300 rounded-xl px-4 py-2 focus:outline-none focus:border-indigo-500"
+                                    >
+                                        <option value="">All Models</option>
+                                        {uniqueModels.map(m => <option key={m} value={m}>{m}</option>)}
+                                    </select>
+                                    <select 
+                                        value={filterStatus} 
+                                        onChange={(e) => setFilterStatus(e.target.value)}
+                                        class="bg-slate-950 border border-slate-800 text-sm text-slate-300 rounded-xl px-4 py-2 focus:outline-none focus:border-indigo-500"
+                                    >
+                                        <option value="all">All Statuses</option>
+                                        <option value="in-stock">In Stock (Unsold)</option>
+                                        <option value="sold">Sold</option>
+                                    </select>
+                                    <select 
+                                        value={filterReinvestment} 
+                                        onChange={(e) => setFilterReinvestment(e.target.value)}
+                                        class="bg-slate-950 border border-slate-800 text-sm text-slate-300 rounded-xl px-4 py-2 focus:outline-none focus:border-indigo-500"
+                                    >
+                                        <option value="all">All Investment Sources</option>
+                                        <option value="no">Initial Capital</option>
+                                        <option value="yes">Reinvestment</option>
+                                    </select>
+                                </div>
+
+                                <div class="bg-slate-900/30 border border-slate-800/80 rounded-2xl overflow-hidden">
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr class="bg-slate-900 border-b border-slate-800 text-xs font-semibold text-slate-400 uppercase tracking-wider sticky top-0">
+                                                    <th class="py-4 px-5">Model</th>
+                                                    <th class="py-4 px-5">Buy Price</th>
+                                                    <th class="py-4 px-5">Expected Price</th>
+                                                    <th class="py-4 px-5">Actual Sold Price</th>
+                                                    <th class="py-4 px-5">Status Switcher</th>
+                                                    <th class="py-4 px-5">Dates Info</th>
+                                                    <th class="py-4 px-5">Reinvestment</th>
+                                                    <th class="py-4 px-5 text-right">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-slate-800/60 text-sm">
+                                                {filteredPhones.map(phone => {
+                                                    const isSold = !!phone.sellDate;
+                                                    const daysToSell = isSold ? Math.round((new Date(phone.sellDate) - new Date(phone.buyDate)) / 86400000) : null;
+                                                    return (
+                                                        <tr key={phone.id} class="hover:bg-slate-900/40 transition-colors">
+                                                            <td class="py-4 px-5 font-bold text-white">
+                                                                {phone.model}
+                                                                {phone.notes && <p class="text-[10px] text-slate-500 font-normal mt-0.5 max-w-xs truncate">{phone.notes}</p>}
+                                                            </td>
+                                                            <td class="py-4 px-5 font-medium">{phone.buyPrice}€</td>
+                                                            <td class="py-4 px-5 text-slate-400">{phone.expectedSellPrice}€</td>
+                                                            <td class="py-4 px-5 font-black text-emerald-400">
+                                                                {isSold ? `${phone.actualSellPrice}€` : <span class="text-slate-600 font-normal">Unsold</span>}
+                                                            </td>
+                                                            <td class="py-4 px-5">
+                                                                <select 
+                                                                    value={isSold ? 'sold' : 'in-stock'}
+                                                                    onChange={(e) => handleToggleStatus(phone, e.target.value)}
+                                                                    class={`text-xs font-semibold px-2 py-1 rounded-lg border focus:outline-none cursor-pointer ${isSold ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-sky-500/10 border-sky-500/30 text-sky-400'}`}
+                                                                >
+                                                                    <option class="bg-slate-900 text-sky-400" value="in-stock">In Stock (Unsold)</option>
+                                                                    <option class="bg-slate-900 text-emerald-400" value="sold">Sold</option>
+                                                                </select>
+                                                            </td>
+                                                            <td class="py-4 px-5 text-xs text-slate-400">
+                                                                <div>Buy: {phone.buyDate}</div>
+                                                                {isSold && <div class="text-indigo-400 mt-0.5">Sell: {phone.sellDate} ({daysToSell}d)</div>}
+                                                            </td>
+                                                            <td class="py-4 px-5">
+                                                                <span class={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${phone.reinvestment ? 'bg-amber-500/15 text-amber-400' : 'bg-slate-800 text-slate-400'}`}>
+                                                                    {phone.reinvestment ? "Reinvest" : "Initial Cap"}
+                                                                </span>
+                                                            </td>
+                                                            <td class="py-4 px-5 text-right space-x-2">
+                                                                <button onClick={() => { setSelectedPhone(phone); setIsEditModalOpen(true); }} class="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-slate-800 rounded-lg transition-colors inline-block">
+                                                                    <Icons.Edit />
+                                                                </button>
+                                                                <button onClick={() => handleDeletePhone(phone.id)} class="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-slate-800 rounded-lg transition-colors inline-block">
+                                                                    <Icons.Trash />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* LEDGER */}
+                        {activeTab === 'ledger' && (
+                            <div class="bg-slate-900/30 border border-slate-800/80 rounded-2xl overflow-hidden">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-900 border-b border-slate-800 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                                <th class="py-4 px-5">Effective Date</th>
+                                                <th class="py-4 px-5">Type of Entry</th>
+                                                <th class="py-4 px-5">Details</th>
+                                                <th class="py-4 px-5">Cash Impact</th>
+                                                <th class="py-4 px-5">Running Cash Balance</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-800/60 font-mono text-xs">
+                                            {ledger.slice().reverse().map(tx => (
+                                                <tr key={tx.id} class="hover:bg-slate-900/40 transition-colors">
+                                                    <td class="py-4 px-5 text-slate-400">{tx.date}</td>
+                                                    <td class="py-4 px-5">
+                                                        <span class={`px-2 py-0.5 rounded-full text-[9px] uppercase font-bold ${tx.type === 'SELL' ? 'bg-emerald-500/10 text-emerald-400' : tx.type === 'REINVEST_BUY' ? 'bg-amber-500/10 text-amber-400' : 'bg-slate-800 text-slate-400'}`}>
+                                                            {tx.type}
+                                                        </span>
+                                                    </td>
+                                                    <td class="py-4 px-5 text-slate-200 font-sans font-medium text-sm">{tx.description}</td>
+                                                    <td class={`py-4 px-5 text-sm font-bold ${tx.amount > 0 ? 'text-emerald-400' : tx.amount < 0 ? 'text-rose-400' : 'text-slate-500'}`}>
+                                                        {tx.amount > 0 ? `+${tx.amount}€` : tx.amount < 0 ? `${tx.amount}€` : "0€ (Initial Cap)"}
+                                                    </td>
+                                                    <td class="py-4 px-5 text-sm font-extrabold text-indigo-300">{tx.balance}€</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* EXTENDED STATISTICS */}
+                        {activeTab === 'stats' && (
+                            <div class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl">
+                                        <h3 class="text-sm font-bold text-slate-400 tracking-wide uppercase mb-4">Financial Health Indicators</h3>
+                                        <div class="space-y-4">
+                                            <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
+                                                <span class="text-xs text-slate-400">Total Business Revenue</span>
+                                                <span class="text-sm font-bold text-white">{stats.totalSales}€</span>
+                                            </div>
+                                            <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
+                                                <span class="text-xs text-slate-400">Total Capital Invested (Sold)</span>
+                                                <span class="text-sm font-bold text-white">{stats.soldBuyPriceSum}€</span>
+                                            </div>
+                                            <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
+                                                <span class="text-xs text-slate-400">Net Business Profit</span>
+                                                <span class="text-sm font-bold text-emerald-400">{stats.totalProfit}€</span>
+                                            </div>
+                                            <div class="flex justify-between items-center py-2.5">
+                                                <span class="text-xs text-slate-400">Overall Business ROI %</span>
+                                                <span class="text-sm font-bold text-indigo-400">{stats.roi.toFixed(1)}%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl">
+                                        <h3 class="text-sm font-bold text-slate-400 tracking-wide uppercase mb-4">Inventory Valuations</h3>
+                                        <div class="space-y-4">
+                                            <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
+                                                <span class="text-xs text-slate-400">Total Assets In Stock</span>
+                                                <span class="text-sm font-bold text-white">{stats.phonesInStock} units</span>
+                                            </div>
+                                            <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
+                                                <span class="text-xs text-slate-400">Total Capital Currently Frozen</span>
+                                                <span class="text-sm font-bold text-white">{stats.inventoryCost}€</span>
+                                            </div>
+                                            <div class="flex justify-between items-center py-2.5">
+                                                <span class="text-xs text-slate-400">Expected Value on Liquidation</span>
+                                                <span class="text-sm font-bold text-indigo-400">{stats.inventoryMarketValue}€</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl">
+                                        <h3 class="text-sm font-bold text-slate-400 tracking-wide uppercase mb-4">Velocity Metrics</h3>
+                                        <div class="space-y-4">
+                                            <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
+                                                <span class="text-xs text-slate-400">Fastest Turnaround</span>
+                                                <span class="text-sm font-bold text-emerald-400">{stats.fastestSale} Days</span>
+                                            </div>
+                                            <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
+                                                <span class="text-xs text-slate-400">Slowest Turnaround</span>
+                                                <span class="text-sm font-bold text-rose-400">{stats.slowestSale} Days</span>
+                                            </div>
+                                            <div class="flex justify-between items-center py-2.5">
+                                                <span class="text-xs text-slate-400">Average Velocity to Liquidate</span>
+                                                <span class="text-sm font-bold text-white">{stats.avgDays.toFixed(1)} Days</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* TOAST SYSTEM */}
+                    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full">
+                        {toasts.map(t => (
+                            <div key={t.id} class="p-4 bg-slate-900 border border-slate-800 text-slate-200 rounded-xl shadow-2xl flex items-start gap-3">
+                                <span class="mt-0.5"><Icons.Info /></span>
+                                <div class="text-xs font-semibold">{t.message}</div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* ADD MODAL */}
+                    {isAddModalOpen && (
+                        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                            <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden">
+                                <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
+                                    <h3 class="text-lg font-bold">Register New Purchase</h3>
+                                    <button onClick={() => setIsAddModalOpen(false)} class="text-slate-400 hover:text-white">✕</button>
+                                </header>
+                                <form onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const fd = new FormData(e.target);
+                                    handleAddPhone({
+                                        model: fd.get('model'),
+                                        imei: fd.get('imei'),
+                                        buyPrice: Number(fd.get('buyPrice')),
+                                        expectedSellPrice: Number(fd.get('expectedSellPrice')),
+                                        actualSellPrice: null,
+                                        buyDate: fd.get('buyDate'),
+                                        sellDate: null,
+                                        reinvestment: fd.get('reinvestment') === 'on',
+                                        notes: fd.get('notes')
+                                    });
+                                    setIsAddModalOpen(false);
+                                }} class="p-6 space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Model Name *</label>
+                                            <input required name="model" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">IMEI</label>
+                                            <input name="imei" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Buy Price (€) *</label>
+                                            <input required name="buyPrice" type="number" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Expected Sale Price (€) *</label>
+                                            <input required name="expectedSellPrice" type="number" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Purchase Date *</label>
+                                        <input required name="buyDate" type="date" defaultValue={new Date().toISOString().split('T')[0]} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Internal Notes</label>
+                                        <textarea name="notes" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white"></textarea>
+                                    </div>
+                                    <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                        <input type="checkbox" name="reinvestment" id="chk" class="w-4 h-4 text-indigo-600 rounded bg-slate-950 border-slate-800" />
+                                        <label for="chk" class="text-xs text-slate-300 font-bold cursor-pointer">Reinvestment Buy (Immediately subtracts from Cash Balance)</label>
+                                    </div>
+                                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
+                                        <button type="button" onClick={() => setIsAddModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm">Cancel</button>
+                                        <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold">Register Unit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* EDIT MODAL */}
+                    {isEditModalOpen && selectedPhone && (
+                        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                            <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden">
+                                <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
+                                    <h3 class="text-lg font-bold">Edit Phone Details</h3>
+                                    <button onClick={() => setIsEditModalOpen(false)} class="text-slate-400 hover:text-white">✕</button>
+                                </header>
+                                <form onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const fd = new FormData(e.target);
+                                    handleEditPhone({
+                                        ...selectedPhone,
+                                        model: fd.get('model'),
+                                        imei: fd.get('imei'),
+                                        buyPrice: Number(fd.get('buyPrice')),
+                                        expectedSellPrice: Number(fd.get('expectedSellPrice')),
+                                        actualSellPrice: fd.get('actualSellPrice') ? Number(fd.get('actualSellPrice')) : null,
+                                        buyDate: fd.get('buyDate'),
+                                        sellDate: fd.get('sellDate') || null,
+                                        reinvestment: fd.get('reinvestment') === 'on',
+                                        notes: fd.get('notes')
+                                    });
+                                    setIsEditModalOpen(false);
+                                }} class="p-6 space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Model Name *</label>
+                                            <input required name="model" type="text" defaultValue={selectedPhone.model} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">IMEI</label>
+                                            <input name="imei" type="text" defaultValue={selectedPhone.imei || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Buy Price *</label>
+                                            <input required name="buyPrice" type="number" defaultValue={selectedPhone.buyPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Expected Sale *</label>
+                                            <input required name="expectedSellPrice" type="number" defaultValue={selectedPhone.expectedSellPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Actual Sold Price</label>
+                                            <input name="actualSellPrice" type="number" defaultValue={selectedPhone.actualSellPrice || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Purchase Date</label>
+                                            <input required name="buyDate" type="date" defaultValue={selectedPhone.buyDate} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Sell Date (blank if unsold)</label>
+                                            <input name="sellDate" type="date" defaultValue={selectedPhone.sellDate || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Notes</label>
+                                        <textarea name="notes" defaultValue={selectedPhone.notes || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white"></textarea>
+                                    </div>
+                                    <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                        <input type="checkbox" name="reinvestment" id="chk2" defaultChecked={selectedPhone.reinvestment} class="w-4 h-4 text-indigo-600 rounded bg-slate-950 border-slate-800" />
+                                        <label for="chk2" class="text-xs text-slate-300 font-bold cursor-pointer">Reinvestment Buy</label>
+                                    </div>
+                                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
+                                        <button type="button" onClick={() => setIsEditModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm">Cancel</button>
+                                        <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* SELL CONFIRM MODAL */}
+                    {isSellModalOpen && selectedPhone && (
+                        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                            <div class="bg-slate-900 border border-slate-800 w-full max-sm rounded-2xl overflow-hidden">
+                                <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
+                                    <h3 class="text-lg font-bold">Record Sale Details</h3>
+                                    <button onClick={() => setIsSellModalOpen(false)} class="text-slate-400 hover:text-white">✕</button>
+                                </header>
+                                <form onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const fd = new FormData(e.target);
+                                    const price = Number(fd.get('actualSellPrice'));
+                                    const date = fd.get('sellDate');
+
+                                    const updated = phones.map(p => {
+                                        if (p.id === selectedPhone.id) {
+                                            return {
+                                                ...p,
+                                                actualSellPrice: price,
+                                                sellDate: date,
+                                                sellSequence: Date.now()
+                                            };
+                                        }
+                                        return p;
+                                    });
+                                    updatePhonesAndPersist(updated);
+                                    setIsSellModalOpen(false);
+                                    triggerToast(`Sold ${selectedPhone.model} for ${price}€!`, 'success');
+                                }} class="p-6 space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Actual Sold Price (€) *</label>
+                                        <input required name="actualSellPrice" type="number" defaultValue={selectedPhone.expectedSellPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Sell Date *</label>
+                                        <input required name="sellDate" type="date" defaultValue={new Date().toISOString().split('T')[0]} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+                                    </div>
+                                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
+                                        <button type="button" onClick={() => setIsSellModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm">Cancel</button>
+                                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold">Complete Sale</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlipFlow - Enterprise Phone Flipping Ledger</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            950: '#030712',
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- React and ReactDOM CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- Babel for rendering JSX in browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            color: #f8fafc;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // =========================================================
+        //  SUPABASE PROJECT CONFIGURATION:
+        // =========================================================
+        const supabaseUrl = "https://krkwwfixsqjroohjkgeb.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtya3d3Zml4c3Fqcm9vaGprZ2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTMzODMsImV4cCI6MjEwMDI4OTM4M30.d8baOvjq4kyAFZSBWoi2bnReuqT4xHKOvcG_6nn0GoU"; 
+
         // Initialize Supabase safely
         let supabase = null;
         try {
