@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -67,7 +66,7 @@
         const supabaseUrl = "https://krkwwfixsqjroohjkgeb.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtya3d3Zml4c3Fqcm9vaGprZ2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTMzODMsImV4cCI6MjEwMDI4OTM4M30.d8baOvjq4kyAFZSBWoi2bnReuqT4xHKOvcG_6nn0GoU"; 
 
-        // Initialize Supabase safely
+        // Initialize Supabase safely (naming conflict fixed)
         let supabaseClient = null;
         try {
             if (supabaseKey && supabaseKey !== "PASTE_YOUR_ANON_PUBLIC_KEY_HERE") {
@@ -812,44 +811,6 @@
                 };
             }, [modalBuyPrice, modalExpectedSellPrice, modalLocalROI]);
 
-            if (!isUnlocked) {
-                return (
-                    <div class="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-                        <div class="absolute w-[300px] h-[300px] bg-indigo-600/10 blur-[120px] rounded-full top-1/4 left-1/3"></div>
-                        <div class="absolute w-[250px] h-[250px] bg-purple-600/10 blur-[100px] rounded-full bottom-1/4 right-1/3"></div>
-
-                        <div class="w-full max-w-md bg-slate-900/50 backdrop-blur-xl border border-slate-800/80 p-8 rounded-3xl shadow-2xl relative z-10 text-center">
-                            <div class="inline-flex p-4 bg-indigo-500/10 text-indigo-400 rounded-2xl mb-5 shadow-inner">
-                                <Icons.Lock />
-                            </div>
-                            <h1 class="text-2xl font-black tracking-tight text-white mb-2">FlipFlow Hub</h1>
-                            <p class="text-xs text-slate-400 mb-6 leading-relaxed">Financial ledger protection active.<br />Enter security passcode to unlock system variables.</p>
-                            
-                            <form onSubmit={handleUnlock} class="space-y-4">
-                                <div class="relative">
-                                    <input 
-                                        type="password" 
-                                        placeholder="••••"
-                                        value={passwordInput}
-                                        onChange={(e) => setPasswordInput(e.target.value)}
-                                        class={`w-full bg-slate-950 border text-center text-xl font-bold tracking-widest text-white rounded-xl py-3 px-4 focus:outline-none transition-all ${passwordError ? 'border-rose-500 ring-2 ring-rose-500/20' : 'border-slate-800 focus:border-indigo-500'}`}
-                                        autoFocus
-                                    />
-                                    {passwordError && (
-                                        <p class="text-rose-400 text-[11px] font-semibold mt-1.5 animate-bounce">Access denied. Passcode invalid.</p>
-                                    )}
-                                </div>
-                                <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-indigo-600/10">
-                                    Access Ledger
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                );
-            }
-
-            const cloudSyncActive = supabaseKey && supabaseKey !== "PASTE_YOUR_ANON_PUBLIC_KEY_HERE" && supabaseClient !== null;
-
             return (
                 <div class="flex flex-col md:flex-row min-h-screen text-slate-100 bg-slate-950">
                     {/* Sidebar */}
@@ -1112,7 +1073,7 @@
                         {/* INVENTORY */}
                         {activeTab === 'inventory' && (
                             <div class="space-y-6">
-                                <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col md:flex-row gap-3">
+                                <div class="bg-slate-900/40 border border-slate-800/80 p-4 flex flex-col md:flex-row gap-3">
                                     <div class="flex-1 relative">
                                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><Icons.Search /></span>
                                         <input 
@@ -1738,7 +1699,7 @@
                                                         <td class="py-3 px-4 font-bold text-slate-500 uppercase tracking-wider text-[10px]">Price (Sourcing)</td>
                                                         {selectedCompareIds.map(id => {
                                                             const item = mockDatabasePhones.find(p => p.id === id);
-                                                            return <td key={id} class="py-3 px-4 font-bold text-lg text-emerald-400">{item?.price}€</td>;
+                                                            return <td key={id} class="py-3 px-4 font-bold text-lg text-emerald-400">{item?.price}€</td>
                                                         })}
                                                     </tr>
                                                     <tr>
@@ -1950,7 +1911,7 @@
 
                     {/* DETAIL MODAL FOR MOBILE PRICES CARDS */}
                     {selectedSupplierDetail && (
-                        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans">
                             <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl">
                                 <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
                                     <h3 class="text-lg font-bold">Supplier Product Profile</h3>
@@ -1986,7 +1947,7 @@
                                     </div>
 
                                     {/* Smart Suggestions module based on Target ROI */}
-                                    <div class="bg-indigo-950/20 border border-indigo-900/30 p-4 rounded-xl space-y-2 font-sans">
+                                    <div class="bg-indigo-950/20 border border-indigo-900/30 p-4 rounded-xl space-y-2">
                                         <div class="flex justify-between items-center">
                                             <span class="text-xs font-bold text-indigo-300">Arbitrage Assessment Suggestions</span>
                                             <span class="text-xs text-indigo-400 font-bold">Target ROI: {globalTargetROI}%</span>
@@ -2024,9 +1985,19 @@
                         </div>
                     )}
 
+                    {/* TOAST SYSTEM */}
+                    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full font-sans">
+                        {toasts.map(t => (
+                            <div key={t.id} class="p-4 bg-slate-900 border border-slate-800 text-slate-200 rounded-xl shadow-2xl flex items-start gap-3">
+                                <span class="mt-0.5"><Icons.Info /></span>
+                                <div class="text-xs font-semibold">{t.message}</div>
+                            </div>
+                        ))}
+                    </div>
+
                     {/* ADD MODAL */}
                     {isAddModalOpen && (
-                        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans">
                             <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
                                 <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
                                     <h3 class="text-lg font-bold">Register New Purchase</h3>
