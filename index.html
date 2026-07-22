@@ -28,6 +28,8 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <!-- Babel for rendering JSX in browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Inter Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -56,9 +58,24 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useMemo, useRef } = React;
+        const { useState, useEffect, useMemo } = React;
 
-        // Custom SVGs corresponding to Lucide icons
+        // =========================================================
+        //  SUPABASE PROJECT CONFIGURATION:
+        // =========================================================
+        const supabaseUrl = "https://krkwwfixsqjroohjkgeb.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtya3d3Zml4c3Fqcm9vaGprZ2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTMzODMsImV4cCI6MjEwMDI4OTM4M30.d8baOvjq4kyAFZSBWoi2bnReuqT4xHKOvcG_6nn0GoU"; 
+
+        // Initialize Supabase safely
+        let supabase = null;
+        try {
+            if (supabaseKey && supabaseKey !== "PASTE_YOUR_ANON_PUBLIC_KEY_HERE") {
+                supabase = supabase.createClient(supabaseUrl, supabaseKey);
+            }
+        } catch (err) {
+            console.error("Supabase failed to initialize:", err);
+        }
+
         const Icons = {
             TrendingUp: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
             TrendingDown: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>,
@@ -74,10 +91,10 @@
             Trash: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>,
             Edit: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>,
             Info: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>,
-            Lock: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Lock: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+            Cloud: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-2.54-4.5-5-4.5-.42-1.89-1.74-3.5-4-3.5-2.65 0-4.5 2.24-4.5 5 0 .26.01.52.03.77A4.47 4.47 0 0 0 2 17.5 4.5 4.5 0 0 0 6.5 22h11Z"/></svg>
         };
 
-        // Your exact requested preloaded scenario
         const defaultPhones = [
             {
                 id: '1',
@@ -138,10 +155,8 @@
         ];
 
         function App() {
-            // Password Protection State
-            const [isUnlocked, setIsUnlocked] = useState(() => {
-                return sessionStorage.getItem('flipflow_unlocked') === 'true';
-            });
+            // Unlocked State (Passcode '314')
+            const [isUnlocked, setIsUnlocked] = useState(() => sessionStorage.getItem('flipflow_unlocked') === 'true');
             const [passwordInput, setPasswordInput] = useState('');
             const [passwordError, setPasswordError] = useState(false);
 
@@ -152,23 +167,17 @@
 
             const [toasts, setToasts] = useState([]);
             const [activeTab, setActiveTab] = useState('dashboard');
+            const [syncLoading, setSyncLoading] = useState(false);
             
-            // Filters
             const [searchTerm, setSearchTerm] = useState('');
             const [filterModel, setFilterModel] = useState('');
             const [filterStatus, setFilterStatus] = useState('all');
             const [filterReinvestment, setFilterReinvestment] = useState('all');
 
-            // Modals
             const [isAddModalOpen, setIsAddModalOpen] = useState(false);
             const [isEditModalOpen, setIsEditModalOpen] = useState(false);
             const [isSellModalOpen, setIsSellModalOpen] = useState(false);
             const [selectedPhone, setSelectedPhone] = useState(null);
-
-            // Sync with local storage
-            useEffect(() => {
-                localStorage.setItem('flipflow_inventory', JSON.stringify(phones));
-            }, [phones]);
 
             const triggerToast = (message, type = 'info') => {
                 const id = Date.now();
@@ -176,14 +185,79 @@
                 setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
             };
 
-            // Passcode unlock action
+            // Fetch Cloud Data from Supabase on App Startup
+            useEffect(() => {
+                if (supabase) {
+                    setSyncLoading(true);
+                    supabase
+                        .from('ledger_store')
+                        .select('phones')
+                        .eq('id', 'main_inventory')
+                        .single()
+                        .then(({ data, error }) => {
+                            if (!error && data && data.phones) {
+                                setPhones(data.phones);
+                                localStorage.setItem('flipflow_inventory', JSON.stringify(data.phones));
+                                triggerToast("Cloud Sync: Loaded latest data successfully!", "success");
+                            } else {
+                                pushToCloud(phones);
+                            }
+                        })
+                        .catch(() => triggerToast("Cloud Sync Offline. Using Local Storage.", "warning"))
+                        .finally(() => setSyncLoading(false));
+                }
+            }, []);
+
+            // Helper to upload data to Supabase
+            const pushToCloud = (dataToPush) => {
+                if (!supabase) return;
+                setSyncLoading(true);
+                supabase
+                    .from('ledger_store')
+                    .upsert({ id: 'main_inventory', phones: dataToPush })
+                    .then(({ error }) => {
+                        if (error) throw error;
+                        triggerToast("Synced successfully with Supabase Cloud!", "success");
+                    })
+                    .catch(() => triggerToast("Failed to write to Cloud. Queue saved locally.", "warning"))
+                    .finally(() => setSyncLoading(false));
+            };
+
+            const updatePhonesAndPersist = (newPhones) => {
+                setPhones(newPhones);
+                localStorage.setItem('flipflow_inventory', JSON.stringify(newPhones));
+                pushToCloud(newPhones);
+            };
+
+            const handleForceRefresh = () => {
+                if (!supabase) {
+                    triggerToast("Supabase is not configured.", "warning");
+                    return;
+                }
+                setSyncLoading(true);
+                supabase
+                    .from('ledger_store')
+                    .select('phones')
+                    .eq('id', 'main_inventory')
+                    .single()
+                    .then(({ data, error }) => {
+                        if (!error && data && data.phones) {
+                            setPhones(data.phones);
+                            localStorage.setItem('flipflow_inventory', JSON.stringify(data.phones));
+                            triggerToast("Pulled latest cloud data successfully!", "success");
+                        }
+                    })
+                    .catch(() => triggerToast("Failed to fetch cloud database.", "warning"))
+                    .finally(() => setSyncLoading(false));
+            };
+
             const handleUnlock = (e) => {
                 e.preventDefault();
                 if (passwordInput === '314') {
                     setIsUnlocked(true);
                     sessionStorage.setItem('flipflow_unlocked', 'true');
                     setPasswordError(false);
-                    triggerToast("System unlocked. Welcome back!", "success");
+                    triggerToast("System unlocked.", "success");
                 } else {
                     setPasswordError(true);
                     setPasswordInput('');
@@ -194,7 +268,6 @@
             const ledger = useMemo(() => {
                 let list = [];
                 phones.forEach(p => {
-                    // Buy Event
                     list.push({
                         id: `${p.id}-buy`,
                         phoneId: p.id,
@@ -208,7 +281,6 @@
                             : `Initial Inventory — ${p.model}`
                     });
 
-                    // Sell Event
                     if (p.sellDate) {
                         list.push({
                             id: `${p.id}-sell`,
@@ -223,7 +295,6 @@
                     }
                 });
 
-                // Correct sequence sort
                 list.sort((a, b) => {
                     const diff = new Date(a.date) - new Date(b.date);
                     if (diff !== 0) return diff;
@@ -237,7 +308,6 @@
                 });
             }, [phones]);
 
-            // Full Business Metrics engine
             const stats = useMemo(() => {
                 const availableCash = ledger.length > 0 ? ledger[ledger.length - 1].balance : 0;
                 
@@ -278,14 +348,12 @@
                         soldBuyPriceSum += buyVal;
                         potentialSalesRevenue += actualVal;
 
-                        // Velocity metrics
                         const days = Math.max(0, Math.round((new Date(p.sellDate) - new Date(p.buyDate)) / 86400000));
                         totalDaysToSell += days;
 
                         if (days < fastestSale) fastestSale = days;
                         if (days > slowestSale) slowestSale = days;
 
-                        // Records
                         if (profit > highestProfit) {
                             highestProfit = profit;
                             highestProfitPhone = p;
@@ -319,7 +387,6 @@
                 };
             }, [phones, ledger]);
 
-            // Filtered lists
             const filteredPhones = useMemo(() => {
                 return phones.filter(p => {
                     const matchesSearch = p.model.toLowerCase().includes(searchTerm.toLowerCase()) || (p.imei && p.imei.includes(searchTerm));
@@ -334,24 +401,19 @@
                 return [...new Set(phones.map(p => p.model))];
             }, [phones]);
 
-            // Status Toggle (Sold <-> Unsold)
             const handleToggleStatus = (phone, targetStatus) => {
                 if (targetStatus === 'sold') {
                     setSelectedPhone(phone);
                     setIsSellModalOpen(true);
                 } else {
-                    setPhones(prev => prev.map(p => {
+                    const updated = phones.map(p => {
                         if (p.id === phone.id) {
-                            return {
-                                ...p,
-                                sellDate: null,
-                                actualSellPrice: null,
-                                sellSequence: null
-                            };
+                            return { ...p, sellDate: null, actualSellPrice: null, sellSequence: null };
                         }
                         return p;
-                    }));
-                    triggerToast(`${phone.model} marked back to Unsold (In Stock)`, 'warning');
+                    });
+                    updatePhonesAndPersist(updated);
+                    triggerToast(`${phone.model} marked back to Unsold`, 'warning');
                 }
             };
 
@@ -362,12 +424,11 @@
                     buySequence: Date.now(),
                     sellSequence: formData.sellDate ? Date.now() + 1 : null
                 };
-                setPhones(prev => [...prev, newPhone]);
-                triggerToast(`Added: ${formData.model}`, 'success');
+                updatePhonesAndPersist([...phones, newPhone]);
             };
 
             const handleEditPhone = (updatedPhone) => {
-                setPhones(prev => prev.map(p => {
+                const updated = phones.map(p => {
                     if (p.id === updatedPhone.id) {
                         return {
                             ...updatedPhone,
@@ -375,14 +436,14 @@
                         };
                     }
                     return p;
-                }));
-                triggerToast(`Saved details for ${updatedPhone.model}`, 'success');
+                });
+                updatePhonesAndPersist(updated);
             };
 
             const handleDeletePhone = (id) => {
                 if (window.confirm("Delete this entry? This modifies ledger history.")) {
-                    setPhones(prev => prev.filter(p => p.id !== id));
-                    triggerToast("Entry deleted", "warning");
+                    const updated = phones.filter(p => p.id !== id);
+                    updatePhonesAndPersist(updated);
                 }
             };
 
@@ -428,7 +489,7 @@
                     try {
                         const parsed = JSON.parse(event.target.result);
                         if (Array.isArray(parsed)) {
-                            setPhones(parsed);
+                            updatePhonesAndPersist(parsed);
                             triggerToast("Database successfully restored from JSON file!", "success");
                         } else {
                             triggerToast("Invalid format. Expecting JSON array.", "warning");
@@ -440,11 +501,9 @@
                 fileReader.readAsText(e.target.files[0]);
             };
 
-            // Password Protection Overlay Render
             if (!isUnlocked) {
                 return (
                     <div class="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-                        {/* Decorative background glow circles */}
                         <div class="absolute w-[300px] h-[300px] bg-indigo-600/10 blur-[120px] rounded-full top-1/4 left-1/3"></div>
                         <div class="absolute w-[250px] h-[250px] bg-purple-600/10 blur-[100px] rounded-full bottom-1/4 right-1/3"></div>
 
@@ -478,6 +537,8 @@
                 );
             }
 
+            const cloudSyncActive = supabaseKey && supabaseKey !== "PASTE_YOUR_ANON_PUBLIC_KEY_HERE";
+
             return (
                 <div class="flex flex-col md:flex-row min-h-screen text-slate-100 bg-slate-950">
                     {/* Sidebar */}
@@ -489,7 +550,9 @@
                                 </div>
                                 <div>
                                     <h1 class="text-xl font-bold tracking-tight">FlipFlow</h1>
-                                    <span class="text-xs text-indigo-400 font-semibold tracking-wider uppercase">Flipping Engine</span>
+                                    <div class="flex items-center gap-1.5 mt-0.5">
+                                        <span class="text-xs text-indigo-400 font-semibold tracking-wider uppercase">Flipping Engine</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -509,7 +572,25 @@
                             </nav>
                         </div>
 
+                        {/* Direct Cloud Settings Bar */}
                         <div class="mt-8 pt-6 border-t border-slate-800/60 space-y-3">
+                            <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800/60">
+                                <div class="flex items-center justify-between text-xs font-semibold text-slate-400">
+                                    <span>CLOUD STATUS</span>
+                                    <span class={`w-2.5 h-2.5 rounded-full ${cloudSyncActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-600'}`} title={cloudSyncActive ? "Synced with Supabase Cloud" : "Running Locally"}></span>
+                                </div>
+                                <div class="mt-2 flex flex-col gap-1.5">
+                                    <span class="text-[10px] text-slate-400 leading-relaxed font-medium">
+                                        {cloudSyncActive ? "Connected to Supabase DB" : "No Cloud Configured"}
+                                    </span>
+                                    {cloudSyncActive && (
+                                        <button onClick={handleForceRefresh} disabled={syncLoading} class="w-full text-center text-[10px] py-1 bg-slate-900 border border-slate-800 rounded hover:bg-slate-800 transition-colors font-bold text-indigo-400 flex items-center justify-center gap-1">
+                                            <Icons.Cloud /> {syncLoading ? "Syncing..." : "Sync Now"}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
                             <button onClick={exportCSV} class="w-full flex items-center justify-center gap-2 px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-300 transition-colors">
                                 <Icons.Download /> Export CSV Sheet
                             </button>
@@ -528,7 +609,7 @@
                         <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                             <div>
                                 <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white capitalize">{activeTab} View</h2>
-                                <p class="text-slate-400 text-sm">Managing phone resale inventory with real-world ledger entries.</p>
+                                <p class="text-slate-400 text-sm">Managing phone resale inventory with cloud database sync.</p>
                             </div>
                             <button onClick={() => setIsAddModalOpen(true)} class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-xl text-sm shadow-md hover:from-indigo-600 hover:to-purple-700 transition-all">
                                 <Icons.Plus /> Register Purchase
@@ -1042,7 +1123,7 @@
                     {/* SELL CONFIRM MODAL */}
                     {isSellModalOpen && selectedPhone && (
                         <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl overflow-hidden">
+                            <div class="bg-slate-900 border border-slate-800 w-full max-sm rounded-2xl overflow-hidden">
                                 <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
                                     <h3 class="text-lg font-bold">Record Sale Details</h3>
                                     <button onClick={() => setIsSellModalOpen(false)} class="text-slate-400 hover:text-white">✕</button>
@@ -1053,7 +1134,7 @@
                                     const price = Number(fd.get('actualSellPrice'));
                                     const date = fd.get('sellDate');
 
-                                    setPhones(prev => prev.map(p => {
+                                    const updated = phones.map(p => {
                                         if (p.id === selectedPhone.id) {
                                             return {
                                                 ...p,
@@ -1063,7 +1144,8 @@
                                             };
                                         }
                                         return p;
-                                    }));
+                                    });
+                                    updatePhonesAndPersist(updated);
                                     setIsSellModalOpen(false);
                                     triggerToast(`Sold ${selectedPhone.model} for ${price}€!`, 'success');
                                 }} class="p-6 space-y-4">
