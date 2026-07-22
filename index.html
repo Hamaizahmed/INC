@@ -1,5 +1,4 @@
-
-
+```html
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -98,7 +97,9 @@
             Eye: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 0 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>,
             AlertBell: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>,
             Check: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
-            Star: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill={props.fill || "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Star: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill={props.fill || "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+            Smartphone: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>,
+            Copy: () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
         };
 
         const defaultPhones = [
@@ -178,6 +179,179 @@
             { id: 'm14', brand: 'Motorola', model: 'Edge 50', storage: '256GB', colour: 'Silver', condition: 'New', price: 399, shipping: 4.99, store: 'PcComponentes', rating: 4.4, warranty: '24 Months' }
         ];
 
+        // =========================================================
+        // LOCAL SUPPLIER PRICE LIST DATABASE (supplierDatabase)
+        // =========================================================
+        const supplierDatabase = [
+            // Apple - Brand New / Original
+            { id: 'sup-1', brand: 'Apple', model: 'iPhone SE 2nd', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 110 },
+            { id: 'sup-2', brand: 'Apple', model: 'iPhone SE', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 100 },
+            { id: 'sup-3', brand: 'Apple', model: 'iPhone 12', storage: '64GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 185 },
+            { id: 'sup-4', brand: 'Apple', model: 'iPhone 12 Mini', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 165 },
+            { id: 'sup-5', brand: 'Apple', model: 'iPhone 12 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 260 },
+            { id: 'sup-6', brand: 'Apple', model: 'iPhone 12 Pro Max', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 300 },
+            { id: 'sup-7', brand: 'Apple', model: 'iPhone 12 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 325 },
+            { id: 'sup-8', brand: 'Apple', model: 'iPhone 13', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 255 },
+            { id: 'sup-9', brand: 'Apple', model: 'iPhone 13 Mini', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 245 },
+            { id: 'sup-10', brand: 'Apple', model: 'iPhone 13 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 330 },
+            { id: 'sup-11', brand: 'Apple', model: 'iPhone 13 Pro', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 360 },
+            { id: 'sup-12', brand: 'Apple', model: 'iPhone 13 Pro Max', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 380 },
+            { id: 'sup-13', brand: 'Apple', model: 'iPhone 13 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 410 },
+            { id: 'sup-14', brand: 'Apple', model: 'iPhone 14', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 295 },
+            { id: 'sup-15', brand: 'Apple', model: 'iPhone 14 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 410 },
+            { id: 'sup-16', brand: 'Apple', model: 'iPhone 14 Pro', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 435 },
+            { id: 'sup-17', brand: 'Apple', model: 'iPhone 14 Pro Max', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 485 },
+            { id: 'sup-18', brand: 'Apple', model: 'iPhone 14 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 530 },
+            { id: 'sup-19', brand: 'Apple', model: 'iPhone 15', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 410 },
+            { id: 'sup-20', brand: 'Apple', model: 'iPhone 15', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 440 },
+            { id: 'sup-21', brand: 'Apple', model: 'iPhone 15 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 510 },
+            { id: 'sup-22', brand: 'Apple', model: 'iPhone 15 Pro', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 540 },
+            { id: 'sup-23', brand: 'Apple', model: 'iPhone 15 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 640 },
+            { id: 'sup-24', brand: 'Apple', model: 'iPhone 15 Pro Max', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 660 },
+            { id: 'sup-25', brand: 'Apple', model: 'iPhone 16', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 540 },
+            { id: 'sup-26', brand: 'Apple', model: 'iPhone 16 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 660 },
+            { id: 'sup-27', brand: 'Apple', model: 'iPhone 16 Pro', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 700 },
+            { id: 'sup-28', brand: 'Apple', model: 'iPhone 16 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 790 },
+            { id: 'sup-29', brand: 'Apple', model: 'iPad 8th Gen', storage: '128GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 165 },
+
+            // Apple - Segunda Mano (A++ Grade)
+            { id: 'sup-30', brand: 'Apple', model: 'iPhone 12', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 210 },
+            { id: 'sup-31', brand: 'Apple', model: 'iPhone 13 Mini', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 260 },
+            { id: 'sup-32', brand: 'Apple', model: 'iPhone 13', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 275 },
+            { id: 'sup-33', brand: 'Apple', model: 'iPhone 14', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 330 },
+            { id: 'sup-34', brand: 'Apple', model: 'iPhone 15', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 415 },
+            { id: 'sup-35', brand: 'Apple', model: 'iPhone 12 Pro Max', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 300 },
+            { id: 'sup-36', brand: 'Apple', model: 'iPhone 13 Pro', storage: '256GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 375 },
+            { id: 'sup-37', brand: 'Apple', model: 'iPhone 13 Pro Max', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 400 },
+            { id: 'sup-38', brand: 'Apple', model: 'iPhone 13 Pro Max', storage: '256GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 440 },
+            { id: 'sup-39', brand: 'Apple', model: 'iPhone 14 Pro', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 430 },
+            { id: 'sup-40', brand: 'Apple', model: 'iPhone 14 Pro Max', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 490 },
+            { id: 'sup-41', brand: 'Apple', model: 'iPhone 15 Pro Max', storage: '256GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 630 },
+            { id: 'sup-42', brand: 'Apple', model: 'iPhone 16 Pro', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 650 },
+            { id: 'sup-43', brand: 'Apple', model: 'iPhone 16 Pro Max', storage: '256GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 800 },
+
+            // Samsung European
+            { id: 'sup-44', brand: 'Samsung', model: 'Galaxy A05s', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 104 },
+            { id: 'sup-45', brand: 'Samsung', model: 'Galaxy A16', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 96 },
+            { id: 'sup-46', brand: 'Samsung', model: 'Galaxy A17 4G', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 117 },
+            { id: 'sup-47', brand: 'Samsung', model: 'Galaxy A17 4G', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 152 },
+            { id: 'sup-48', brand: 'Samsung', model: 'Galaxy A17 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 136 },
+            { id: 'sup-49', brand: 'Samsung', model: 'Galaxy A17 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 165 },
+            { id: 'sup-50', brand: 'Samsung', model: 'Galaxy A26 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 165 },
+            { id: 'sup-51', brand: 'Samsung', model: 'Galaxy A56 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 270 },
+            { id: 'sup-52', brand: 'Samsung', model: 'Galaxy A56 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 305 },
+            { id: 'sup-53', brand: 'Samsung', model: 'Galaxy A37 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 328 },
+            { id: 'sup-54', brand: 'Samsung', model: 'Galaxy A57 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 399 },
+            { id: 'sup-55', brand: 'Samsung', model: 'Galaxy S25', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 570 },
+            { id: 'sup-56', brand: 'Samsung', model: 'Galaxy S25', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 615 },
+            { id: 'sup-57', brand: 'Samsung', model: 'Galaxy S25 Edge', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 590 },
+            { id: 'sup-58', brand: 'Samsung', model: 'Galaxy S26', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 680 },
+            { id: 'sup-59', brand: 'Samsung', model: 'Galaxy S26', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 755 },
+            { id: 'sup-60', brand: 'Samsung', model: 'Galaxy S25 Ultra', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 830 },
+            { id: 'sup-61', brand: 'Samsung', model: 'Galaxy S25 Ultra', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 930 },
+            { id: 'sup-62', brand: 'Samsung', model: 'Galaxy S26 Ultra', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 990 },
+            { id: 'sup-63', brand: 'Samsung', model: 'Galaxy S26 Ultra', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 1030 },
+
+            // Redmi / Xiaomi
+            { id: 'sup-64', brand: 'Xiaomi', model: 'Redmi A5', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 70 },
+            { id: 'sup-65', brand: 'Xiaomi', model: 'Redmi A5', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 77 },
+            { id: 'sup-66', brand: 'Xiaomi', model: 'Redmi A7 Pro', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 97 },
+            { id: 'sup-67', brand: 'Xiaomi', model: 'Redmi 15C', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 87 },
+            { id: 'sup-68', brand: 'Xiaomi', model: 'Redmi 15C 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 93 },
+            { id: 'sup-69', brand: 'Xiaomi', model: 'Redmi 15C (4+4)', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 96 },
+            { id: 'sup-70', brand: 'Xiaomi', model: 'Redmi 15C', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 108 },
+            { id: 'sup-71', brand: 'Xiaomi', model: 'Redmi 15C 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 110 },
+            { id: 'sup-72', brand: 'Xiaomi', model: 'Redmi 15', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 109 },
+            { id: 'sup-73', brand: 'Xiaomi', model: 'Redmi 15', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 126 },
+            { id: 'sup-74', brand: 'Xiaomi', model: 'Redmi Note 12 Pro Plus 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 190 },
+            { id: 'sup-75', brand: 'Xiaomi', model: 'Redmi Note 13 Pro Plus 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 230 },
+            { id: 'sup-76', brand: 'Xiaomi', model: 'Redmi Note 14', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 108 },
+            { id: 'sup-77', brand: 'Xiaomi', model: 'Redmi Note 14', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 127 },
+            { id: 'sup-78', brand: 'Xiaomi', model: 'Redmi Note 14 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 152 },
+            { id: 'sup-79', brand: 'Xiaomi', model: 'Redmi Note 14 Pro 4G', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 180 },
+            { id: 'sup-80', brand: 'Xiaomi', model: 'Redmi Note 14 Pro 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 208 },
+            { id: 'sup-81', brand: 'Xiaomi', model: 'Redmi Note 14 Pro Plus', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 243 },
+            { id: 'sup-82', brand: 'Xiaomi', model: 'Redmi Note 15', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 155 },
+            { id: 'sup-83', brand: 'Xiaomi', model: 'Redmi Note 15 Pro 4G', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 203 },
+            { id: 'sup-84', brand: 'Xiaomi', model: 'Redmi Note 15 Pro 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 242 },
+            { id: 'sup-85', brand: 'Xiaomi', model: 'Redmi Note 15 Pro Plus 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 289 },
+
+            // POCO
+            { id: 'sup-86', brand: 'POCO', model: 'Poco C71', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 67 },
+            { id: 'sup-87', brand: 'POCO', model: 'POCO C71', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 78 },
+            { id: 'sup-88', brand: 'POCO', model: 'Poco M4 5G', storage: '64GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 78 },
+            { id: 'sup-89', brand: 'POCO', model: 'Poco C85', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 88 },
+            { id: 'sup-90', brand: 'POCO', model: 'Poco X4 Pro 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 190 },
+            { id: 'sup-91', brand: 'POCO', model: 'Poco M8 5G', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 220 },
+
+            // Realme
+            { id: 'sup-92', brand: 'Realme', model: 'Realme Note 70T', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 80 },
+            { id: 'sup-93', brand: 'Realme', model: 'Realme C75', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 113 },
+            { id: 'sup-94', brand: 'Realme', model: 'Realme C71', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 108 },
+            { id: 'sup-95', brand: 'Realme', model: 'Realme 14X 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 120 },
+            { id: 'sup-96', brand: 'Realme', model: 'Realme P3 Lite', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 106 },
+            { id: 'sup-97', brand: 'Realme', model: 'Realme C61', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 95 },
+
+            // Oppo
+            { id: 'sup-98', brand: 'Oppo', model: 'Oppo A5X', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 80 },
+            { id: 'sup-99', brand: 'Oppo', model: 'Oppo A6X', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 97 },
+            { id: 'sup-100', brand: 'Oppo', model: 'Oppo A6', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 157 },
+            { id: 'sup-101', brand: 'Oppo', model: 'Oppo A5 Pro 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 150 },
+            { id: 'sup-102', brand: 'Oppo', model: 'Oppo A6 Pro 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 185 },
+            { id: 'sup-103', brand: 'Oppo', model: 'Oppo Reno 13FS 5G', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 250 },
+            { id: 'sup-104', brand: 'Oppo', model: 'Oppo Reno 8 Lite 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 210 },
+            { id: 'sup-105', brand: 'Oppo', model: 'Oppo Reno 13F 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 195 },
+            { id: 'sup-106', brand: 'Oppo', model: 'Oppo Reno 15F 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 285 },
+
+            // Honor / Vivo / ZTE / Moto
+            { id: 'sup-107', brand: 'Honor', model: 'Honor 400 Smart 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 105 },
+            { id: 'sup-108', brand: 'Honor', model: 'Honor X5c Plus', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 95 },
+            { id: 'sup-109', brand: 'Honor', model: 'Honor X5c Plus', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 75 },
+            { id: 'sup-110', brand: 'Honor', model: 'Honor X8c', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 125 },
+            { id: 'sup-111', brand: 'Honor', model: 'Honor Magic7 Lite', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 215 },
+            { id: 'sup-112', brand: 'Vivo', model: 'Vivo Y19s', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 110 },
+            { id: 'sup-113', brand: 'ZTE', model: 'ZTE A35E', storage: '32GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 50 },
+            { id: 'sup-114', brand: 'ZTE', model: 'ZTE A35E', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 58 },
+            { id: 'sup-115', brand: 'ZTE', model: 'ZTE A36', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 64 },
+            { id: 'sup-116', brand: 'ZTE', model: 'ZTE A76 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 88 },
+            { id: 'sup-117', brand: 'ZTE', model: 'ZTE V70 Vita', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 87 },
+            { id: 'sup-118', brand: 'ZTE', model: 'ZTE V70 Max', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 75 },
+            { id: 'sup-119', brand: 'ZTE', model: 'ZTE Nubia Music 2', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 75 },
+            { id: 'sup-120', brand: 'Motorola', model: 'Moto G06', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 72 },
+            { id: 'sup-121', brand: 'Motorola', model: 'Moto G06', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 90 },
+            { id: 'sup-122', brand: 'Motorola', model: 'Moto G15', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 80 },
+            { id: 'sup-123', brand: 'Motorola', model: 'Moto G15 Power', storage: '512GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 115 },
+
+            // Classic Phones
+            { id: 'sup-124', brand: 'BlackBerry', model: 'BlackBerry Leap', storage: '16GB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 50 },
+            { id: 'sup-125', brand: 'Qubo', model: 'Qubo X10', storage: '32MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 27 },
+            { id: 'sup-126', brand: 'Qubo', model: 'Qubo New 4G', storage: '64MB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 28 },
+            { id: 'sup-127', brand: 'Qubo', model: 'Qubo X28 4G', storage: '128MB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 33 },
+            { id: 'sup-128', brand: 'Nokia', model: 'Nokia 105', storage: '4MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 9 },
+            { id: 'sup-129', brand: 'Nokia', model: 'Nokia 106', storage: '4MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 9 },
+            { id: 'sup-130', brand: 'Nokia', model: 'Nokia 150', storage: '4MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 16 },
+            { id: 'sup-131', brand: 'Nokia', model: 'Nokia 2720 Flip', storage: '512MB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 23 },
+            { id: 'sup-132', brand: 'Nexo', model: 'Nexo Flip Dual', storage: '32MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 23 },
+            { id: 'sup-133', brand: 'Astro', model: 'Astro Flip 4G', storage: '64MB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 28 },
+            { id: 'sup-134', brand: 'Astro', model: 'Astro SR (Base)', storage: '32MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 17 },
+
+            // Tablets
+            { id: 'sup-135', brand: 'Samsung', model: 'Samsung Tab A11', storage: '64GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 112 },
+            { id: 'sup-136', brand: 'Samsung', model: 'Samsung Tab A11', storage: '128GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 135 },
+            { id: 'sup-137', brand: 'Samsung', model: 'Samsung Tab A11 Plus', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Tablets', supplierPrice: 195 },
+            { id: 'sup-138', brand: 'Qubo', model: 'Qubo Tab T106', storage: '128GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 120 },
+            { id: 'sup-139', brand: 'Modio', model: 'Modio M30', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Tablets', supplierPrice: 85 },
+            { id: 'sup-140', brand: 'Modio', model: 'Modio M730 7"', storage: '256GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 55 },
+            { id: 'sup-141', brand: 'ZTE', model: 'ZTE Tab X1001', storage: '64GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 98 },
+            { id: 'sup-142', brand: 'ZTE', model: 'ZTE Tab X1101', storage: '128GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 130 },
+            { id: 'sup-143', brand: 'Lenovo', model: 'Lenovo Idea Tab (Pen)', storage: '256GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 180 },
+            { id: 'sup-144', brand: 'Corn', model: 'Corn Tab T12 Pro', storage: '128GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 100 },
+            { id: 'sup-145', brand: 'Doogee', model: 'Doogee T10W', storage: '128GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 95 },
+            { id: 'sup-146', brand: 'Xiaomi', model: 'Redmi Pad 2', storage: '128GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 129 },
+            { id: 'sup-147', brand: 'Xiaomi', model: 'Redmi Pad 2', storage: '256GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 160 },
+            { id: 'sup-148', brand: 'Apple', model: 'iPad 11', storage: '128GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 315 }
+        ];
+
         function App() {
             // Unlocked State (Passcode '314')
             const [isUnlocked, setIsUnlocked] = useState(() => sessionStorage.getItem('flipflow_unlocked') === 'true');
@@ -237,6 +411,17 @@
             const [marketSearching, setMarketSearching] = useState(false);
             const [marketSubTab, setMarketSubTab] = useState('listings'); // listings | watchlist | alerts | compare
 
+            // Filters (Mobile Prices Page)
+            const [mobilePricesSearch, setMobilePricesSearch] = useState('');
+            const [mobilePricesBrand, setMobilePricesBrand] = useState('');
+            const [mobilePricesCondition, setMobilePricesCondition] = useState('');
+            const [mobilePricesCategory, setMobilePricesCategory] = useState('');
+            const [mobilePricesNetwork, setMobilePricesNetwork] = useState('');
+            const [mobilePricesStorage, setMobilePricesStorage] = useState('');
+            const [mobilePricesSort, setMobilePricesSort] = useState('Lowest Price');
+            const [mobilePricesMin, setMobilePricesMin] = useState(0);
+            const [mobilePricesMax, setMobilePricesMax] = useState(1200);
+
             // Alerts creator state
             const [newAlertModel, setNewAlertModel] = useState('');
             const [newAlertTarget, setNewAlertTarget] = useState('');
@@ -246,6 +431,13 @@
             const [isEditModalOpen, setIsEditModalOpen] = useState(false);
             const [isSellModalOpen, setIsSellModalOpen] = useState(false);
             const [selectedPhone, setSelectedPhone] = useState(null);
+
+            // Unique Models for Inventory Filter
+            const uniqueModels = useMemo(() => {
+                const set = new Set();
+                phones.forEach(p => p.model && set.add(p.model));
+                return Array.from(set);
+            }, [phones]);
 
             // Sync persistence
             useEffect(() => {
@@ -268,6 +460,16 @@
                 const id = Date.now();
                 setToasts(prev => [...prev, { id, message, type }]);
                 setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
+            };
+
+            // Copy to clipboard helper
+            const copyToClipboard = (text, label = "Copied to clipboard") => {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text);
+                    triggerToast(`${label}!`, "success");
+                } else {
+                    triggerToast("Unable to access clipboard", "warning");
+                }
             };
 
             // Fetch Cloud Data from Supabase on App Startup
@@ -668,6 +870,87 @@
                 };
             }, [searchedMarketListings, globalTargetROI]);
 
+            // =========================================================
+            // MOBILE PRICES (SUPPLIER DATABASE) SEARCH & FUZZY LOGIC
+            // =========================================================
+            const filteredSupplierPhones = useMemo(() => {
+                let list = [...supplierDatabase];
+
+                if (mobilePricesSearch.trim()) {
+                    const query = mobilePricesSearch.toLowerCase().trim();
+                    const words = query.split(/\s+/);
+
+                    list = list.filter(item => {
+                        const fullText = `${item.brand} ${item.model} ${item.storage} ${item.condition} ${item.category} ${item.network}`.toLowerCase();
+                        const cleanText = fullText.replace(/[^a-z0-9]/g, '');
+                        const cleanQuery = query.replace(/[^a-z0-9]/g, '');
+                        
+                        if (cleanText.includes(cleanQuery)) return true;
+                        return words.every(w => fullText.includes(w));
+                    });
+                }
+
+                if (mobilePricesBrand) {
+                    list = list.filter(item => item.brand.toLowerCase() === mobilePricesBrand.toLowerCase());
+                }
+
+                if (mobilePricesCondition) {
+                    list = list.filter(item => item.condition === mobilePricesCondition);
+                }
+
+                if (mobilePricesCategory) {
+                    list = list.filter(item => item.category === mobilePricesCategory);
+                }
+
+                if (mobilePricesNetwork) {
+                    list = list.filter(item => item.network.includes(mobilePricesNetwork));
+                }
+
+                if (mobilePricesStorage) {
+                    list = list.filter(item => item.storage === mobilePricesStorage);
+                }
+
+                list = list.filter(item => item.supplierPrice >= mobilePricesMin && item.supplierPrice <= mobilePricesMax);
+
+                if (mobilePricesSort === 'Lowest Price') {
+                    list.sort((a, b) => a.supplierPrice - b.supplierPrice);
+                } else if (mobilePricesSort === 'Highest Price') {
+                    list.sort((a, b) => b.supplierPrice - a.supplierPrice);
+                } else if (mobilePricesSort === 'Alphabetical') {
+                    list.sort((a, b) => a.model.localeCompare(b.model));
+                }
+
+                return list;
+            }, [
+                mobilePricesSearch, mobilePricesBrand, mobilePricesCondition, 
+                mobilePricesCategory, mobilePricesNetwork, mobilePricesStorage,
+                mobilePricesSort, mobilePricesMin, mobilePricesMax
+            ]);
+
+            const mobilePricesStats = useMemo(() => {
+                if (filteredSupplierPhones.length === 0) return { count: 0, min: 0, max: 0, avg: 0 };
+                const prices = filteredSupplierPhones.map(p => p.supplierPrice);
+                const min = Math.min(...prices);
+                const max = Math.max(...prices);
+                const avg = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+                return { count: prices.length, min, max, avg };
+            }, [filteredSupplierPhones]);
+
+            // Supplier Matcher for Market Research page integration
+            const marketSearchSupplierMatches = useMemo(() => {
+                if (!marketSearchTerm.trim()) return [];
+                const query = marketSearchTerm.toLowerCase().trim();
+                const words = query.split(/\s+/);
+
+                return supplierDatabase.filter(item => {
+                    const fullText = `${item.brand} ${item.model} ${item.storage} ${item.condition}`.toLowerCase();
+                    const cleanText = fullText.replace(/[^a-z0-9]/g, '');
+                    const cleanQuery = query.replace(/[^a-z0-9]/g, '');
+                    if (cleanText.includes(cleanQuery)) return true;
+                    return words.every(w => fullText.includes(w));
+                }).slice(0, 6);
+            }, [marketSearchTerm]);
+
             // Save/Watchlist controls
             const handleToggleWatchlist = (listing) => {
                 const isSaved = watchlist.some(w => w.id === listing.id);
@@ -727,19 +1010,25 @@
 
             // Populates and spawns Register Purchase Modal with specific listing data
             const handleAddListingToInventory = (listing) => {
-                setModalBuyPrice(listing.price);
-                // Pre-fill expected selling price with the average market value from stats
-                setModalExpectedSellPrice(marketSearchStats.recommendedSellPrice || listing.price);
+                const buyVal = listing.price || listing.supplierPrice;
+                const recSellVal = listing.price 
+                    ? (marketSearchStats.recommendedSellPrice || listing.price)
+                    : Math.round(buyVal * (1 + globalTargetROI / 100));
+
+                setModalBuyPrice(buyVal);
+                setModalExpectedSellPrice(recSellVal);
                 setModalLocalROI(globalTargetROI);
                 
                 setSelectedPhone({
-                    model: `${listing.model} (${listing.storage})`,
+                    model: listing.model.includes(listing.storage || "") ? listing.model : `${listing.model} (${listing.storage})`,
                     imei: "",
-                    buyPrice: listing.price,
-                    expectedSellPrice: marketSearchStats.recommendedSellPrice || listing.price,
+                    buyPrice: buyVal,
+                    expectedSellPrice: recSellVal,
                     buyDate: new Date().toISOString().split('T')[0],
                     reinvestment: false,
-                    notes: `Sourced from ${listing.store}. Condition: ${listing.condition}. Colour: ${listing.colour}.`
+                    notes: listing.store 
+                        ? `Sourced from ${listing.store}. Condition: ${listing.condition}. Colour: ${listing.colour}.`
+                        : `Sourced from Wholesale Supplier. Brand: ${listing.brand}. Condition: ${listing.condition}. Category: ${listing.category}.`
                 });
 
                 setIsAddModalOpen(true);
@@ -871,6 +1160,9 @@
                                 <button onClick={() => { setActiveTab('market-search'); setMarketSubTab('listings'); }} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'market-search' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}>
                                     <Icons.Eye /> Market Search
                                 </button>
+                                <button onClick={() => setActiveTab('mobile-prices')} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'mobile-prices' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}>
+                                    <Icons.Smartphone /> 📱 Mobile Prices
+                                </button>
                             </nav>
                         </div>
 
@@ -935,7 +1227,7 @@
                     <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
                         <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                             <div>
-                                <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white capitalize">{activeTab} View</h2>
+                                <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white capitalize">{activeTab.replace('-', ' ')} View</h2>
                                 <p class="text-slate-400 text-sm">Managing phone resale inventory with cloud database sync.</p>
                             </div>
                             <button 
@@ -1577,6 +1869,76 @@
                                                 })}
                                             </div>
                                         )}
+
+                                        {/* FEATURE 2: LOCAL SUPPLIER PRICE COMPARISON SECTION IN MARKET RESEARCH */}
+                                        {marketSearchSupplierMatches.length > 0 && (
+                                            <div class="mt-10 pt-8 border-t border-slate-800 space-y-4">
+                                                <div class="flex items-center justify-between">
+                                                    <div>
+                                                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                                            🏢 Local Supplier Price Deals
+                                                        </h3>
+                                                        <p class="text-xs text-slate-400">Comparing wholesale supplier catalog prices against online market values.</p>
+                                                    </div>
+                                                    <span class="text-xs bg-indigo-500/10 text-indigo-400 font-bold px-3 py-1 rounded-full border border-indigo-500/20">
+                                                        {marketSearchSupplierMatches.length} Matches Found
+                                                    </span>
+                                                </div>
+
+                                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                    {marketSearchSupplierMatches.map(sup => {
+                                                        const avgMarketPrice = marketSearchStats.avg || (sup.supplierPrice * 1.35);
+                                                        const suggestedSellPrice = Math.round(sup.supplierPrice * (1 + globalTargetROI / 100));
+                                                        const expectedProfit = suggestedSellPrice - sup.supplierPrice;
+                                                        const potentialMargin = Math.round(avgMarketPrice - sup.supplierPrice);
+
+                                                        return (
+                                                            <div key={sup.id} class="bg-slate-900/80 border border-indigo-500/30 p-4 rounded-2xl space-y-3 relative overflow-hidden">
+                                                                <div class="flex justify-between items-start">
+                                                                    <div>
+                                                                        <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">{sup.brand} • Wholesale</span>
+                                                                        <h4 class="text-base font-bold text-white mt-0.5">{sup.model}</h4>
+                                                                        <p class="text-xs text-slate-400">{sup.storage} • {sup.condition}</p>
+                                                                    </div>
+                                                                    <div class="text-right">
+                                                                        <span class="text-xs text-slate-400 block">Supplier Price</span>
+                                                                        <span class="text-xl font-black text-emerald-400">{sup.supplierPrice}€</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 grid grid-cols-2 gap-2 text-xs">
+                                                                    <div>
+                                                                        <span class="text-slate-500 text-[10px] uppercase block">Avg Market Price</span>
+                                                                        <span class="font-bold text-white">{Math.round(avgMarketPrice)}€</span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span class="text-slate-500 text-[10px] uppercase block">Suggested Sell</span>
+                                                                        <span class="font-bold text-indigo-300">{suggestedSellPrice}€</span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span class="text-slate-500 text-[10px] uppercase block">Expected Profit</span>
+                                                                        <span class="font-bold text-emerald-400">+{expectedProfit}€</span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span class="text-slate-500 text-[10px] uppercase block">Potential Margin</span>
+                                                                        <span class={`font-bold ${potentialMargin >= 0 ? 'text-teal-400' : 'text-rose-400'}`}>
+                                                                            {potentialMargin >= 0 ? `+${potentialMargin}€` : `${potentialMargin}€`}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <button 
+                                                                    onClick={() => handleAddListingToInventory(sup)}
+                                                                    class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-colors"
+                                                                >
+                                                                    <Icons.Plus /> Import Supplier Unit
+                                                                </button>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
@@ -1719,6 +2081,215 @@
                                                 Clear Compare Board
                                             </button>
                                         </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* FEATURE 1: MOBILE PRICES PAGE (OFFLINE SUPPLIER DATABASE) */}
+                        {activeTab === 'mobile-prices' && (
+                            <div class="space-y-6">
+                                {/* Search & Filter Bar */}
+                                <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl space-y-4">
+                                    <div class="flex flex-col md:flex-row gap-3">
+                                        <div class="flex-1 relative">
+                                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><Icons.Search /></span>
+                                            <input 
+                                                type="text" 
+                                                placeholder="Instant supplier search... (e.g., A17, 15 Pro, Redmi 15C, Tab A11)" 
+                                                value={mobilePricesSearch}
+                                                onChange={(e) => setMobilePricesSearch(e.target.value)}
+                                                class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-indigo-500 font-medium"
+                                            />
+                                        </div>
+                                        {mobilePricesSearch && (
+                                            <button 
+                                                onClick={() => setMobilePricesSearch('')} 
+                                                class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-colors"
+                                            >
+                                                Clear Search
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Multi-filter controls */}
+                                    <div class="grid grid-cols-2 md:grid-cols-6 gap-3 pt-3 border-t border-slate-800/40 text-xs">
+                                        <div>
+                                            <label class="block text-slate-400 font-bold mb-1 uppercase tracking-wider text-[10px]">Brand</label>
+                                            <select value={mobilePricesBrand} onChange={(e) => setMobilePricesBrand(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none">
+                                                <option value="">All Brands</option>
+                                                <option value="Apple">Apple</option>
+                                                <option value="Samsung">Samsung</option>
+                                                <option value="Xiaomi">Xiaomi / Redmi</option>
+                                                <option value="POCO">POCO</option>
+                                                <option value="Realme">Realme</option>
+                                                <option value="Oppo">Oppo</option>
+                                                <option value="Honor">Honor</option>
+                                                <option value="Vivo">Vivo</option>
+                                                <option value="ZTE">ZTE</option>
+                                                <option value="Motorola">Motorola</option>
+                                                <option value="Nokia">Nokia</option>
+                                                <option value="BlackBerry">BlackBerry</option>
+                                                <option value="Qubo">Qubo</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-slate-400 font-bold mb-1 uppercase tracking-wider text-[10px]">Condition</label>
+                                            <select value={mobilePricesCondition} onChange={(e) => setMobilePricesCondition(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none">
+                                                <option value="">All Conditions</option>
+                                                <option value="Brand New">Brand New</option>
+                                                <option value="Segunda Mano (A++)">Segunda Mano (A++)</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-slate-400 font-bold mb-1 uppercase tracking-wider text-[10px]">Category</label>
+                                            <select value={mobilePricesCategory} onChange={(e) => setMobilePricesCategory(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none">
+                                                <option value="">All Categories</option>
+                                                <option value="Smartphones">Smartphones</option>
+                                                <option value="Classic Phones">Classic Phones</option>
+                                                <option value="Tablets">Tablets</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-slate-400 font-bold mb-1 uppercase tracking-wider text-[10px]">Network</label>
+                                            <select value={mobilePricesNetwork} onChange={(e) => setMobilePricesNetwork(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none">
+                                                <option value="">All Networks</option>
+                                                <option value="5G">5G</option>
+                                                <option value="4G">4G</option>
+                                                <option value="2G">2G</option>
+                                                <option value="Wi-Fi">Wi-Fi</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-slate-400 font-bold mb-1 uppercase tracking-wider text-[10px]">Storage</label>
+                                            <select value={mobilePricesStorage} onChange={(e) => setMobilePricesStorage(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none">
+                                                <option value="">All Capacity</option>
+                                                <option value="64GB">64GB</option>
+                                                <option value="128GB">128GB</option>
+                                                <option value="256GB">256GB</option>
+                                                <option value="512GB">512GB</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-slate-400 font-bold mb-1 uppercase tracking-wider text-[10px]">Sort Order</label>
+                                            <select value={mobilePricesSort} onChange={(e) => setMobilePricesSort(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none">
+                                                <option value="Lowest Price">Lowest Price</option>
+                                                <option value="Highest Price">Highest Price</option>
+                                                <option value="Alphabetical">Alphabetical</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Analytics Metrics Bar */}
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center">
+                                        <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Catalog Items</span>
+                                        <span class="text-xl font-black text-white mt-0.5 block">{mobilePricesStats.count} Units</span>
+                                    </div>
+                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center">
+                                        <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Lowest Wholesale Price</span>
+                                        <span class="text-xl font-black text-emerald-400 mt-0.5 block">{mobilePricesStats.min}€</span>
+                                    </div>
+                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center">
+                                        <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Highest Wholesale Price</span>
+                                        <span class="text-xl font-black text-white mt-0.5 block">{mobilePricesStats.max}€</span>
+                                    </div>
+                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center">
+                                        <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Average Wholesale Price</span>
+                                        <span class="text-xl font-black text-indigo-400 mt-0.5 block">{mobilePricesStats.avg}€</span>
+                                    </div>
+                                </div>
+
+                                {/* Supplier Price Cards Grid */}
+                                {filteredSupplierPhones.length === 0 ? (
+                                    <div class="text-center py-12 text-slate-500 font-medium">
+                                        No supplier catalog items match your search filters.
+                                    </div>
+                                ) : (
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                        {filteredSupplierPhones.map(item => {
+                                            const suggestedSellPrice = Math.round(item.supplierPrice * (1 + globalTargetROI / 100));
+                                            const expectedProfit = suggestedSellPrice - item.supplierPrice;
+                                            
+                                            return (
+                                                <div key={item.id} class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 hover:border-indigo-500/40 transition-all flex flex-col justify-between space-y-4">
+                                                    <div class="space-y-3">
+                                                        <div class="flex justify-between items-center">
+                                                            <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                                                                {item.brand}
+                                                            </span>
+                                                            <span class="text-xs text-slate-500 font-mono">
+                                                                {item.category} • {item.network}
+                                                            </span>
+                                                        </div>
+
+                                                        <div>
+                                                            <h4 class="text-lg font-bold text-white">{item.model}</h4>
+                                                            <div class="flex items-center gap-2 mt-1">
+                                                                <span class="text-xs font-semibold text-slate-300">{item.storage}</span>
+                                                                <span class="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
+                                                                <span class="text-xs font-medium text-emerald-400">{item.condition}</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="pt-1">
+                                                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Supplier Wholesale Price</span>
+                                                            <div class="text-3xl font-black text-emerald-400">{item.supplierPrice}€</div>
+                                                        </div>
+
+                                                        {/* Smart Target ROI Suggestions Box */}
+                                                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 space-y-1.5 text-xs">
+                                                            <div class="flex justify-between items-center text-slate-400 text-[11px] font-semibold">
+                                                                <span>Smart Target ROI</span>
+                                                                <span class="text-indigo-400 font-bold">{globalTargetROI}% Target</span>
+                                                            </div>
+                                                            <div class="flex justify-between items-baseline pt-1 border-t border-slate-800/60">
+                                                                <span class="text-slate-400">Suggested Sell: <strong class="text-white">{suggestedSellPrice}€</strong></span>
+                                                                <span class="text-emerald-400 font-bold">Profit: +{expectedProfit}€</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="space-y-2 pt-3 border-t border-slate-800/60">
+                                                        {/* Copy buttons */}
+                                                        <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+                                                            <button 
+                                                                onClick={() => copyToClipboard(`${item.brand} ${item.model}`, "Copied Model")} 
+                                                                class="py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-lg font-bold flex items-center justify-center gap-1 transition-colors"
+                                                            >
+                                                                <Icons.Copy /> Model
+                                                            </button>
+                                                            <button 
+                                                                onClick={() => copyToClipboard(`${item.supplierPrice}€`, "Copied Price")} 
+                                                                class="py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-lg font-bold flex items-center justify-center gap-1 transition-colors"
+                                                            >
+                                                                <Icons.Copy /> Price
+                                                            </button>
+                                                            <button 
+                                                                onClick={() => copyToClipboard(`${item.brand} ${item.model} ${item.storage} (${item.condition}) - ${item.supplierPrice}€`, "Copied Specs")} 
+                                                                class="py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-lg font-bold flex items-center justify-center gap-1 transition-colors"
+                                                            >
+                                                                <Icons.Copy /> Specs
+                                                            </button>
+                                                        </div>
+
+                                                        {/* Add to inventory button */}
+                                                        <button 
+                                                            onClick={() => handleAddListingToInventory(item)}
+                                                            class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-md shadow-indigo-600/10"
+                                                        >
+                                                            <Icons.Plus /> Add to Inventory
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 )}
                             </div>
@@ -2070,12 +2641,4 @@
     </script>
 </body>
 </html>
-
-Verification & Setup:
-
-1.  Open the file on your device.
-2.  Enter your secure passcode (314).
-3.  Click the new Market Search tab in your sidebar.
-4.  Search for a phone model (like iPhone 15 Pro or Galaxy A17), apply the
-    desired conditions/marketplaces, and see the analytics dashboard adapt in
-    real-time.
+```
