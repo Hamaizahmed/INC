@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -67,7 +67,7 @@
         const supabaseUrl = "https://krkwwfixsqjroohjkgeb.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtya3d3Zml4c3Fqcm9vaGprZ2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTMzODMsImV4cCI6MjEwMDI4OTM4M30.d8baOvjq4kyAFZSBWoi2bnReuqT4xHKOvcG_6nn0GoU"; 
 
-        // Initialize Supabase safely (naming conflict fixed)
+        // Initialize Supabase safely
         let supabaseClient = null;
         try {
             if (supabaseKey && supabaseKey !== "PASTE_YOUR_ANON_PUBLIC_KEY_HERE") {
@@ -93,7 +93,11 @@
             Edit: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>,
             Info: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>,
             Lock: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
-            Cloud: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-2.54-4.5-5-4.5-.42-1.89-1.74-3.5-4-3.5-2.65 0-4.5 2.24-4.5 5 0 .26.01.52.03.77A4.47 4.47 0 0 0 2 17.5 4.5 4.5 0 0 0 6.5 22h11Z"/></svg>
+            Cloud: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-2.54-4.5-5-4.5-.42-1.89-1.74-3.5-4-3.5-2.65 0-4.5 2.24-4.5 5 0 .26.01.52.03.77A4.47 4.47 0 0 0 2 17.5 4.5 4.5 0 0 0 6.5 22h11Z"/></svg>,
+            Eye: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 0 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>,
+            AlertBell: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>,
+            Check: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+            Star: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill={props.fill || "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         };
 
         const defaultPhones = [
@@ -155,6 +159,24 @@
             }
         ];
 
+        // Seed data for the Market Search tool mock listings database
+        const mockDatabasePhones = [
+            { id: 'm1', brand: 'Apple', model: 'iPhone 15 Pro', storage: '128GB', colour: 'Black', condition: 'Refurbished', price: 820, shipping: 0, store: 'Back Market', rating: 4.8, warranty: '12 Months' },
+            { id: 'm2', brand: 'Apple', model: 'iPhone 15 Pro', storage: '256GB', colour: 'Blue', condition: 'Used', price: 790, shipping: 9.90, store: 'eBay', rating: 4.5, warranty: 'None' },
+            { id: 'm3', brand: 'Apple', model: 'iPhone 15 Pro', storage: '128GB', colour: 'Gold', condition: 'New', price: 1049, shipping: 0, store: 'MediaMarkt', rating: 4.9, warranty: '24 Months' },
+            { id: 'm4', brand: 'Apple', model: 'iPhone 15 Pro', storage: '512GB', colour: 'Silver', condition: 'Refurbished', price: 990, shipping: 4.99, store: 'Amazon', rating: 4.6, warranty: '12 Months' },
+            { id: 'm5', brand: 'Samsung', model: 'Galaxy A17', storage: '128GB', colour: 'Black', condition: 'New', price: 169, shipping: 0, store: 'Amazon', rating: 4.7, warranty: '24 Months' },
+            { id: 'm6', brand: 'Samsung', model: 'Galaxy A17', storage: '128GB', colour: 'Blue', condition: 'Refurbished', price: 139, shipping: 2.99, store: 'Back Market', rating: 4.3, warranty: '12 Months' },
+            { id: 'm7', brand: 'Samsung', model: 'Galaxy A17', storage: '64GB', colour: 'White', condition: 'Used', price: 110, shipping: 5.50, store: 'Wallapop', rating: 4.2, warranty: 'None' },
+            { id: 'm8', brand: 'Xiaomi', model: 'Redmi Note 14', storage: '128GB', colour: 'Green', condition: 'New', price: 149, shipping: 0, store: 'PcComponentes', rating: 4.8, warranty: '24 Months' },
+            { id: 'm9', brand: 'Xiaomi', model: 'Redmi Note 14', storage: '256GB', colour: 'Black', condition: 'New', price: 179, shipping: 0, store: 'Amazon', rating: 4.7, warranty: '24 Months' },
+            { id: 'm10', brand: 'Xiaomi', model: 'Redmi Note 14', storage: '128GB', colour: 'Blue', condition: 'Used', price: 95, shipping: 4.90, store: 'Cash Converters', rating: 4.0, warranty: '12 Months' },
+            { id: 'm11', brand: 'Google', model: 'Pixel 9', storage: '128GB', colour: 'Purple', condition: 'New', price: 699, shipping: 0, store: 'FNAC', rating: 4.9, warranty: '24 Months' },
+            { id: 'm12', brand: 'Google', model: 'Pixel 9', storage: '256GB', colour: 'Black', condition: 'Refurbished', price: 580, shipping: 0, store: 'Back Market', rating: 4.5, warranty: '12 Months' },
+            { id: 'm13', brand: 'Nothing', model: 'Phone (2)', storage: '256GB', colour: 'White', condition: 'New', price: 549, shipping: 0, store: 'Amazon', rating: 4.7, warranty: '24 Months' },
+            { id: 'm14', brand: 'Motorola', model: 'Edge 50', storage: '256GB', colour: 'Silver', condition: 'New', price: 399, shipping: 4.99, store: 'PcComponentes', rating: 4.4, warranty: '24 Months' }
+        ];
+
         function App() {
             // Unlocked State (Passcode '314')
             const [isUnlocked, setIsUnlocked] = useState(() => sessionStorage.getItem('flipflow_unlocked') === 'true');
@@ -166,35 +188,76 @@
                 return local ? JSON.parse(local) : defaultPhones;
             });
 
-            // Auto Price Suggestion: Global target ROI config
+            // Target ROI configurations
             const [globalTargetROI, setGlobalTargetROI] = useState(() => {
                 const stored = localStorage.getItem('flipflow_global_roi');
                 return stored ? Number(stored) : 35;
             });
 
-            // Modal Reactive Input States (For live auto-calculations)
+            // Modal Reactive Input States
             const [modalBuyPrice, setModalBuyPrice] = useState("");
             const [modalExpectedSellPrice, setModalExpectedSellPrice] = useState("");
             const [modalLocalROI, setModalLocalROI] = useState(35);
+
+            // Watchlist and Price Alerts State Managers
+            const [watchlist, setWatchlist] = useState(() => {
+                const local = localStorage.getItem('flipflow_watchlist');
+                return local ? JSON.parse(local) : [];
+            });
+
+            const [priceAlerts, setPriceAlerts] = useState(() => {
+                const local = localStorage.getItem('flipflow_alerts');
+                return local ? JSON.parse(local) : [];
+            });
 
             const [toasts, setToasts] = useState([]);
             const [activeTab, setActiveTab] = useState('dashboard');
             const [syncLoading, setSyncLoading] = useState(false);
             
+            // Filters (Inventory Tab)
             const [searchTerm, setSearchTerm] = useState('');
             const [filterModel, setFilterModel] = useState('');
             const [filterStatus, setFilterStatus] = useState('all');
             const [filterReinvestment, setFilterReinvestment] = useState('all');
 
+            // Filters (Market Search Tab)
+            const [marketSearchTerm, setMarketSearchTerm] = useState('iPhone 15 Pro');
+            const [marketBrand, setMarketBrand] = useState('Apple');
+            const [marketCondition, setMarketCondition] = useState(['New', 'Used', 'Refurbished']);
+            const [marketStorage, setMarketStorage] = useState(['128GB', '256GB', '512GB']);
+            const [marketColour, setMarketColour] = useState('All');
+            const [marketSort, setMarketSort] = useState('Lowest Price');
+            const [marketCountry, setMarketCountry] = useState('Spain');
+            const [priceRangeMin, setPriceRangeMin] = useState(0);
+            const [priceRangeMax, setPriceRangeMax] = useState(1500);
+
+            // Active list for Comparison Matrix
+            const [selectedCompareIds, setSelectedCompareIds] = useState([]);
+            const [marketSearching, setMarketSearching] = useState(false);
+            const [marketSubTab, setMarketSubTab] = useState('listings'); // listings | watchlist | alerts | compare
+
+            // Alerts creator state
+            const [newAlertModel, setNewAlertModel] = useState('');
+            const [newAlertTarget, setNewAlertTarget] = useState('');
+
+            // Modals
             const [isAddModalOpen, setIsAddModalOpen] = useState(false);
             const [isEditModalOpen, setIsEditModalOpen] = useState(false);
             const [isSellModalOpen, setIsSellModalOpen] = useState(false);
             const [selectedPhone, setSelectedPhone] = useState(null);
 
-            // Sync with local storage
+            // Sync persistence
             useEffect(() => {
                 localStorage.setItem('flipflow_inventory', JSON.stringify(phones));
             }, [phones]);
+
+            useEffect(() => {
+                localStorage.setItem('flipflow_watchlist', JSON.stringify(watchlist));
+            }, [watchlist]);
+
+            useEffect(() => {
+                localStorage.setItem('flipflow_alerts', JSON.stringify(priceAlerts));
+            }, [priceAlerts]);
 
             useEffect(() => {
                 localStorage.setItem('flipflow_global_roi', globalTargetROI.toString());
@@ -418,13 +481,12 @@
                 });
             }, [phones, searchTerm, filterModel, filterStatus, filterReinvestment]);
 
-            const uniqueModels = useMemo(() => {
-                return [...new Set(phones.map(p => p.model))];
-            }, [phones]);
-
             const handleToggleStatus = (phone, targetStatus) => {
                 if (targetStatus === 'sold') {
                     setSelectedPhone(phone);
+                    setModalBuyPrice(phone.buyPrice);
+                    setModalExpectedSellPrice(phone.expectedSellPrice);
+                    setModalLocalROI(globalTargetROI);
                     setIsSellModalOpen(true);
                 } else {
                     const updated = phones.map(p => {
@@ -468,7 +530,7 @@
                 }
             };
 
-            // Calculated smart parameters for the currently active modal (Add or Edit)
+            // Calculated parameters for active modals
             const modalPricingAssessment = useMemo(() => {
                 const buyVal = Number(modalBuyPrice) || 0;
                 const expectedVal = Number(modalExpectedSellPrice) || 0;
@@ -520,6 +582,168 @@
                     smartColorStyles
                 };
             }, [modalBuyPrice, modalExpectedSellPrice, modalLocalROI]);
+
+            // Market Search Engine Filtered Listings generator
+            const searchedMarketListings = useMemo(() => {
+                let initial = [...mockDatabasePhones];
+                
+                // Realtime text matching on model or brand
+                if (marketSearchTerm) {
+                    const term = marketSearchTerm.toLowerCase();
+                    initial = initial.filter(item => 
+                        item.model.toLowerCase().includes(term) || 
+                        item.brand.toLowerCase().includes(term)
+                    );
+                }
+
+                // Apply multi-select checkbox conditions
+                if (marketCondition.length > 0) {
+                    initial = initial.filter(item => marketCondition.includes(item.condition));
+                }
+
+                if (marketStorage.length > 0) {
+                    initial = initial.filter(item => marketStorage.includes(item.storage));
+                }
+
+                if (marketBrand) {
+                    initial = initial.filter(item => item.brand === marketBrand);
+                }
+
+                if (marketColour !== 'All') {
+                    initial = initial.filter(item => item.colour === marketColour);
+                }
+
+                // Range filter
+                initial = initial.filter(item => item.price >= priceRangeMin && item.price <= priceRangeMax);
+
+                // Sort algorithm mapper
+                if (marketSort === 'Lowest Price') {
+                    initial.sort((a, b) => a.price - b.price);
+                } else if (marketSort === 'Highest Price') {
+                    initial.sort((a, b) => b.price - a.price);
+                } else if (marketSort === 'Highest Rating') {
+                    initial.sort((a, b) => b.rating - a.rating);
+                } else if (marketSort === 'Lowest Shipping') {
+                    initial.sort((a, b) => a.shipping - b.shipping);
+                }
+
+                return initial;
+            }, [marketSearchTerm, marketBrand, marketCondition, marketStorage, marketColour, marketSort, priceRangeMin, priceRangeMax]);
+
+            // Realtime aggregate statistic outputs for current search results
+            const marketSearchStats = useMemo(() => {
+                if (searchedMarketListings.length === 0) {
+                    return { min: 0, max: 0, avg: 0, median: 0, count: 0, maxBuyPrice: 0, recommendedSellPrice: 0 };
+                }
+
+                const prices = searchedMarketListings.map(item => item.price).sort((a, b) => a - b);
+                const min = prices[0];
+                const max = prices[prices.length - 1];
+                const sum = prices.reduce((acc, p) => acc + p, 0);
+                const avg = Math.round(sum / prices.length);
+                
+                let median;
+                const mid = Math.floor(prices.length / 2);
+                if (prices.length % 2 !== 0) {
+                    median = prices[mid];
+                } else {
+                    median = Math.round((prices[mid - 1] + prices[mid]) / 2);
+                }
+
+                // Calculate Maximum Buy Price = Average Price / (1 + Global Target ROI / 100)
+                const maxBuyPrice = Math.round(avg / (1 + globalTargetROI / 100));
+
+                // Recommended Sell Price = Avg Price
+                const recommendedSellPrice = avg;
+
+                return {
+                    min,
+                    max,
+                    avg,
+                    median,
+                    count: prices.length,
+                    maxBuyPrice,
+                    recommendedSellPrice
+                };
+            }, [searchedMarketListings, globalTargetROI]);
+
+            // Save/Watchlist controls
+            const handleToggleWatchlist = (listing) => {
+                const isSaved = watchlist.some(w => w.id === listing.id);
+                if (isSaved) {
+                    setWatchlist(prev => prev.filter(w => w.id !== listing.id));
+                    triggerToast(`Removed ${listing.model} from Watchlist`, 'info');
+                } else {
+                    setWatchlist(prev => [...prev, listing]);
+                    triggerToast(`Added ${listing.model} to Watchlist`, 'success');
+                }
+            };
+
+            // Compare array controls
+            const handleToggleCompare = (id) => {
+                if (selectedCompareIds.includes(id)) {
+                    setSelectedCompareIds(prev => prev.filter(item => item !== id));
+                } else {
+                    if (selectedCompareIds.length >= 3) {
+                        triggerToast("You can compare up to 3 listings at a time.", "warning");
+                        return;
+                    }
+                    setSelectedCompareIds(prev => [...prev, id]);
+                }
+            };
+
+            // Form Price Alert creator
+            const handleCreateAlert = (e) => {
+                e.preventDefault();
+                if (!newAlertModel || !newAlertTarget) return;
+
+                const newAlert = {
+                    id: 'alert-' + Date.now(),
+                    model: newAlertModel,
+                    targetPrice: Number(newAlertTarget),
+                    dateCreated: new Date().toISOString().split('T')[0]
+                };
+
+                setPriceAlerts(prev => [...prev, newAlert]);
+                setNewAlertModel('');
+                setNewAlertTarget('');
+                triggerToast("Price Threshold Alert established successfully!", "success");
+            };
+
+            const handleDeleteAlert = (id) => {
+                setPriceAlerts(prev => prev.filter(a => a.id !== id));
+                triggerToast("Alert rule deleted", "warning");
+            };
+
+            // Trigger Search loader effect simulation
+            const triggerMarketSearch = (e) => {
+                e.preventDefault();
+                setMarketSearching(true);
+                setTimeout(() => {
+                    setMarketSearching(false);
+                }, 600);
+            };
+
+            // Populates and spawns Register Purchase Modal with specific listing data
+            const handleAddListingToInventory = (listing) => {
+                setModalBuyPrice(listing.price);
+                // Pre-fill expected selling price with the average market value from stats
+                setModalExpectedSellPrice(marketSearchStats.recommendedSellPrice || listing.price);
+                setModalLocalROI(globalTargetROI);
+                
+                setSelectedPhone({
+                    model: `${listing.model} (${listing.storage})`,
+                    imei: "",
+                    buyPrice: listing.price,
+                    expectedSellPrice: marketSearchStats.recommendedSellPrice || listing.price,
+                    buyDate: new Date().toISOString().split('T')[0],
+                    reinvestment: false,
+                    notes: `Sourced from ${listing.store}. Condition: ${listing.condition}. Colour: ${listing.colour}.`
+                });
+
+                setIsAddModalOpen(true);
+                triggerToast(`Configuring Inventory form for ${listing.model}!`, "info");
+            };
 
             const exportCSV = () => {
                 let csvContent = "data:text/csv;charset=utf-8,";
@@ -642,6 +866,9 @@
                                 </button>
                                 <button onClick={() => setActiveTab('stats')} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'stats' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}>
                                     <Icons.TrendingUp /> Business Metrics
+                                </button>
+                                <button onClick={() => { setActiveTab('market-search'); setMarketSubTab('listings'); }} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'market-search' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}>
+                                    <Icons.Eye /> Market Search
                                 </button>
                             </nav>
                         </div>
@@ -1083,10 +1310,422 @@
                                 </div>
                             </div>
                         )}
+
+                        {/* MARKET SEARCH */}
+                        {activeTab === 'market-search' && (
+                            <div class="space-y-6">
+                                {/* Search Tabs */}
+                                <div class="flex border-b border-slate-800 font-sans gap-2">
+                                    <button onClick={() => setMarketSubTab('listings')} class={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${marketSubTab === 'listings' ? 'border-indigo-500 text-indigo-400 bg-indigo-500/5' : 'border-transparent text-slate-400 hover:text-white'}`}>
+                                        🔍 Live Listings ({searchedMarketListings.length})
+                                    </button>
+                                    <button onClick={() => setMarketSubTab('watchlist')} class={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${marketSubTab === 'watchlist' ? 'border-indigo-500 text-indigo-400 bg-indigo-500/5' : 'border-transparent text-slate-400 hover:text-white'}`}>
+                                        ⭐ Saved Watchlist ({watchlist.length})
+                                    </button>
+                                    <button onClick={() => setMarketSubTab('alerts')} class={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${marketSubTab === 'alerts' ? 'border-indigo-500 text-indigo-400 bg-indigo-500/5' : 'border-transparent text-slate-400 hover:text-white'}`}>
+                                        🔔 Price Alerts ({priceAlerts.length})
+                                    </button>
+                                    {selectedCompareIds.length > 0 && (
+                                        <button onClick={() => setMarketSubTab('compare')} class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-amber-400 hover:text-amber-300">
+                                            ⚖️ Compare Box ({selectedCompareIds.length})
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* TAB 1: LIVE LISTINGS SEARCH */}
+                                {marketSubTab === 'listings' && (
+                                    <div class="space-y-6">
+                                        {/* Main Search Panel */}
+                                        <form onSubmit={triggerMarketSearch} class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl space-y-4">
+                                            <div class="flex gap-3">
+                                                <div class="flex-1 relative">
+                                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><Icons.Search /></span>
+                                                    <input 
+                                                        required
+                                                        type="text" 
+                                                        placeholder="Search phone model... (e.g. iPhone 15 Pro, Galaxy A17, Pixel 9)" 
+                                                        value={marketSearchTerm}
+                                                        onChange={(e) => setMarketSearchTerm(e.target.value)}
+                                                        class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-indigo-500 font-medium"
+                                                    />
+                                                </div>
+                                                <button type="submit" class="px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-indigo-600/10 whitespace-nowrap">
+                                                    Search Market
+                                                </button>
+                                            </div>
+
+                                            {/* Advanced Collapsible Filters */}
+                                            <div class="grid grid-cols-1 md:grid-cols-4 gap-5 pt-3 border-t border-slate-800/40 text-xs">
+                                                {/* Brand Dropdown */}
+                                                <div>
+                                                    <label class="block text-slate-400 font-bold mb-1.5 uppercase tracking-wider">Manufacturer</label>
+                                                    <select value={marketBrand} onChange={(e) => setMarketBrand(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-slate-300 focus:outline-none">
+                                                        <option value="">All Brands</option>
+                                                        <option value="Apple">Apple</option>
+                                                        <option value="Samsung">Samsung</option>
+                                                        <option value="Google">Google</option>
+                                                        <option value="Xiaomi">Xiaomi</option>
+                                                        <option value="Nothing">Nothing</option>
+                                                        <option value="Motorola">Motorola</option>
+                                                    </select>
+                                                </div>
+
+                                                {/* Storage Multiselect */}
+                                                <div>
+                                                    <label class="block text-slate-400 font-bold mb-1.5 uppercase tracking-wider">Storage Capacity</label>
+                                                    <div class="flex flex-wrap gap-1.5">
+                                                        {['64GB', '128GB', '256GB', '512GB'].map(cap => {
+                                                            const isChecked = marketStorage.includes(cap);
+                                                            return (
+                                                                <button
+                                                                    key={cap}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        if (isChecked) setMarketStorage(prev => prev.filter(c => c !== cap));
+                                                                        else setMarketStorage(prev => [...prev, cap]);
+                                                                    }}
+                                                                    class={`px-2.5 py-1.5 rounded-lg border text-[11px] font-bold transition-all ${isChecked ? 'bg-indigo-600/10 border-indigo-500 text-indigo-400' : 'bg-slate-950 border-slate-800 text-slate-500'}`}
+                                                                >
+                                                                    {cap}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+
+                                                {/* Condition Checkboxes */}
+                                                <div>
+                                                    <label class="block text-slate-400 font-bold mb-1.5 uppercase tracking-wider">Quality Condition</label>
+                                                    <div class="flex gap-3 mt-1.5">
+                                                        {['New', 'Used', 'Refurbished'].map(cond => {
+                                                            const isChecked = marketCondition.includes(cond);
+                                                            return (
+                                                                <label key={cond} class="flex items-center gap-2 cursor-pointer text-slate-300 font-medium">
+                                                                    <input 
+                                                                        type="checkbox"
+                                                                        checked={isChecked}
+                                                                        onChange={() => {
+                                                                            if (isChecked) setMarketCondition(prev => prev.filter(c => c !== cond));
+                                                                            else setMarketCondition(prev => [...prev, cond]);
+                                                                        }}
+                                                                        class="w-4 h-4 bg-slate-950 border-slate-800 text-indigo-600 rounded focus:ring-0"
+                                                                    />
+                                                                    {cond}
+                                                                </label>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+
+                                                {/* Price Slider filter */}
+                                                <div>
+                                                    <div class="flex justify-between items-center text-slate-400 font-bold mb-1 uppercase tracking-wider">
+                                                        <span>Price Range</span>
+                                                        <span class="text-indigo-400 font-mono text-[11px]">{priceRangeMin}€ - {priceRangeMax}€</span>
+                                                    </div>
+                                                    <input 
+                                                        type="range" 
+                                                        min="0" 
+                                                        max="1200" 
+                                                        step="50"
+                                                        value={priceRangeMax} 
+                                                        onChange={(e) => setPriceRangeMax(Number(e.target.value))} 
+                                                        class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500 mt-2" 
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Supplementary filters row */}
+                                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3 border-t border-slate-800/40 text-xs">
+                                                <div>
+                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Device Color</label>
+                                                    <select value={marketColour} onChange={(e) => setMarketColour(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none">
+                                                        <option value="All">All Colors</option>
+                                                        <option value="Black">Black</option>
+                                                        <option value="White">White</option>
+                                                        <option value="Blue">Blue</option>
+                                                        <option value="Gold">Gold</option>
+                                                        <option value="Silver">Silver</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Sort Results</label>
+                                                    <select value={marketSort} onChange={(e) => setMarketSort(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none">
+                                                        <option value="Lowest Price">Lowest Price</option>
+                                                        <option value="Highest Price">Highest Price</option>
+                                                        <option value="Highest Rating">Highest Rating</option>
+                                                        <option value="Lowest Shipping">Lowest Shipping</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Sourcing Country</label>
+                                                    <select value={marketCountry} onChange={(e) => setMarketCountry(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none">
+                                                        <option value="Spain">Spain</option>
+                                                        <option value="Germany">Germany</option>
+                                                        <option value="France">France</option>
+                                                        <option value="Italy">Italy</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        {/* Market Assistant Analytics Bar */}
+                                        {searchedMarketListings.length > 0 && (
+                                            <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                                                <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center">
+                                                    <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Lowest Price</span>
+                                                    <span class="text-xl font-bold text-white mt-1 block">{marketSearchStats.min}€</span>
+                                                </div>
+                                                <div class="bg-indigo-950/20 border border-indigo-900/30 p-4 rounded-xl text-center">
+                                                    <span class="text-[10px] text-indigo-400 uppercase tracking-wider block font-bold">Average Price</span>
+                                                    <span class="text-xl font-bold text-indigo-300 mt-1 block">{marketSearchStats.avg}€</span>
+                                                </div>
+                                                <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center">
+                                                    <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Highest Price</span>
+                                                    <span class="text-xl font-bold text-white mt-1 block">{marketSearchStats.max}€</span>
+                                                </div>
+                                                <div class="bg-emerald-950/20 border border-emerald-900/30 p-4 rounded-xl text-center lg:col-span-2">
+                                                    <span class="text-[10px] text-emerald-400 uppercase tracking-wider block font-bold">Buying Assistant — Recommended Max Buy Price</span>
+                                                    <span class="text-xl font-black text-emerald-300 mt-1 block">Below {marketSearchStats.maxBuyPrice}€</span>
+                                                    <span class="text-[9px] text-slate-500 mt-1 block">To maintain default target ROI of {globalTargetROI}%</span>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Listings Renderer (Loader supported) */}
+                                        {marketSearching ? (
+                                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                                {[1, 2, 3].map(n => (
+                                                    <div key={n} class="bg-slate-900/30 border border-slate-800 rounded-2xl h-80 animate-pulse"></div>
+                                                ))}
+                                            </div>
+                                        ) : searchedMarketListings.length === 0 ? (
+                                            <div class="text-center py-12 text-slate-500 font-medium">
+                                                No listings generated for this filter set. Change terms or expand price boundary.
+                                            </div>
+                                        ) : (
+                                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                                {searchedMarketListings.map(listing => {
+                                                    const isSaved = watchlist.some(w => w.id === listing.id);
+                                                    const isCompared = selectedCompareIds.includes(listing.id);
+                                                    
+                                                    // Assistant classification logic
+                                                    let dealRating = "❌ Overpriced";
+                                                    let badgeColor = "bg-rose-500/10 text-rose-400 border-rose-500/30";
+                                                    if (listing.price <= marketSearchStats.maxBuyPrice) {
+                                                        dealRating = "✅ Great Deal";
+                                                        badgeColor = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+                                                    } else if (listing.price <= marketSearchStats.avg) {
+                                                        dealRating = "⚠️ Fair Price";
+                                                        badgeColor = "bg-amber-500/10 text-amber-400 border-amber-500/30";
+                                                    }
+
+                                                    return (
+                                                        <div key={listing.id} class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700/80 transition-all flex flex-col justify-between">
+                                                            <div class="space-y-3">
+                                                                <div class="flex justify-between items-start">
+                                                                    <span class="text-xs font-mono text-slate-500">{listing.store}</span>
+                                                                    <div class="flex gap-2">
+                                                                        <button onClick={() => handleToggleCompare(listing.id)} class={`p-1.5 rounded-lg border text-xs font-bold transition-colors ${isCompared ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' : 'bg-slate-950 border-slate-800 text-slate-500 hover:text-slate-200'}`}>
+                                                                            ⚖️ Compare
+                                                                        </button>
+                                                                        <button onClick={() => handleToggleWatchlist(listing)} class="text-slate-400 hover:text-amber-400 transition-colors">
+                                                                            <Icons.Star fill={isSaved ? "currentColor" : "none"} />
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div>
+                                                                    <h4 class="text-lg font-bold text-white">{listing.model}</h4>
+                                                                    <div class="flex items-center gap-2 mt-1">
+                                                                        <span class="text-xs text-slate-400">{listing.storage}</span>
+                                                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
+                                                                        <span class="text-xs text-slate-400">{listing.colour}</span>
+                                                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
+                                                                        <span class="text-xs text-indigo-400 font-medium">{listing.condition}</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Sourcing rating check */}
+                                                                <div class="flex justify-between items-center text-xs py-2 bg-slate-950 px-3 rounded-xl border border-slate-800/60 font-sans">
+                                                                    <span class="text-slate-400">Assessed Quality</span>
+                                                                    <span class="font-bold text-amber-400">★ {listing.rating} / 5</span>
+                                                                </div>
+
+                                                                <div class="pt-2">
+                                                                    <div class="text-2xl font-black text-white">{listing.price}€</div>
+                                                                    <span class="text-[10px] text-slate-500 block mt-0.5">Shipping: {listing.shipping === 0 ? "Free" : `${listing.shipping}€`} • Warranty: {listing.warranty}</span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="mt-5 space-y-2.5 pt-4 border-t border-slate-800/40">
+                                                                <div class={`text-center text-xs font-bold py-1.5 rounded-xl border ${badgeColor}`}>
+                                                                    {dealRating}
+                                                                </div>
+                                                                <div class="grid grid-cols-2 gap-2">
+                                                                    <button onClick={() => handleAddListingToInventory(listing)} class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1">
+                                                                        <Icons.Plus /> Sourced Unit
+                                                                    </button>
+                                                                    <a href="https://google.com/shopping" target="_blank" class="w-full py-2 bg-slate-950 border border-slate-800 hover:bg-slate-800 rounded-xl text-xs font-bold text-center flex items-center justify-center">
+                                                                        Source Listing
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* TAB 2: PERSONAL WATCHLIST */}
+                                {marketSubTab === 'watchlist' && (
+                                    <div class="space-y-6">
+                                        {watchlist.length === 0 ? (
+                                            <div class="text-center py-12 text-slate-500 font-medium">
+                                                Your Watchlist is empty. Star listings inside search panel to save them.
+                                            </div>
+                                        ) : (
+                                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                                {watchlist.map(listing => (
+                                                    <div key={listing.id} class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 flex flex-col justify-between">
+                                                        <div class="space-y-3">
+                                                            <div class="flex justify-between items-center text-xs text-slate-500 font-mono">
+                                                                <span>{listing.store}</span>
+                                                                <button onClick={() => handleToggleWatchlist(listing)} class="text-amber-400">
+                                                                    <Icons.Star fill="currentColor" />
+                                                                </button>
+                                                            </div>
+                                                            <div>
+                                                                <h4 class="text-base font-bold text-white">{listing.model}</h4>
+                                                                <p class="text-xs text-slate-400 mt-1">{listing.storage} • {listing.colour} • {listing.condition}</p>
+                                                            </div>
+                                                            <div class="text-2xl font-black text-white">{listing.price}€</div>
+                                                        </div>
+                                                        <button onClick={() => handleAddListingToInventory(listing)} class="w-full mt-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1">
+                                                            <Icons.Plus /> Import to Inventory
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* TAB 3: PRICE ALERTS */}
+                                {marketSubTab === 'alerts' && (
+                                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                        <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl h-fit">
+                                            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-4">Set Price Threshold Alarm</h3>
+                                            <form onSubmit={handleCreateAlert} class="space-y-4">
+                                                <div>
+                                                    <label class="block text-xs font-semibold text-slate-400 mb-1">Target Phone Model *</label>
+                                                    <input required type="text" placeholder="e.g. Galaxy S24" value={newAlertModel} onChange={(e) => setNewAlertModel(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                                                </div>
+                                                <div>
+                                                    <label class="block text-xs font-semibold text-slate-400 mb-1">Trigger Price Level (€) *</label>
+                                                    <input required type="number" placeholder="420" value={newAlertTarget} onChange={(e) => setNewAlertTarget(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                                                </div>
+                                                <button type="submit" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all">
+                                                    Activate Alert Rule
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        <div class="lg:col-span-2 bg-slate-900/30 border border-slate-800/80 rounded-2xl p-5 overflow-hidden">
+                                            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-4">Active Sourcing Thresholds</h3>
+                                            {priceAlerts.length === 0 ? (
+                                                <p class="text-xs text-slate-500 font-sans leading-relaxed">No tracking alarms established yet. Connect thresholds to track pricing dips across platforms.</p>
+                                            ) : (
+                                                <div class="divide-y divide-slate-800">
+                                                    {priceAlerts.map(alert => (
+                                                        <div key={alert.id} class="flex justify-between items-center py-3">
+                                                            <div>
+                                                                <h4 class="text-sm font-bold text-white">{alert.model}</h4>
+                                                                <p class="text-[10px] text-slate-500 mt-0.5">Created: {alert.dateCreated}</p>
+                                                            </div>
+                                                            <div class="flex items-center gap-4">
+                                                                <span class="text-xs font-bold text-emerald-400">Trigger under {alert.targetPrice}€</span>
+                                                                <button onClick={() => handleDeleteAlert(alert.id)} class="p-1 text-slate-500 hover:text-rose-500 transition-colors">
+                                                                    <Icons.Trash />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* TAB 4: COMPARE MATRIX */}
+                                {marketSubTab === 'compare' && (
+                                    <div class="bg-slate-900/30 border border-slate-800/80 rounded-2xl p-5 overflow-hidden">
+                                        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-4">Comparison Matrix</h3>
+                                        <div class="overflow-x-auto">
+                                            <table class="w-full text-left border-collapse text-xs">
+                                                <thead>
+                                                    <tr class="bg-slate-900 border-b border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
+                                                        <th class="py-3 px-4">Specifications</th>
+                                                        {selectedCompareIds.map(id => {
+                                                            const item = mockDatabasePhones.find(p => p.id === id);
+                                                            return <th key={id} class="py-3 px-4 text-white font-bold">{item?.model}</th>;
+                                                        })}
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="divide-y divide-slate-800 font-sans text-slate-300">
+                                                    <tr>
+                                                        <td class="py-3 px-4 font-bold text-slate-500 uppercase tracking-wider text-[10px]">Market Store</td>
+                                                        {selectedCompareIds.map(id => {
+                                                            const item = mockDatabasePhones.find(p => p.id === id);
+                                                            return <td key={id} class="py-3 px-4 font-mono font-bold text-white">{item?.store}</td>;
+                                                        })}
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="py-3 px-4 font-bold text-slate-500 uppercase tracking-wider text-[10px]">Price (Sourcing)</td>
+                                                        {selectedCompareIds.map(id => {
+                                                            const item = mockDatabasePhones.find(p => p.id === id);
+                                                            return <td key={id} class="py-3 px-4 font-bold text-lg text-emerald-400">{item?.price}€</td>;
+                                                        })}
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="py-3 px-4 font-bold text-slate-500 uppercase tracking-wider text-[10px]">Condition</td>
+                                                        {selectedCompareIds.map(id => {
+                                                            const item = mockDatabasePhones.find(p => p.id === id);
+                                                            return <td key={id} class="py-3 px-4 text-indigo-400 font-semibold">{item?.condition}</td>;
+                                                        })}
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="py-3 px-4 font-bold text-slate-500 uppercase tracking-wider text-[10px]">Shipping</td>
+                                                        {selectedCompareIds.map(id => {
+                                                            const item = mockDatabasePhones.find(p => p.id === id);
+                                                            return <td key={id} class="py-3 px-4">{item?.shipping === 0 ? "Free" : `${item?.shipping}€`}</td>;
+                                                        })}
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="py-3 px-4 font-bold text-slate-500 uppercase tracking-wider text-[10px]">Warranty policy</td>
+                                                        {selectedCompareIds.map(id => {
+                                                            const item = mockDatabasePhones.find(p => p.id === id);
+                                                            return <td key={id} class="py-3 px-4 text-slate-400">{item?.warranty}</td>;
+                                                        })}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="flex justify-end gap-3 mt-5 pt-4 border-t border-slate-800">
+                                            <button onClick={() => setSelectedCompareIds([])} class="px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-xl text-xs font-bold text-slate-400 transition-colors">
+                                                Clear Compare Board
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </main>
 
                     {/* TOAST SYSTEM */}
-                    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full">
+                    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full font-sans">
                         {toasts.map(t => (
                             <div key={t.id} class="p-4 bg-slate-900 border border-slate-800 text-slate-200 rounded-xl shadow-2xl flex items-start gap-3">
                                 <span class="mt-0.5"><Icons.Info /></span>
@@ -1122,11 +1761,11 @@
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Model Name *</label>
-                                            <input required name="model" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
+                                            <input required name="model" type="text" defaultValue={selectedPhone?.model || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                         </div>
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">IMEI</label>
-                                            <input name="imei" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
+                                            <input name="imei" type="text" defaultValue={selectedPhone?.imei || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
@@ -1211,14 +1850,14 @@
 
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-400 mb-1">Purchase Date *</label>
-                                        <input required name="buyDate" type="date" defaultValue={new Date().toISOString().split('T')[0]} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
+                                        <input required name="buyDate" type="date" defaultValue={selectedPhone?.buyDate || new Date().toISOString().split('T')[0]} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-400 mb-1">Internal Notes</label>
-                                        <textarea name="notes" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
+                                        <textarea name="notes" defaultValue={selectedPhone?.notes || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
                                     </div>
                                     <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
-                                        <input type="checkbox" name="reinvestment" id="chk" class="w-4 h-4 text-indigo-600 rounded bg-slate-950 border-slate-800 focus:ring-0" />
+                                        <input type="checkbox" name="reinvestment" id="chk" defaultChecked={selectedPhone?.reinvestment || false} class="w-4 h-4 text-indigo-600 rounded bg-slate-950 border-slate-800 focus:ring-0" />
                                         <label for="chk" class="text-xs text-slate-300 font-bold cursor-pointer">Reinvestment Buy (Immediately subtracts from Cash Balance)</label>
                                     </div>
                                     <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
@@ -1430,3 +2069,5 @@
     </script>
 </body>
 </html>
+
+
