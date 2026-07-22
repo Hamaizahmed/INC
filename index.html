@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlipFlow - Premium Phone Flipping Dashboard</title>
+    <title>FlipFlow - Phone Flipping Ledger</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -36,7 +36,6 @@
             background-color: #030712;
             color: #f8fafc;
         }
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -59,84 +58,80 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // Custom SVGs corresponding to Lucide icons for reliable offline/direct loading
         const Icons = {
-            TrendingUp: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-trending-up"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
-            TrendingDown: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-trending-down"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>,
-            Euro: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-euro"><path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/></svg>,
-            Layers: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polygon points="2 17 12 22 22 17"/><polygon points="2 12 12 17 22 12"/></svg>,
-            ShoppingCart: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-shopping-cart"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>,
-            History: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-history"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>,
-            BarChart: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-bar-chart-3"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>,
-            Filter: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-filter"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>,
-            Search: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
-            Plus: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>,
-            Download: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>,
-            Upload: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>,
-            Trash: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>,
-            Edit: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>,
-            ArrowUpRight: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-arrow-up-right"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>,
-            Tag: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-tag"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l4.72-4.72c.94-.94.94-2.48 0-3.42z"/><path d="m6 6 .01-.01"/></svg>,
-            Info: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            TrendingUp: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
+            TrendingDown: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>,
+            Euro: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/></svg>,
+            Layers: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polygon points="2 17 12 22 22 17"/><polygon points="2 12 12 17 22 12"/></svg>,
+            ShoppingCart: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>,
+            History: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>,
+            BarChart: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>,
+            Search: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
+            Plus: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>,
+            Download: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>,
+            Upload: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>,
+            Trash: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>,
+            Edit: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>,
+            Info: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
         };
 
-        // Real initial mock sequence based on prompt parameters
+        // Preloaded dataset matching your exact scenario
         const defaultPhones = [
             {
-                id: 'mock-1',
+                id: '1',
                 model: 'Note 14',
                 imei: '358912345678901',
                 buyPrice: 103,
-                expectedSellPrice: 140,
+                expectedSellPrice: 149,
                 actualSellPrice: 149,
                 buyDate: '2025-07-04',
                 sellDate: '2025-07-11',
                 reinvestment: false,
-                notes: 'Initial Capital Purchase',
+                notes: 'Part of initial 314€ Capital investment',
                 buySequence: 1720051200000,
                 sellSequence: 1720656000000
             },
             {
-                id: 'mock-2',
-                model: 'A07',
+                id: '2',
+                model: 'Galaxy A07',
                 imei: '358912345678902',
                 buyPrice: 92,
-                expectedSellPrice: 120,
+                expectedSellPrice: 125,
                 actualSellPrice: 125,
                 buyDate: '2025-07-04',
                 sellDate: '2025-07-11',
                 reinvestment: false,
-                notes: 'Initial Capital Purchase',
+                notes: 'Part of initial 314€ Capital investment',
                 buySequence: 1720051200001,
                 sellSequence: 1720656000001
             },
             {
-                id: 'mock-3',
-                model: 'A17',
+                id: '3',
+                model: 'Galaxy A17',
                 imei: '358912345678903',
                 buyPrice: 119,
-                expectedSellPrice: 160,
-                actualSellPrice: 169,
+                expectedSellPrice: 169,
+                actualSellPrice: null,
                 buyDate: '2025-07-04',
-                sellDate: '2025-07-20',
+                sellDate: null, // UNSOLD
                 reinvestment: false,
-                notes: 'Initial Capital Purchase',
+                notes: 'Part of initial 314€ Capital investment',
                 buySequence: 1720051200002,
-                sellSequence: 1721433600001
+                sellSequence: null
             },
             {
-                id: 'mock-4',
-                model: 'A07',
+                id: '4',
+                model: 'Galaxy A07',
                 imei: '358912345678904',
                 buyPrice: 96,
-                expectedSellPrice: 120,
-                actualSellPrice: 129,
+                expectedSellPrice: 129,
+                actualSellPrice: null,
                 buyDate: '2025-07-16',
-                sellDate: '2025-07-20',
-                reinvestment: true,
-                notes: 'First Reinvestment Phone',
+                sellDate: null, // UNSOLD
+                reinvestment: true, // Reinvestment item
+                notes: 'Reinvestment buy (reduces balance by 96)',
                 buySequence: 1721088000000,
-                sellSequence: 1721433600000
+                sellSequence: null
             }
         ];
 
@@ -148,15 +143,9 @@
 
             const [toasts, setToasts] = useState([]);
             const [activeTab, setActiveTab] = useState('dashboard');
-            
-            // Search & Filtering States
             const [searchTerm, setSearchTerm] = useState('');
             const [filterModel, setFilterModel] = useState('');
             const [filterStatus, setFilterStatus] = useState('all');
-            const [filterReinvestment, setFilterReinvestment] = useState('all');
-            const [filterMonth, setFilterMonth] = useState('');
-            const [sortField, setSortField] = useState('buyDate');
-            const [sortDirection, setSortDirection] = useState('desc');
 
             // Modals
             const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -164,21 +153,17 @@
             const [isSellModalOpen, setIsSellModalOpen] = useState(false);
             const [selectedPhone, setSelectedPhone] = useState(null);
 
-            // Save to localStorage
             useEffect(() => {
                 localStorage.setItem('flipflow_inventory', JSON.stringify(phones));
             }, [phones]);
 
-            // Toast triggering Helper
             const triggerToast = (message, type = 'info') => {
                 const id = Date.now();
                 setToasts(prev => [...prev, { id, message, type }]);
-                setTimeout(() => {
-                    setToasts(prev => prev.filter(t => t.id !== id));
-                }, 4000);
+                setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
             };
 
-            // Dynamic Ledger & Cash calculation
+            // Dynamic Ledger Balance Engine
             const ledger = useMemo(() => {
                 let list = [];
                 phones.forEach(p => {
@@ -196,7 +181,7 @@
                             : `Initial Inventory — ${p.model}`
                     });
 
-                    // Sell Event
+                    // Sell Event (Only if status is Sold / Sell Date exists)
                     if (p.sellDate) {
                         list.push({
                             id: `${p.id}-sell`,
@@ -211,25 +196,21 @@
                     }
                 });
 
-                // Correct chronological ordering with sequence breaking ties
+                // Chronological Sorting
                 list.sort((a, b) => {
                     const diff = new Date(a.date) - new Date(b.date);
                     if (diff !== 0) return diff;
                     return a.sequence - b.sequence;
                 });
 
-                // Compute running cumulative balance
-                let currentBalance = 0;
+                let running = 0;
                 return list.map(item => {
-                    currentBalance += item.amount;
-                    return {
-                        ...item,
-                        balance: currentBalance
-                    };
+                    running += item.amount;
+                    return { ...item, balance: running };
                 });
             }, [phones]);
 
-            // Core Financial Statistics Engine
+            // Financial Calculations
             const stats = useMemo(() => {
                 const availableCash = ledger.length > 0 ? ledger[ledger.length - 1].balance : 0;
                 
@@ -239,69 +220,25 @@
                 let totalProfit = 0;
                 let phonesSold = 0;
                 let phonesInStock = 0;
-                let totalDaysToSell = 0;
-                let profitPhonePrices = 0; // Buy price sum of sold phones for ROI
-
-                let minDays = Infinity;
-                let maxDays = -Infinity;
-                let highestProfit = -Infinity;
-                let lowestProfit = Infinity;
-                let highestProfitPhone = null;
-                let lowestProfitPhone = null;
-
-                const modelProfits = {};
+                
+                // Track expected total sales when everything (sold & unsold) completes
+                let potentialSalesRevenue = 0;
 
                 phones.forEach(p => {
                     const isSold = !!p.sellDate;
+                    const expectedVal = Number(p.expectedSellPrice);
+                    const actualVal = Number(p.actualSellPrice || p.expectedSellPrice);
+
                     if (!isSold) {
                         inventoryCost += Number(p.buyPrice);
-                        inventoryMarketValue += Number(p.expectedSellPrice);
+                        inventoryMarketValue += expectedVal;
                         phonesInStock++;
+                        potentialSalesRevenue += expectedVal;
                     } else {
-                        const sellVal = Number(p.actualSellPrice || p.expectedSellPrice);
-                        const buyVal = Number(p.buyPrice);
-                        const profit = sellVal - buyVal;
-                        
-                        totalSales += sellVal;
-                        totalProfit += profit;
+                        totalSales += actualVal;
+                        totalProfit += (actualVal - Number(p.buyPrice));
                         phonesSold++;
-                        profitPhonePrices += buyVal;
-
-                        // Days calculation
-                        const days = Math.max(0, Math.round((new Date(p.sellDate) - new Date(p.buyDate)) / (1000 * 60 * 60 * 24)));
-                        totalDaysToSell += days;
-
-                        if (days < minDays) minDays = days;
-                        if (days > maxDays) maxDays = days;
-
-                        if (profit > highestProfit) {
-                            highestProfit = profit;
-                            highestProfitPhone = p;
-                        }
-                        if (profit < lowestProfit) {
-                            lowestProfit = profit;
-                            lowestProfitPhone = p;
-                        }
-
-                        // Model aggregation
-                        modelProfits[p.model] = (modelProfits[p.model] || 0) + profit;
-                    }
-                });
-
-                // Best/Worst Performing Models
-                let bestModel = 'None';
-                let bestVal = -Infinity;
-                let worstModel = 'None';
-                let worstVal = Infinity;
-
-                Object.keys(modelProfits).forEach(m => {
-                    if (modelProfits[m] > bestVal) {
-                        bestVal = modelProfits[m];
-                        bestModel = m;
-                    }
-                    if (modelProfits[m] < worstVal) {
-                        worstVal = modelProfits[m];
-                        worstModel = m;
+                        potentialSalesRevenue += actualVal;
                     }
                 });
 
@@ -313,89 +250,43 @@
                     totalProfit,
                     phonesSold,
                     phonesInStock,
-                    avgProfit: phonesSold > 0 ? totalProfit / phonesSold : 0,
-                    avgDays: phonesSold > 0 ? totalDaysToSell / phonesSold : 0,
-                    roi: profitPhonePrices > 0 ? (totalProfit / profitPhonePrices) * 100 : 0,
-                    highestProfit: highestProfit === -Infinity ? 0 : highestProfit,
-                    highestProfitPhone,
-                    lowestProfit: lowestProfit === Infinity ? 0 : lowestProfit,
-                    lowestProfitPhone,
-                    fastestSale: minDays === Infinity ? 0 : minDays,
-                    slowestSale: maxDays === -Infinity ? 0 : maxDays,
-                    bestModel,
-                    worstModel,
-                    totalCapitalSpent: phones.reduce((acc, p) => acc + Number(p.buyPrice), 0)
+                    potentialSalesRevenue // This represents the 572€ total revenue when fully sold!
                 };
             }, [phones, ledger]);
 
-            // Filtered and Sorted Phone Inventory
+            // Filtered lists
             const filteredPhones = useMemo(() => {
-                let res = [...phones];
-
-                if (searchTerm) {
-                    const term = searchTerm.toLowerCase();
-                    res = res.filter(p => 
-                        p.model.toLowerCase().includes(term) || 
-                        (p.imei && p.imei.toLowerCase().includes(term)) ||
-                        (p.notes && p.notes.toLowerCase().includes(term))
-                    );
-                }
-
-                if (filterModel) {
-                    res = res.filter(p => p.model === filterModel);
-                }
-
-                if (filterStatus !== 'all') {
-                    res = res.filter(p => filterStatus === 'sold' ? !!p.sellDate : !p.sellDate);
-                }
-
-                if (filterReinvestment !== 'all') {
-                    const val = filterReinvestment === 'yes';
-                    res = res.filter(p => p.reinvestment === val);
-                }
-
-                if (filterMonth) {
-                    res = res.filter(p => {
-                        const date = p.sellDate || p.buyDate;
-                        return date && date.startsWith(filterMonth);
-                    });
-                }
-
-                // Sort logic
-                res.sort((a, b) => {
-                    let valA, valB;
-                    if (sortField === 'profit') {
-                        valA = a.sellDate ? (Number(a.actualSellPrice) - Number(a.buyPrice)) : -Infinity;
-                        valB = b.sellDate ? (Number(b.actualSellPrice) - Number(b.buyPrice)) : -Infinity;
-                    } else if (sortField === 'daysToSell') {
-                        valA = a.sellDate ? Math.round((new Date(a.sellDate) - new Date(a.buyDate)) / 86400000) : -Infinity;
-                        valB = b.sellDate ? Math.round((new Date(b.sellDate) - new Date(b.buyDate)) / 86400000) : -Infinity;
-                    } else {
-                        valA = a[sortField];
-                        valB = b[sortField];
-                    }
-
-                    if (valA === undefined || valA === null) return 1;
-                    if (valB === undefined || valB === null) return -1;
-
-                    if (typeof valA === 'string') {
-                        return sortDirection === 'asc' 
-                            ? valA.localeCompare(valB) 
-                            : valB.localeCompare(valA);
-                    } else {
-                        return sortDirection === 'asc' ? valA - valB : valB - valA;
-                    }
+                return phones.filter(p => {
+                    const matchesSearch = p.model.toLowerCase().includes(searchTerm.toLowerCase()) || (p.imei && p.imei.includes(searchTerm));
+                    const matchesModel = filterModel ? p.model === filterModel : true;
+                    const matchesStatus = filterStatus === 'all' ? true : (filterStatus === 'sold' ? !!p.sellDate : !p.sellDate);
+                    return matchesSearch && matchesModel && matchesStatus;
                 });
+            }, [phones, searchTerm, filterModel, filterStatus]);
 
-                return res;
-            }, [phones, searchTerm, filterModel, filterStatus, filterReinvestment, filterMonth, sortField, sortDirection]);
+            // Status Toggle Controller (Sold <-> Unsold)
+            const handleToggleStatus = (phone, targetStatus) => {
+                if (targetStatus === 'sold') {
+                    // Open fast modal to enter prices
+                    setSelectedPhone(phone);
+                    setIsSellModalOpen(true);
+                } else {
+                    // Transition back to unsold (In Stock)
+                    setPhones(prev => prev.map(p => {
+                        if (p.id === phone.id) {
+                            return {
+                                ...p,
+                                sellDate: null,
+                                actualSellPrice: null,
+                                sellSequence: null
+                            };
+                        }
+                        return p;
+                    }));
+                    triggerToast(`${phone.model} marked back to Unsold (In Stock)`, 'warning');
+                }
+            };
 
-            // Available unique model names for filtering dropdowns
-            const uniqueModels = useMemo(() => {
-                return [...new Set(phones.map(p => p.model))];
-            }, [phones]);
-
-            // Create Phone Record
             const handleAddPhone = (formData) => {
                 const newPhone = {
                     ...formData,
@@ -403,28 +294,13 @@
                     buySequence: Date.now(),
                     sellSequence: formData.sellDate ? Date.now() + 1 : null
                 };
-
                 setPhones(prev => [...prev, newPhone]);
-                triggerToast(`Inventory entry added: ${formData.model}`, 'success');
-
-                // Real-time automatic business safety warnings
-                if (phones.filter(p => !p.sellDate).length <= 2) {
-                    triggerToast("Low Stock Warning: Available phones in stock are low.", "warning");
-                }
+                triggerToast(`Added: ${formData.model}`, 'success');
             };
 
-            // Update Phone Record
             const handleEditPhone = (updatedPhone) => {
                 setPhones(prev => prev.map(p => {
                     if (p.id === updatedPhone.id) {
-                        // Notify updates on important transitions
-                        if (!p.sellDate && updatedPhone.sellDate) {
-                            const profit = Number(updatedPhone.actualSellPrice || updatedPhone.expectedSellPrice) - Number(updatedPhone.buyPrice);
-                            triggerToast(`Sale completed: +${updatedPhone.actualSellPrice}€ for ${updatedPhone.model}!`, 'success');
-                            if (profit >= 50) {
-                                triggerToast(`Excellent work! Large profit of ${profit}€ achieved on this unit.`, 'success');
-                            }
-                        }
                         return {
                             ...updatedPhone,
                             sellSequence: updatedPhone.sellDate && !p.sellDate ? Date.now() : p.sellSequence
@@ -432,464 +308,139 @@
                     }
                     return p;
                 }));
-                triggerToast(`Updated successfully: ${updatedPhone.model}`, 'info');
+                triggerToast(`Saved details for ${updatedPhone.model}`, 'success');
             };
 
-            // Delete Phone
             const handleDeletePhone = (id) => {
-                const target = phones.find(p => p.id === id);
-                if (window.confirm(`Are you sure you want to delete ${target.model}? This action changes ledger history.`)) {
+                if (window.confirm("Delete this entry? This modifies ledger history.")) {
                     setPhones(prev => prev.filter(p => p.id !== id));
-                    triggerToast(`Entry deleted: ${target.model}`, 'warning');
+                    triggerToast("Entry deleted", "warning");
                 }
-            };
-
-            // Quick sell action from table
-            const handleQuickSell = (phone) => {
-                setSelectedPhone(phone);
-                setIsSellModalOpen(true);
-            };
-
-            // JSON / CSV Import & Export handlers
-            const exportJSON = () => {
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(phones, null, 2));
-                const dlAnchorElem = document.createElement('a');
-                dlAnchorElem.setAttribute("href", dataStr);
-                dlAnchorElem.setAttribute("download", `flipflow_backup_${new Date().toISOString().split('T')[0]}.json`);
-                dlAnchorElem.click();
-                triggerToast("Local JSON database exported", "success");
-            };
-
-            const importJSON = (e) => {
-                const fileReader = new FileReader();
-                fileReader.onload = event => {
-                    try {
-                        const parsed = JSON.parse(event.target.result);
-                        if (Array.isArray(parsed)) {
-                            setPhones(parsed);
-                            triggerToast("Database successfully restored from JSON file!", "success");
-                        } else {
-                            triggerToast("Invalid format. Expecting JSON array.", "warning");
-                        }
-                    } catch (err) {
-                        triggerToast("Failed to parse file structure.", "warning");
-                    }
-                };
-                fileReader.readAsText(e.target.files[0]);
-            };
-
-            const exportCSV = () => {
-                let csvContent = "data:text/csv;charset=utf-8,";
-                csvContent += "Phone Model,IMEI,Buy Price,Expected Sell Price,Actual Sell Price,Buy Date,Sell Date,Reinvestment,Notes\n";
-                phones.forEach(p => {
-                    const row = [
-                        `"${p.model}"`,
-                        `"${p.imei || ''}"`,
-                        p.buyPrice,
-                        p.expectedSellPrice,
-                        p.actualSellPrice || '',
-                        p.buyDate,
-                        p.sellDate || '',
-                        p.reinvestment ? 'Yes' : 'No',
-                        `"${p.notes || ''}"`
-                    ].join(",");
-                    csvContent += row + "\n";
-                });
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `flipflow_export_${new Date().toISOString().split('T')[0]}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                triggerToast("CSV Sheet exported successfully", "success");
             };
 
             return (
                 <div class="flex flex-col md:flex-row min-h-screen text-slate-100 bg-slate-950">
-                    {/* Responsive Navigation Sidebar */}
+                    {/* Sidebar */}
                     <aside class="w-full md:w-64 bg-slate-900 border-b md:border-b-0 md:border-r border-slate-800 p-6 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center gap-3 mb-8">
-                                <div class="bg-indigo-600 p-2.5 rounded-xl shadow-lg shadow-indigo-500/20">
+                                <div class="bg-indigo-600 p-2.5 rounded-xl">
                                     <Icons.Euro />
                                 </div>
                                 <div>
-                                    <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">FlipFlow</h1>
-                                    <span class="text-xs text-indigo-400 font-semibold tracking-wider uppercase">Ledger Hub</span>
+                                    <h1 class="text-xl font-bold tracking-tight">FlipFlow</h1>
+                                    <span class="text-xs text-indigo-400 font-semibold tracking-wider uppercase">Flipping Engine</span>
                                 </div>
                             </div>
 
                             <nav class="space-y-1.5">
-                                <button 
-                                    onClick={() => setActiveTab('dashboard')} 
-                                    class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}
-                                >
+                                <button onClick={() => setActiveTab('dashboard')} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'dashboard' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
                                     <Icons.BarChart /> Dashboard
                                 </button>
-                                <button 
-                                    onClick={() => setActiveTab('inventory')} 
-                                    class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === 'inventory' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}
-                                >
-                                    <Icons.Layers /> Inventory Manager
+                                <button onClick={() => setActiveTab('inventory')} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'inventory' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+                                    <Icons.Layers /> Inventory List
                                 </button>
-                                <button 
-                                    onClick={() => setActiveTab('ledger')} 
-                                    class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === 'ledger' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}
-                                >
-                                    <Icons.History /> Cash Flow Ledger
-                                </button>
-                                <button 
-                                    onClick={() => setActiveTab('stats')} 
-                                    class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === 'stats' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}
-                                >
-                                    <Icons.TrendingUp /> Business Metrics
+                                <button onClick={() => setActiveTab('ledger')} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'ledger' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+                                    <Icons.History /> Ledger History
                                 </button>
                             </nav>
                         </div>
-
-                        <div class="mt-8 pt-6 border-t border-slate-800/60 space-y-3">
-                            <button onClick={exportCSV} class="w-full flex items-center justify-center gap-2 px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-300 transition-colors">
-                                <Icons.Download /> Export CSV Sheet
-                            </button>
-                            <button onClick={exportJSON} class="w-full flex items-center justify-center gap-2 px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-300 transition-colors">
-                                <Icons.Download /> Backup JSON
-                            </button>
-                            <label class="w-full flex items-center justify-center gap-2 px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-300 cursor-pointer transition-colors">
-                                <Icons.Upload /> Restore Backup
-                                <input type="file" accept=".json" onChange={importJSON} class="hidden" />
-                            </label>
+                        <div class="mt-8 pt-6 border-t border-slate-800/60 text-center text-xs text-slate-500 font-medium">
+                            FlipFlow Ledger System v1.1
                         </div>
                     </aside>
 
-                    {/* Main Content Area */}
-                    <main class="flex-1 p-6 md:p-10 overflow-y-auto max-w-7xl mx-auto w-full">
-                        {/* Top Utility Nav bar */}
+                    {/* Content */}
+                    <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
                         <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                             <div>
-                                <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white capitalize">{activeTab} Panel</h2>
-                                <p class="text-slate-400 text-sm">Managing ledger entries with autonomous running cash flow calculation.</p>
+                                <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white capitalize">{activeTab} View</h2>
+                                <p class="text-slate-400 text-sm">Managing phone resale inventory with real-world ledger entries.</p>
                             </div>
-                            <button 
-                                onClick={() => setIsAddModalOpen(true)}
-                                class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-xl text-sm shadow-md hover:from-indigo-600 hover:to-purple-700 transition-all shadow-indigo-500/15"
-                            >
-                                <Icons.Plus /> Register New Phone
+                            <button onClick={() => setIsAddModalOpen(true)} class="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-sm hover:bg-indigo-700 transition-all">
+                                <Icons.Plus /> Register New Purchase
                             </button>
                         </header>
 
-                        {/* DASHBOARD CARD GRID */}
+                        {/* DASHBOARD */}
                         {activeTab === 'dashboard' && (
-                            <div class="space-y-8">
+                            <div class="space-y-6">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                                    {/* Glassmorphic Cards */}
-                                    <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden transition-transform duration-200 hover:-translate-y-1">
-                                        <div class="flex justify-between items-start">
-                                            <span class="text-sm font-semibold text-slate-400">Available Business Cash</span>
-                                            <span class="p-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg"><Icons.Euro /></span>
+                                    <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl">
+                                        <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
+                                            <span>AVAILABLE CASH</span>
+                                            <span class="text-emerald-400 p-1 bg-emerald-500/10 rounded-md"><Icons.Euro /></span>
                                         </div>
-                                        <div class="mt-4">
-                                            <h3 class="text-3xl font-extrabold tracking-tight text-emerald-400">{stats.availableCash.toLocaleString()}€</h3>
-                                            <p class="text-xs text-slate-500 mt-1">Real-time ledger value</p>
-                                        </div>
+                                        <h3 class="text-3xl font-black text-emerald-400 mt-3">{stats.availableCash}€</h3>
+                                        <p class="text-[10px] text-slate-500 mt-1">Reflects cash currently in hand</p>
                                     </div>
 
-                                    <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden transition-transform duration-200 hover:-translate-y-1">
-                                        <div class="flex justify-between items-start">
-                                            <span class="text-sm font-semibold text-slate-400">Inventory Cost</span>
-                                            <span class="p-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg"><Icons.Layers /></span>
+                                    <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl">
+                                        <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
+                                            <span>TOTAL REVENUE TARGET</span>
+                                            <span class="text-indigo-400 p-1 bg-indigo-500/10 rounded-md"><Icons.TrendingUp /></span>
                                         </div>
-                                        <div class="mt-4">
-                                            <h3 class="text-3xl font-extrabold tracking-tight text-white">{stats.inventoryCost.toLocaleString()}€</h3>
-                                            <p class="text-xs text-slate-500 mt-1">Cost of unsold units</p>
-                                        </div>
+                                        <h3 class="text-3xl font-black text-indigo-400 mt-3">{stats.potentialSalesRevenue}€</h3>
+                                        <p class="text-[10px] text-slate-500 mt-1">Total combined sales value target</p>
                                     </div>
 
-                                    <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden transition-transform duration-200 hover:-translate-y-1">
-                                        <div class="flex justify-between items-start">
-                                            <span class="text-sm font-semibold text-slate-400">Market Value</span>
-                                            <span class="p-1.5 bg-purple-500/10 text-purple-400 rounded-lg"><Icons.ArrowUpRight /></span>
+                                    <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl">
+                                        <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
+                                            <span>FROZEN INVENTORY COST</span>
+                                            <span class="text-amber-400 p-1 bg-amber-500/10 rounded-md"><Icons.Layers /></span>
                                         </div>
-                                        <div class="mt-4">
-                                            <h3 class="text-3xl font-extrabold tracking-tight text-purple-400">{stats.inventoryMarketValue.toLocaleString()}€</h3>
-                                            <p class="text-xs text-slate-500 mt-1">Expected return on unsold</p>
-                                        </div>
+                                        <h3 class="text-3xl font-black text-white mt-3">{stats.inventoryCost}€</h3>
+                                        <p class="text-[10px] text-slate-500 mt-1">Unsold units cost</p>
                                     </div>
 
-                                    <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden transition-transform duration-200 hover:-translate-y-1">
-                                        <div class="flex justify-between items-start">
-                                            <span class="text-sm font-semibold text-slate-400">Total Profits Reached</span>
-                                            <span class="p-1.5 bg-teal-500/10 text-teal-400 rounded-lg"><Icons.TrendingUp /></span>
+                                    <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl">
+                                        <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
+                                            <span>COMPLETED PROFIT</span>
+                                            <span class="text-teal-400 p-1 bg-teal-500/10 rounded-md"><Icons.TrendingUp /></span>
                                         </div>
-                                        <div class="mt-4">
-                                            <h3 class="text-3xl font-extrabold tracking-tight text-teal-400">{stats.totalProfit.toLocaleString()}€</h3>
-                                            <p class="text-xs text-slate-500 mt-1">Net difference after sale</p>
-                                        </div>
+                                        <h3 class="text-3xl font-black text-teal-400 mt-3">{stats.totalProfit}€</h3>
+                                        <p class="text-[10px] text-slate-500 mt-1">Net difference of completed sales</p>
                                     </div>
                                 </div>
 
-                                {/* Dashboard Second Row Stat Badges */}
-                                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl">
-                                        <p class="text-xs text-slate-400 font-medium">ROI %</p>
-                                        <p class="text-lg font-bold mt-1 text-indigo-400">{stats.roi.toFixed(1)}%</p>
-                                    </div>
-                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl">
-                                        <p class="text-xs text-slate-400 font-medium">Units Sold</p>
-                                        <p class="text-lg font-bold mt-1 text-white">{stats.phonesSold}</p>
-                                    </div>
-                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl">
-                                        <p class="text-xs text-slate-400 font-medium">In Stock</p>
-                                        <p class="text-lg font-bold mt-1 text-white">{stats.phonesInStock}</p>
-                                    </div>
-                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl">
-                                        <p class="text-xs text-slate-400 font-medium">Avg Profit / Unit</p>
-                                        <p class="text-lg font-bold mt-1 text-emerald-400">{stats.avgProfit.toFixed(1)}€</p>
-                                    </div>
-                                    <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl col-span-2 md:col-span-1">
-                                        <p class="text-xs text-slate-400 font-medium">Avg Days to Sell</p>
-                                        <p class="text-lg font-bold mt-1 text-white">{stats.avgDays.toFixed(1)} Days</p>
-                                    </div>
-                                </div>
-
-                                {/* Live Mini SVG Performance Graphs */}
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl">
-                                        <h4 class="text-sm font-semibold text-slate-300 mb-4">Financial Ledger Flow Visualization</h4>
-                                        <div class="h-48 flex items-end gap-1.5 pt-4">
-                                            {ledger.length === 0 ? (
-                                                <div class="w-full text-center text-slate-500 text-sm pb-16">No transactions logged yet.</div>
-                                            ) : (
-                                                <svg class="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none">
-                                                    {/* Custom React dynamic graph visualization */}
-                                                    {(() => {
-                                                        const points = ledger.map((item, index) => {
-                                                            const x = (index / (ledger.length - 1 || 1)) * 100;
-                                                            // Normalize mapping
-                                                            const maxVal = Math.max(...ledger.map(i => i.balance), 100);
-                                                            const minVal = Math.min(...ledger.map(i => i.balance), 0);
-                                                            const y = 35 - ((item.balance - minVal) / (maxVal - minVal || 1)) * 30;
-                                                            return `${x},${y}`;
-                                                        }).join(' ');
-                                                        return (
-                                                            <React.Fragment>
-                                                                <polyline fill="none" stroke="#4f46e5" strokeWidth="1.5" points={points} />
-                                                                {ledger.map((item, index) => {
-                                                                    const x = (index / (ledger.length - 1 || 1)) * 100;
-                                                                    const maxVal = Math.max(...ledger.map(i => i.balance), 100);
-                                                                    const minVal = Math.min(...ledger.map(i => i.balance), 0);
-                                                                    const y = 35 - ((item.balance - minVal) / (maxVal - minVal || 1)) * 30;
-                                                                    return (
-                                                                        <circle 
-                                                                            key={index} 
-                                                                            cx={x} 
-                                                                            cy={y} 
-                                                                            r="1.2" 
-                                                                            fill="#10b981" 
-                                                                            class="cursor-pointer group relative"
-                                                                        />
-                                                                    );
-                                                                })}
-                                                            </React.Fragment>
-                                                        );
-                                                    })()}
-                                                </svg>
-                                            )}
-                                        </div>
-                                        <p class="text-xs text-slate-500 mt-2 text-center">Progress line plotting running cash balance (X-Axis: Sequential Activity)</p>
-                                    </div>
-
-                                    {/* High/Low performing callouts */}
-                                    <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl flex flex-col justify-between">
-                                        <h4 class="text-sm font-semibold text-slate-300 mb-4">Core Ledger Analytics Highlights</h4>
-                                        <div class="space-y-4">
-                                            <div class="flex justify-between items-center bg-slate-800/40 p-3.5 rounded-xl border border-slate-800/60">
-                                                <div>
-                                                    <span class="text-xs text-slate-400">Highest Margin Sale</span>
-                                                    <p class="text-sm font-bold mt-0.5 text-white">{stats.highestProfitPhone ? stats.highestProfitPhone.model : 'None yet'}</p>
-                                                </div>
-                                                <div class="text-right">
-                                                    <span class="text-xs text-emerald-400 font-semibold">+{stats.highestProfit}€</span>
-                                                    <p class="text-[10px] text-slate-500 mt-0.5">Absolute profit</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="flex justify-between items-center bg-slate-800/40 p-3.5 rounded-xl border border-slate-800/60">
-                                                <div>
-                                                    <span class="text-xs text-slate-400">Lowest Margin Sale</span>
-                                                    <p class="text-sm font-bold mt-0.5 text-white">{stats.lowestProfitPhone ? stats.lowestProfitPhone.model : 'None yet'}</p>
-                                                </div>
-                                                <div class="text-right">
-                                                    <span class="text-xs text-rose-400 font-semibold">+{stats.lowestProfit}€</span>
-                                                    <p class="text-[10px] text-slate-500 mt-0.5">Absolute profit</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <div class="bg-slate-800/30 border border-slate-800/60 p-3 rounded-xl">
-                                                    <span class="text-[10px] text-slate-500 uppercase tracking-wider">Fastest Turnaround</span>
-                                                    <p class="text-sm font-extrabold text-white mt-1">{stats.fastestSale} Days</p>
-                                                </div>
-                                                <div class="bg-slate-800/30 border border-slate-800/60 p-3 rounded-xl">
-                                                    <span class="text-[10px] text-slate-500 uppercase tracking-wider">Slowest Turnaround</span>
-                                                    <p class="text-sm font-extrabold text-white mt-1">{stats.slowestSale} Days</p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="bg-indigo-950/20 border border-indigo-900/40 p-5 rounded-2xl flex items-start gap-4">
+                                    <span class="p-2 bg-indigo-500/10 text-indigo-400 rounded-xl"><Icons.Info /></span>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-white">Current Cash Ledger Validation Summary</h4>
+                                        <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                            Your original starting capital was <strong>314€</strong> (used on your first three purchases). 
+                                            You sold 2 of those units generating <strong>274€</strong>, then reinvested <strong>96€</strong> into buying your 4th phone. 
+                                            This leaves you with exactly <strong class="text-emerald-400">178€ in available cash</strong> and 2 unsold phones (Galaxy A17 & Galaxy A07). 
+                                            Once those final 2 phones sell for their expected values, your total business sales revenue will reach <strong class="text-indigo-400">572€</strong>!
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         )}
 
-                        {/* INVENTORY PANEL */}
+                        {/* INVENTORY */}
                         {activeTab === 'inventory' && (
                             <div class="space-y-6">
-                                {/* Extended Realtime Filters Bar */}
-                                <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col gap-4">
-                                    <div class="flex flex-col md:flex-row gap-3">
-                                        <div class="flex-1 relative">
-                                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><Icons.Search /></span>
-                                            <input 
-                                                type="text" 
-                                                placeholder="Search model, notes, IMEI..." 
-                                                value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
-                                                class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 pl-9 pr-4 text-sm text-white focus:outline-none focus:border-indigo-500"
-                                            />
-                                        </div>
-                                        <select 
-                                            value={filterModel} 
-                                            onChange={(e) => setFilterModel(e.target.value)}
-                                            class="bg-slate-950 border border-slate-800 text-sm text-slate-300 rounded-xl px-4 py-2 focus:outline-none focus:border-indigo-500"
-                                        >
-                                            <option value="">All Models</option>
-                                            {uniqueModels.map(m => <option key={m} value={m}>{m}</option>)}
-                                        </select>
-                                        <select 
-                                            value={filterStatus} 
-                                            onChange={(e) => setFilterStatus(e.target.value)}
-                                            class="bg-slate-950 border border-slate-800 text-sm text-slate-300 rounded-xl px-4 py-2 focus:outline-none focus:border-indigo-500"
-                                        >
-                                            <option value="all">All Inventory Status</option>
-                                            <option value="in-stock">In Stock</option>
-                                            <option value="sold">Sold Units</option>
-                                        </select>
-                                        <select 
-                                            value={filterReinvestment} 
-                                            onChange={(e) => setFilterReinvestment(e.target.value)}
-                                            class="bg-slate-950 border border-slate-800 text-sm text-slate-300 rounded-xl px-4 py-2 focus:outline-none focus:border-indigo-500"
-                                        >
-                                            <option value="all">All Sources</option>
-                                            <option value="no">Initial Capital (No Reinvest)</option>
-                                            <option value="yes">Reinvestment (Yes)</option>
-                                        </select>
+                                <div class="flex flex-col sm:flex-row gap-3">
+                                    <div class="flex-1 relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><Icons.Search /></span>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Search phone model..." 
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            class="w-full bg-slate-900 border border-slate-800 rounded-xl py-2 pl-9 pr-4 text-sm text-white focus:outline-none focus:border-indigo-500"
+                                        />
                                     </div>
-                                </div>
-
-                                {/* Primary Inventory Table Component */}
-                                <div class="bg-slate-900/30 border border-slate-800/80 rounded-2xl overflow-hidden">
-                                    <div class="overflow-x-auto">
-                                        <table class="w-full text-left border-collapse">
-                                            <thead>
-                                                <tr class="bg-slate-900 border-b border-slate-800 text-xs font-semibold text-slate-400 uppercase tracking-wider sticky top-0">
-                                                    <th class="py-4 px-5">Phone Model</th>
-                                                    <th class="py-4 px-5">IMEI</th>
-                                                    <th class="py-4 px-5">Buy Price</th>
-                                                    <th class="py-4 px-5">Expected Sell</th>
-                                                    <th class="py-4 px-5">Actual Sell</th>
-                                                    <th class="py-4 px-5">Dates</th>
-                                                    <th class="py-4 px-5">Reinvestment</th>
-                                                    <th class="py-4 px-5">Status</th>
-                                                    <th class="py-4 px-5">Profit Margin</th>
-                                                    <th class="py-4 px-5 text-right">Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="divide-y divide-slate-800/60 text-sm">
-                                                {filteredPhones.length === 0 ? (
-                                                    <tr>
-                                                        <td colSpan="10" class="py-10 text-center text-slate-500 font-medium">
-                                                            No phones match this configuration. Try adjusting filters or create a new entry.
-                                                        </td>
-                                                    </tr>
-                                                ) : (
-                                                    filteredPhones.map(phone => {
-                                                        const isSold = !!phone.sellDate;
-                                                        const profit = isSold ? (Number(phone.actualSellPrice || phone.expectedSellPrice) - Number(phone.buyPrice)) : null;
-                                                        const daysToSell = isSold ? Math.round((new Date(phone.sellDate) - new Date(phone.buyDate)) / 86400000) : null;
-
-                                                        return (
-                                                            <tr key={phone.id} class="hover:bg-slate-900/40 transition-colors">
-                                                                <td class="py-4 px-5 font-semibold text-white">
-                                                                    {phone.model}
-                                                                    {phone.notes && <p class="text-[11px] text-slate-500 font-normal mt-0.5 max-w-xs truncate">{phone.notes}</p>}
-                                                                </td>
-                                                                <td class="py-4 px-5 text-slate-400 font-mono text-xs">{phone.imei || "N/A"}</td>
-                                                                <td class="py-4 px-5 font-medium">{phone.buyPrice}€</td>
-                                                                <td class="py-4 px-5 text-slate-400">{phone.expectedSellPrice}€</td>
-                                                                <td class="py-4 px-5">{isSold ? `${phone.actualSellPrice}€` : "—"}</td>
-                                                                <td class="py-4 px-5 text-xs">
-                                                                    <div class="text-slate-400">Buy: {phone.buyDate}</div>
-                                                                    {isSold && <div class="text-indigo-400 mt-0.5">Sell: {phone.sellDate} ({daysToSell} days)</div>}
-                                                                </td>
-                                                                <td class="py-4 px-5">
-                                                                    <span class={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${phone.reinvestment ? 'bg-amber-500/10 text-amber-400' : 'bg-slate-800 text-slate-400'}`}>
-                                                                        {phone.reinvestment ? "Reinvestment" : "Initial Buy"}
-                                                                    </span>
-                                                                </td>
-                                                                <td class="py-4 px-5">
-                                                                    <span class={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${isSold ? 'bg-emerald-500/10 text-emerald-400' : 'bg-sky-500/10 text-sky-400'}`}>
-                                                                        {isSold ? "Sold" : "In Stock"}
-                                                                    </span>
-                                                                </td>
-                                                                <td class="py-4 px-5 font-bold">
-                                                                    {profit !== null ? (
-                                                                        <span class={profit >= 0 ? 'text-emerald-400' : 'text-rose-400'}>
-                                                                            +{profit}€
-                                                                        </span>
-                                                                    ) : "—"}
-                                                                </td>
-                                                                <td class="py-4 px-5 text-right space-x-1.5 whitespace-nowrap">
-                                                                    {!isSold && (
-                                                                        <button 
-                                                                            onClick={() => handleQuickSell(phone)}
-                                                                            class="px-2.5 py-1 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors"
-                                                                        >
-                                                                            Sell Unit
-                                                                        </button>
-                                                                    )}
-                                                                    <button 
-                                                                        onClick={() => { setSelectedPhone(phone); setIsEditModalOpen(true); }}
-                                                                        class="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-slate-800 rounded-lg transition-colors inline-block"
-                                                                    >
-                                                                        <Icons.Edit />
-                                                                    </button>
-                                                                    <button 
-                                                                        onClick={() => handleDeletePhone(phone.id)}
-                                                                        class="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-slate-800 rounded-lg transition-colors inline-block"
-                                                                    >
-                                                                        <Icons.Trash />
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })
-                                                )}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* TRANSACTION HISTORY PANEL */}
-                        {activeTab === 'ledger' && (
-                            <div class="space-y-6">
-                                <div class="bg-indigo-950/40 border border-indigo-800/40 p-4 rounded-xl flex items-start gap-3">
-                                    <span class="p-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg"><Icons.Info /></span>
-                                    <div class="text-xs text-indigo-200/90 leading-relaxed">
-                                        <p class="font-bold">Ledger Architecture Principle:</p>
-                                        <p class="mt-0.5">Your running cash flow ledger behaves exactly like a real bank account where each transaction directly modifies the previous running balance. Transactions are sorted dynamically by date and the entry sequence timestamps.</p>
-                                    </div>
+                                    <select 
+                                        value={filterStatus} 
+                                        onChange={(e) => setFilterStatus(e.target.value)}
+                                        class="bg-slate-900 border border-slate-800 text-sm text-slate-300 rounded-xl px-4 py-2 focus:outline-none"
+                                    >
+                                        <option value="all">All Statuses</option>
+                                        <option value="in-stock">In Stock (Unsold)</option>
+                                        <option value="sold">Sold</option>
+                                    </select>
                                 </div>
 
                                 <div class="bg-slate-900/30 border border-slate-800/80 rounded-2xl overflow-hidden">
@@ -897,35 +448,53 @@
                                         <table class="w-full text-left border-collapse">
                                             <thead>
                                                 <tr class="bg-slate-900 border-b border-slate-800 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                                                    <th class="py-4 px-5">Effective Date</th>
-                                                    <th class="py-4 px-5">Type of Entry</th>
-                                                    <th class="py-4 px-5">Transaction Details</th>
-                                                    <th class="py-4 px-5">Direct Cash Impact</th>
-                                                    <th class="py-4 px-5">Running Bank Balance</th>
+                                                    <th class="py-4 px-5">Model</th>
+                                                    <th class="py-4 px-5">Buy Price</th>
+                                                    <th class="py-4 px-5">Expected Price</th>
+                                                    <th class="py-4 px-5">Actual Sold Price</th>
+                                                    <th class="py-4 px-5">Status Switcher</th>
+                                                    <th class="py-4 px-5">Reinvestment</th>
+                                                    <th class="py-4 px-5 text-right">Actions</th>
                                                 </tr>
                                             </thead>
-                                            <tbody class="divide-y divide-slate-800/60 font-mono text-xs">
-                                                {ledger.slice().reverse().map((tx) => {
-                                                    const isNegative = tx.amount < 0;
-                                                    const isPositive = tx.amount > 0;
-                                                    
-                                                    let badgeStyle = "bg-slate-800 text-slate-400";
-                                                    if (tx.type === 'REINVEST_BUY') badgeStyle = "bg-amber-500/10 text-amber-400";
-                                                    if (tx.type === 'SELL') badgeStyle = "bg-emerald-500/10 text-emerald-400 font-semibold";
-
+                                            <tbody class="divide-y divide-slate-800/60 text-sm">
+                                                {filteredPhones.map(phone => {
+                                                    const isSold = !!phone.sellDate;
                                                     return (
-                                                        <tr key={tx.id} class="hover:bg-slate-900/40 transition-colors">
-                                                            <td class="py-4 px-5 text-slate-300 font-semibold">{tx.date}</td>
+                                                        <tr key={phone.id} class="hover:bg-slate-900/40 transition-colors">
+                                                            <td class="py-4 px-5 font-bold text-white">
+                                                                {phone.model}
+                                                                {phone.notes && <p class="text-[10px] text-slate-500 font-normal mt-0.5">{phone.notes}</p>}
+                                                            </td>
+                                                            <td class="py-4 px-5">{phone.buyPrice}€</td>
+                                                            <td class="py-4 px-5 text-slate-400">{phone.expectedSellPrice}€</td>
+                                                            <td class="py-4 px-5 font-bold text-emerald-400">
+                                                                {isSold ? `${phone.actualSellPrice}€` : <span class="text-slate-600 font-normal">Unsold</span>}
+                                                            </td>
                                                             <td class="py-4 px-5">
-                                                                <span class={`px-2 py-0.5 rounded-full text-[10px] tracking-wide uppercase ${badgeStyle}`}>
-                                                                    {tx.type}
+                                                                {/* Status toggle element */}
+                                                                <select 
+                                                                    value={isSold ? 'sold' : 'in-stock'}
+                                                                    onChange={(e) => handleToggleStatus(phone, e.target.value)}
+                                                                    class={`text-xs font-semibold px-2 py-1 rounded-lg border focus:outline-none cursor-pointer ${isSold ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-sky-500/10 border-sky-500/30 text-sky-400'}`}
+                                                                >
+                                                                    <option class="bg-slate-900 text-sky-400" value="in-stock">In Stock (Unsold)</option>
+                                                                    <option class="bg-slate-900 text-emerald-400" value="sold">Sold</option>
+                                                                </select>
+                                                            </td>
+                                                            <td class="py-4 px-5">
+                                                                <span class={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${phone.reinvestment ? 'bg-amber-500/15 text-amber-400' : 'bg-slate-800 text-slate-400'}`}>
+                                                                    {phone.reinvestment ? "Reinvest" : "Initial Cap"}
                                                                 </span>
                                                             </td>
-                                                            <td class="py-4 px-5 text-slate-200 font-sans font-semibold text-sm">{tx.description}</td>
-                                                            <td class={`py-4 px-5 text-sm font-bold ${isPositive ? 'text-emerald-400' : isNegative ? 'text-rose-400' : 'text-slate-500'}`}>
-                                                                {isPositive ? `+${tx.amount}€` : isNegative ? `${tx.amount}€` : "0€ (Initial Cap)"}
+                                                            <td class="py-4 px-5 text-right space-x-2">
+                                                                <button onClick={() => { setSelectedPhone(phone); setIsEditModalOpen(true); }} class="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-slate-800 rounded-lg transition-colors inline-block">
+                                                                    <Icons.Edit />
+                                                                </button>
+                                                                <button onClick={() => handleDeletePhone(phone.id)} class="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-slate-800 rounded-lg transition-colors inline-block">
+                                                                    <Icons.Trash />
+                                                                </button>
                                                             </td>
-                                                            <td class="py-4 px-5 text-sm font-extrabold text-indigo-300">{tx.balance.toLocaleString()}€</td>
                                                         </tr>
                                                     );
                                                 })}
@@ -936,89 +505,59 @@
                             </div>
                         )}
 
-                        {/* FULL EXTENDED STATISTICS PANEL */}
-                        {activeTab === 'stats' && (
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl">
-                                    <h3 class="text-sm font-bold text-slate-400 tracking-wide uppercase mb-4">Financial Health Indicators</h3>
-                                    <div class="space-y-4">
-                                        <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
-                                            <span class="text-xs text-slate-400">Total Business Revenue</span>
-                                            <span class="text-sm font-bold text-white">{stats.totalSales}€</span>
-                                        </div>
-                                        <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
-                                            <span class="text-xs text-slate-400">Total Capital Spent</span>
-                                            <span class="text-sm font-bold text-white">{stats.totalCapitalSpent}€</span>
-                                        </div>
-                                        <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
-                                            <span class="text-xs text-slate-400">Net Business Profit</span>
-                                            <span class="text-sm font-bold text-emerald-400">{stats.totalProfit}€</span>
-                                        </div>
-                                        <div class="flex justify-between items-center py-2.5">
-                                            <span class="text-xs text-slate-400">Overall Business ROI %</span>
-                                            <span class="text-sm font-bold text-indigo-400">{stats.roi.toFixed(1)}%</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl">
-                                    <h3 class="text-sm font-bold text-slate-400 tracking-wide uppercase mb-4">Inventory Valuations</h3>
-                                    <div class="space-y-4">
-                                        <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
-                                            <span class="text-xs text-slate-400">Total Assets In Stock</span>
-                                            <span class="text-sm font-bold text-white">{stats.phonesInStock} units</span>
-                                        </div>
-                                        <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
-                                            <span class="text-xs text-slate-400">Total Capital Currently Frozen</span>
-                                            <span class="text-sm font-bold text-white">{stats.inventoryCost}€</span>
-                                        </div>
-                                        <div class="flex justify-between items-center py-2.5">
-                                            <span class="text-xs text-slate-400">Expected Value on Liquidation</span>
-                                            <span class="text-sm font-bold text-indigo-400">{stats.inventoryMarketValue}€</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl">
-                                    <h3 class="text-sm font-bold text-slate-400 tracking-wide uppercase mb-4">Unit Leaderboards</h3>
-                                    <div class="space-y-4">
-                                        <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
-                                            <span class="text-xs text-slate-400">Best Performing Model Group</span>
-                                            <span class="text-sm font-bold text-emerald-400">{stats.bestModel}</span>
-                                        </div>
-                                        <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
-                                            <span class="text-xs text-slate-400">Weakest Model Group</span>
-                                            <span class="text-sm font-bold text-rose-400">{stats.worstModel}</span>
-                                        </div>
-                                        <div class="flex justify-between items-center py-2.5">
-                                            <span class="text-xs text-slate-400">Average Velocity to Liquidate</span>
-                                            <span class="text-sm font-bold text-white">{stats.avgDays.toFixed(1)} Days</span>
-                                        </div>
-                                    </div>
+                        {/* LEDGER */}
+                        {activeTab === 'ledger' && (
+                            <div class="bg-slate-900/30 border border-slate-800/80 rounded-2xl overflow-hidden">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-900 border-b border-slate-800 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                                <th class="py-4 px-5">Effective Date</th>
+                                                <th class="py-4 px-5">Type of Entry</th>
+                                                <th class="py-4 px-5">Details</th>
+                                                <th class="py-4 px-5">Cash Impact</th>
+                                                <th class="py-4 px-5">Running Cash Balance</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-800/60 font-mono text-xs">
+                                            {ledger.slice().reverse().map(tx => (
+                                                <tr key={tx.id} class="hover:bg-slate-900/40 transition-colors">
+                                                    <td class="py-4 px-5 text-slate-400">{tx.date}</td>
+                                                    <td class="py-4 px-5">
+                                                        <span class={`px-2 py-0.5 rounded-full text-[9px] uppercase font-bold ${tx.type === 'SELL' ? 'bg-emerald-500/10 text-emerald-400' : tx.type === 'REINVEST_BUY' ? 'bg-amber-500/10 text-amber-400' : 'bg-slate-800 text-slate-400'}`}>
+                                                            {tx.type}
+                                                        </span>
+                                                    </td>
+                                                    <td class="py-4 px-5 text-slate-200 font-sans font-medium text-sm">{tx.description}</td>
+                                                    <td class={`py-4 px-5 text-sm font-bold ${tx.amount > 0 ? 'text-emerald-400' : tx.amount < 0 ? 'text-rose-400' : 'text-slate-500'}`}>
+                                                        {tx.amount > 0 ? `+${tx.amount}€` : tx.amount < 0 ? `${tx.amount}€` : "0€ (Initial Cap)"}
+                                                    </td>
+                                                    <td class="py-4 px-5 text-sm font-extrabold text-indigo-300">{tx.balance}€</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         )}
                     </main>
 
-                    {/* TOAST NOTIFICATION STACK */}
-                    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-2.5 max-w-sm w-full">
+                    {/* TOAST SYSTEM */}
+                    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full">
                         {toasts.map(t => (
-                            <div 
-                                key={t.id} 
-                                class={`p-4 rounded-xl shadow-2xl flex items-start gap-3 border transition-all duration-300 transform translate-y-0 ${t.type === 'success' ? 'bg-emerald-950/90 border-emerald-800/80 text-emerald-100' : t.type === 'warning' ? 'bg-amber-950/90 border-amber-800/80 text-amber-100' : 'bg-slate-900/95 border-slate-800 text-slate-100'}`}
-                            >
+                            <div key={t.id} class="p-4 bg-slate-900 border border-slate-800 text-slate-200 rounded-xl shadow-2xl flex items-start gap-3">
                                 <span class="mt-0.5"><Icons.Info /></span>
-                                <div class="text-xs font-semibold leading-relaxed">{t.message}</div>
+                                <div class="text-xs font-semibold">{t.message}</div>
                             </div>
                         ))}
                     </div>
 
-                    {/* ADD PHONE MODAL */}
+                    {/* ADD MODAL */}
                     {isAddModalOpen && (
                         <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
+                            <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden">
                                 <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
-                                    <h3 class="text-lg font-bold">Register New Inventory Entry</h3>
+                                    <h3 class="text-lg font-bold">Register New Purchase</h3>
                                     <button onClick={() => setIsAddModalOpen(false)} class="text-slate-400 hover:text-white">✕</button>
                                 </header>
                                 <form onSubmit={(e) => {
@@ -1029,9 +568,9 @@
                                         imei: fd.get('imei'),
                                         buyPrice: Number(fd.get('buyPrice')),
                                         expectedSellPrice: Number(fd.get('expectedSellPrice')),
-                                        actualSellPrice: fd.get('actualSellPrice') ? Number(fd.get('actualSellPrice')) : null,
+                                        actualSellPrice: null,
                                         buyDate: fd.get('buyDate'),
-                                        sellDate: fd.get('sellDate') || null,
+                                        sellDate: null,
                                         reinvestment: fd.get('reinvestment') === 'on',
                                         notes: fd.get('notes')
                                     });
@@ -1039,66 +578,51 @@
                                 }} class="p-6 space-y-4">
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Phone Model *</label>
-                                            <input required name="model" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Model Name *</label>
+                                            <input required name="model" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">IMEI (Optional)</label>
-                                            <input name="imei" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">IMEI</label>
+                                            <input name="imei" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
                                         </div>
                                     </div>
-
-                                    <div class="grid grid-cols-3 gap-4">
-                                        <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Buy Price (€) *</label>
-                                            <input required name="buyPrice" type="number" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Expected Price (€) *</label>
-                                            <input required name="expectedSellPrice" type="number" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Actual Sell Price (€)</label>
-                                            <input name="actualSellPrice" type="number" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
-                                        </div>
-                                    </div>
-
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Buy Date *</label>
-                                            <input required name="buyDate" type="date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Buy Price (€) *</label>
+                                            <input required name="buyPrice" type="number" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Sell Date (Blank if Unsold)</label>
-                                            <input name="sellDate" type="date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Expected Sale Price (€) *</label>
+                                            <input required name="expectedSellPrice" type="number" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
                                         </div>
                                     </div>
-
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-400 mb-1.5">Notes / Condition</label>
-                                        <textarea name="notes" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"></textarea>
+                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Purchase Date *</label>
+                                        <input required name="buyDate" type="date" defaultValue={new Date().toISOString().split('T')[0]} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
                                     </div>
-
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Internal Notes</label>
+                                        <textarea name="notes" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white"></textarea>
+                                    </div>
                                     <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
-                                        <input type="checkbox" name="reinvestment" id="reinvest_check" class="w-4.5 h-4.5 bg-slate-950 rounded text-indigo-600 border-slate-800 focus:ring-0" />
-                                        <label for="reinvest_check" class="text-xs text-slate-300 font-semibold cursor-pointer">Reinvestment Purchase (Reduces running cash balance immediately)</label>
+                                        <input type="checkbox" name="reinvestment" id="chk" class="w-4 h-4 text-indigo-600 rounded bg-slate-950 border-slate-800" />
+                                        <label for="chk" class="text-xs text-slate-300 font-bold cursor-pointer">Reinvestment Buy (Immediately subtracts from Cash Balance)</label>
                                     </div>
-
                                     <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
-                                        <button type="button" onClick={() => setIsAddModalOpen(false)} class="px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-xl text-sm font-medium transition-colors">Cancel</button>
-                                        <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-lg transition-all">Add Unit</button>
+                                        <button type="button" onClick={() => setIsAddModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm">Cancel</button>
+                                        <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold">Register Unit</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     )}
 
-                    {/* EDIT PHONE MODAL */}
+                    {/* EDIT MODAL */}
                     {isEditModalOpen && selectedPhone && (
                         <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
+                            <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden">
                                 <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
-                                    <h3 class="text-lg font-bold">Edit Phone Properties</h3>
+                                    <h3 class="text-lg font-bold">Edit Phone Details</h3>
                                     <button onClick={() => setIsEditModalOpen(false)} class="text-slate-400 hover:text-white">✕</button>
                                 </header>
                                 <form onSubmit={(e) => {
@@ -1120,89 +644,94 @@
                                 }} class="p-6 space-y-4">
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Phone Model *</label>
-                                            <input required name="model" defaultValue={selectedPhone.model} type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Model Name *</label>
+                                            <input required name="model" type="text" defaultValue={selectedPhone.model} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">IMEI (Optional)</label>
-                                            <input name="imei" defaultValue={selectedPhone.imei} type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">IMEI</label>
+                                            <input name="imei" type="text" defaultValue={selectedPhone.imei || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
                                         </div>
                                     </div>
-
-                                    <div class="grid grid-cols-3 gap-4">
+                                    <div class="grid grid-cols-3 gap-3">
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Buy Price (€) *</label>
-                                            <input required name="buyPrice" defaultValue={selectedPhone.buyPrice} type="number" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Buy Price *</label>
+                                            <input required name="buyPrice" type="number" defaultValue={selectedPhone.buyPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Expected Price (€) *</label>
-                                            <input required name="expectedSellPrice" defaultValue={selectedPhone.expectedSellPrice} type="number" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Expected Sale *</label>
+                                            <input required name="expectedSellPrice" type="number" defaultValue={selectedPhone.expectedSellPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Actual Sell Price (€)</label>
-                                            <input name="actualSellPrice" defaultValue={selectedPhone.actualSellPrice || ""} type="number" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Actual Sold Price</label>
+                                            <input name="actualSellPrice" type="number" defaultValue={selectedPhone.actualSellPrice || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
                                         </div>
                                     </div>
-
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Buy Date *</label>
-                                            <input required name="buyDate" defaultValue={selectedPhone.buyDate} type="date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Purchase Date</label>
+                                            <input required name="buyDate" type="date" defaultValue={selectedPhone.buyDate} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Sell Date</label>
-                                            <input name="sellDate" defaultValue={selectedPhone.sellDate || ""} type="date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Sell Date (blank if unsold)</label>
+                                            <input name="sellDate" type="date" defaultValue={selectedPhone.sellDate || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
                                         </div>
                                     </div>
-
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-400 mb-1.5">Notes / Condition</label>
-                                        <textarea name="notes" defaultValue={selectedPhone.notes || ""} rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none"></textarea>
+                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Notes</label>
+                                        <textarea name="notes" defaultValue={selectedPhone.notes || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white"></textarea>
                                     </div>
-
                                     <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
-                                        <input type="checkbox" name="reinvestment" id="edit_reinvest_check" defaultChecked={selectedPhone.reinvestment} class="w-4.5 h-4.5 bg-slate-950 rounded text-indigo-600 border-slate-800 focus:ring-0" />
-                                        <label for="edit_reinvest_check" class="text-xs text-slate-300 font-semibold cursor-pointer">Reinvestment Purchase (Reduces running cash balance immediately)</label>
+                                        <input type="checkbox" name="reinvestment" id="chk2" defaultChecked={selectedPhone.reinvestment} class="w-4 h-4 text-indigo-600 rounded bg-slate-950 border-slate-800" />
+                                        <label for="chk2" class="text-xs text-slate-300 font-bold cursor-pointer">Reinvestment Buy</label>
                                     </div>
-
                                     <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
-                                        <button type="button" onClick={() => setIsEditModalOpen(false)} class="px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-xl text-sm font-medium transition-colors">Cancel</button>
-                                        <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-lg transition-all">Save Changes</button>
+                                        <button type="button" onClick={() => setIsEditModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm">Cancel</button>
+                                        <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold">Save Changes</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     )}
 
-                    {/* SELL UNIT QUICK MODAL */}
+                    {/* SELL CONFIRM MODAL */}
                     {isSellModalOpen && selectedPhone && (
                         <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl">
+                            <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl overflow-hidden">
                                 <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
-                                    <h3 class="text-lg font-bold">Log Sale Event: {selectedPhone.model}</h3>
+                                    <h3 class="text-lg font-bold">Record Sale Details</h3>
                                     <button onClick={() => setIsSellModalOpen(false)} class="text-slate-400 hover:text-white">✕</button>
                                 </header>
                                 <form onSubmit={(e) => {
                                     e.preventDefault();
                                     const fd = new FormData(e.target);
-                                    handleEditPhone({
-                                        ...selectedPhone,
-                                        actualSellPrice: Number(fd.get('actualSellPrice')),
-                                        sellDate: fd.get('sellDate')
-                                    });
+                                    const price = Number(fd.get('actualSellPrice'));
+                                    const date = fd.get('sellDate');
+
+                                    setPhones(prev => prev.map(p => {
+                                        if (p.id === selectedPhone.id) {
+                                            return {
+                                                ...p,
+                                                actualSellPrice: price,
+                                                sellDate: date,
+                                                sellSequence: Date.now()
+                                            };
+                                        }
+                                        return p;
+                                    }));
                                     setIsSellModalOpen(false);
+                                    triggerToast(`Sold ${selectedPhone.model} for ${price}€!`, 'success');
                                 }} class="p-6 space-y-4">
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-400 mb-1.5">Actual Sell Price (€) *</label>
-                                        <input required name="actualSellPrice" type="number" step="0.01" defaultValue={selectedPhone.expectedSellPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Actual Sold Price (€) *</label>
+                                        <input required name="actualSellPrice" type="number" defaultValue={selectedPhone.expectedSellPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-400 mb-1.5">Sell Date *</label>
+                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Sell Date *</label>
                                         <input required name="sellDate" type="date" defaultValue={new Date().toISOString().split('T')[0]} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
                                     </div>
                                     <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
-                                        <button type="button" onClick={() => setIsSellModalOpen(false)} class="px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-xl text-sm font-medium transition-colors">Cancel</button>
-                                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg transition-all">Confirm Sale</button>
+                                        <button type="button" onClick={() => setIsSellModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm">Cancel</button>
+                                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold">Complete Sale</button>
                                     </div>
                                 </form>
                             </div>
