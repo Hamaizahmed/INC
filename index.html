@@ -184,172 +184,193 @@
         // =========================================================
         const supplierDatabase = [
             // Apple - Brand New / Original
-            { id: 'sup-1', brand: 'Apple', model: 'iPhone SE 2nd', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 110 },
-            { id: 'sup-2', brand: 'Apple', model: 'iPhone SE', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 100 },
-            { id: 'sup-3', brand: 'Apple', model: 'iPhone 12', storage: '64GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 185 },
-            { id: 'sup-4', brand: 'Apple', model: 'iPhone 12 Mini', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 165 },
-            { id: 'sup-5', brand: 'Apple', model: 'iPhone 12 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 260 },
-            { id: 'sup-6', brand: 'Apple', model: 'iPhone 12 Pro Max', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 300 },
-            { id: 'sup-7', brand: 'Apple', model: 'iPhone 12 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 325 },
-            { id: 'sup-8', brand: 'Apple', model: 'iPhone 13', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 255 },
-            { id: 'sup-9', brand: 'Apple', model: 'iPhone 13 Mini', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 245 },
-            { id: 'sup-10', brand: 'Apple', model: 'iPhone 13 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 330 },
-            { id: 'sup-11', brand: 'Apple', model: 'iPhone 13 Pro', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 360 },
-            { id: 'sup-12', brand: 'Apple', model: 'iPhone 13 Pro Max', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 380 },
-            { id: 'sup-13', brand: 'Apple', model: 'iPhone 13 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 410 },
-            { id: 'sup-14', brand: 'Apple', model: 'iPhone 14', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 295 },
-            { id: 'sup-15', brand: 'Apple', model: 'iPhone 14 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 410 },
-            { id: 'sup-16', brand: 'Apple', model: 'iPhone 14 Pro', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 435 },
-            { id: 'sup-17', brand: 'Apple', model: 'iPhone 14 Pro Max', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 485 },
-            { id: 'sup-18', brand: 'Apple', model: 'iPhone 14 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 530 },
-            { id: 'sup-19', brand: 'Apple', model: 'iPhone 15', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 410 },
-            { id: 'sup-20', brand: 'Apple', model: 'iPhone 15', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 440 },
-            { id: 'sup-21', brand: 'Apple', model: 'iPhone 15 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 510 },
-            { id: 'sup-22', brand: 'Apple', model: 'iPhone 15 Pro', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 540 },
-            { id: 'sup-23', brand: 'Apple', model: 'iPhone 15 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 640 },
-            { id: 'sup-24', brand: 'Apple', model: 'iPhone 15 Pro Max', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 660 },
-            { id: 'sup-25', brand: 'Apple', model: 'iPhone 16', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 540 },
-            { id: 'sup-26', brand: 'Apple', model: 'iPhone 16 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 660 },
-            { id: 'sup-27', brand: 'Apple', model: 'iPhone 16 Pro', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 700 },
-            { id: 'sup-28', brand: 'Apple', model: 'iPhone 16 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 790 },
-            { id: 'sup-29', brand: 'Apple', model: 'iPad 8th Gen', storage: '128GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 165 },
+            { id: 'sup-1', brand: 'Apple', model: 'iPhone SE 2nd', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 110, source: 'Apple Wholesale' },
+            { id: 'sup-2', brand: 'Apple', model: 'iPhone SE', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 100, source: 'Apple Wholesale' },
+            { id: 'sup-3', brand: 'Apple', model: 'iPhone 12', storage: '64GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 185, source: 'Apple Wholesale' },
+            { id: 'sup-4', brand: 'Apple', model: 'iPhone 12 Mini', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 165, source: 'Apple Wholesale' },
+            { id: 'sup-5', brand: 'Apple', model: 'iPhone 12 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 260, source: 'Apple Wholesale' },
+            { id: 'sup-6', brand: 'Apple', model: 'iPhone 12 Pro Max', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 300, source: 'Apple Wholesale' },
+            { id: 'sup-7', brand: 'Apple', model: 'iPhone 12 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 325, source: 'Apple Wholesale' },
+            { id: 'sup-8', brand: 'Apple', model: 'iPhone 13', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 255, source: 'Apple Wholesale' },
+            { id: 'sup-9', brand: 'Apple', model: 'iPhone 13 Mini', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 245, source: 'Apple Wholesale' },
+            { id: 'sup-10', brand: 'Apple', model: 'iPhone 13 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 330, source: 'Apple Wholesale' },
+            { id: 'sup-11', brand: 'Apple', model: 'iPhone 13 Pro', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 360, source: 'Apple Wholesale' },
+            { id: 'sup-12', brand: 'Apple', model: 'iPhone 13 Pro Max', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 380, source: 'Apple Wholesale' },
+            { id: 'sup-13', brand: 'Apple', model: 'iPhone 13 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 410, source: 'Apple Wholesale' },
+            { id: 'sup-14', brand: 'Apple', model: 'iPhone 14', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 295, source: 'Apple Wholesale' },
+            { id: 'sup-15', brand: 'Apple', model: 'iPhone 14 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 410, source: 'Apple Wholesale' },
+            { id: 'sup-16', brand: 'Apple', model: 'iPhone 14 Pro', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 435, source: 'Apple Wholesale' },
+            { id: 'sup-17', brand: 'Apple', model: 'iPhone 14 Pro Max', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 485, source: 'Apple Wholesale' },
+            { id: 'sup-18', brand: 'Apple', model: 'iPhone 14 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 530, source: 'Apple Wholesale' },
+            { id: 'sup-19', brand: 'Apple', model: 'iPhone 15', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 410, source: 'Apple Wholesale' },
+            { id: 'sup-20', brand: 'Apple', model: 'iPhone 15', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 440, source: 'Apple Wholesale' },
+            { id: 'sup-21', brand: 'Apple', model: 'iPhone 15 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 510, source: 'Apple Wholesale' },
+            { id: 'sup-22', brand: 'Apple', model: 'iPhone 15 Pro', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 540, source: 'Apple Wholesale' },
+            { id: 'sup-23', brand: 'Apple', model: 'iPhone 15 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 640, source: 'Apple Wholesale' },
+            { id: 'sup-24', brand: 'Apple', model: 'iPhone 15 Pro Max', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 660, source: 'Apple Wholesale' },
+            { id: 'sup-25', brand: 'Apple', model: 'iPhone 16', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 540, source: 'Apple Wholesale' },
+            { id: 'sup-26', brand: 'Apple', model: 'iPhone 16 Pro', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 660, source: 'Apple Wholesale' },
+            { id: 'sup-27', brand: 'Apple', model: 'iPhone 16 Pro', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 700, source: 'Apple Wholesale' },
+            { id: 'sup-28', brand: 'Apple', model: 'iPhone 16 Pro Max', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 790, source: 'Apple Wholesale' },
+            { id: 'sup-29', brand: 'Apple', model: 'iPad 8th Gen', storage: '128GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 165, source: 'Apple Wholesale' },
 
             // Apple - Segunda Mano (A++ Grade)
-            { id: 'sup-30', brand: 'Apple', model: 'iPhone 12', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 210 },
-            { id: 'sup-31', brand: 'Apple', model: 'iPhone 13 Mini', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 260 },
-            { id: 'sup-32', brand: 'Apple', model: 'iPhone 13', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 275 },
-            { id: 'sup-33', brand: 'Apple', model: 'iPhone 14', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 330 },
-            { id: 'sup-34', brand: 'Apple', model: 'iPhone 15', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 415 },
-            { id: 'sup-35', brand: 'Apple', model: 'iPhone 12 Pro Max', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 300 },
-            { id: 'sup-36', brand: 'Apple', model: 'iPhone 13 Pro', storage: '256GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 375 },
-            { id: 'sup-37', brand: 'Apple', model: 'iPhone 13 Pro Max', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 400 },
-            { id: 'sup-38', brand: 'Apple', model: 'iPhone 13 Pro Max', storage: '256GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 440 },
-            { id: 'sup-39', brand: 'Apple', model: 'iPhone 14 Pro', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 430 },
-            { id: 'sup-40', brand: 'Apple', model: 'iPhone 14 Pro Max', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 490 },
-            { id: 'sup-41', brand: 'Apple', model: 'iPhone 15 Pro Max', storage: '256GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 630 },
-            { id: 'sup-42', brand: 'Apple', model: 'iPhone 16 Pro', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 650 },
-            { id: 'sup-43', brand: 'Apple', model: 'iPhone 16 Pro Max', storage: '256GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 800 },
+            { id: 'sup-30', brand: 'Apple', model: 'iPhone 12', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 210, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-31', brand: 'Apple', model: 'iPhone 13 Mini', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 260, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-32', brand: 'Apple', model: 'iPhone 13', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 275, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-33', brand: 'Apple', model: 'iPhone 14', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 330, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-34', brand: 'Apple', model: 'iPhone 15', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 415, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-35', brand: 'Apple', model: 'iPhone 12 Pro Max', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 300, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-36', brand: 'Apple', model: 'iPhone 13 Pro', storage: '256GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 375, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-37', brand: 'Apple', model: 'iPhone 13 Pro Max', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 400, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-38', brand: 'Apple', model: 'iPhone 13 Pro Max', storage: '256GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 440, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-39', brand: 'Apple', model: 'iPhone 14 Pro', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 430, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-40', brand: 'Apple', model: 'iPhone 14 Pro Max', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 490, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-41', brand: 'Apple', model: 'iPhone 15 Pro Max', storage: '256GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 630, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-42', brand: 'Apple', model: 'iPhone 16 Pro', storage: '128GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 650, source: 'Apple Segunda Mano A++' },
+            { id: 'sup-43', brand: 'Apple', model: 'iPhone 16 Pro Max', storage: '256GB', network: '5G', condition: 'Segunda Mano (A++)', category: 'Smartphones', supplierPrice: 800, source: 'Apple Segunda Mano A++' },
 
             // Samsung European
-            { id: 'sup-44', brand: 'Samsung', model: 'Galaxy A05s', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 104 },
-            { id: 'sup-45', brand: 'Samsung', model: 'Galaxy A16', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 96 },
-            { id: 'sup-46', brand: 'Samsung', model: 'Galaxy A17 4G', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 117 },
-            { id: 'sup-47', brand: 'Samsung', model: 'Galaxy A17 4G', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 152 },
-            { id: 'sup-48', brand: 'Samsung', model: 'Galaxy A17 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 136 },
-            { id: 'sup-49', brand: 'Samsung', model: 'Galaxy A17 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 165 },
-            { id: 'sup-50', brand: 'Samsung', model: 'Galaxy A26 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 165 },
-            { id: 'sup-51', brand: 'Samsung', model: 'Galaxy A56 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 270 },
-            { id: 'sup-52', brand: 'Samsung', model: 'Galaxy A56 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 305 },
-            { id: 'sup-53', brand: 'Samsung', model: 'Galaxy A37 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 328 },
-            { id: 'sup-54', brand: 'Samsung', model: 'Galaxy A57 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 399 },
-            { id: 'sup-55', brand: 'Samsung', model: 'Galaxy S25', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 570 },
-            { id: 'sup-56', brand: 'Samsung', model: 'Galaxy S25', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 615 },
-            { id: 'sup-57', brand: 'Samsung', model: 'Galaxy S25 Edge', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 590 },
-            { id: 'sup-58', brand: 'Samsung', model: 'Galaxy S26', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 680 },
-            { id: 'sup-59', brand: 'Samsung', model: 'Galaxy S26', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 755 },
-            { id: 'sup-60', brand: 'Samsung', model: 'Galaxy S25 Ultra', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 830 },
-            { id: 'sup-61', brand: 'Samsung', model: 'Galaxy S25 Ultra', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 930 },
-            { id: 'sup-62', brand: 'Samsung', model: 'Galaxy S26 Ultra', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 990 },
-            { id: 'sup-63', brand: 'Samsung', model: 'Galaxy S26 Ultra', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 1030 },
+            { id: 'sup-44', brand: 'Samsung', model: 'Galaxy A05s', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 104, source: 'Samsung European Wholesale' },
+            { id: 'sup-45', brand: 'Samsung', model: 'Galaxy A16', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 96, source: 'Samsung European Wholesale' },
+            { id: 'sup-46', brand: 'Samsung', model: 'Galaxy A17 4G', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 117, source: 'Samsung European Wholesale' },
+            { id: 'sup-47', brand: 'Samsung', model: 'Galaxy A17 4G', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 152, source: 'Samsung European Wholesale' },
+            { id: 'sup-48', brand: 'Samsung', model: 'Galaxy A17 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 136, source: 'Samsung European Wholesale' },
+            { id: 'sup-49', brand: 'Samsung', model: 'Galaxy A17 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 165, source: 'Samsung European Wholesale' },
+            { id: 'sup-50', brand: 'Samsung', model: 'Galaxy A26 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 165, source: 'Samsung European Wholesale' },
+            { id: 'sup-51', brand: 'Samsung', model: 'Galaxy A56 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 270, source: 'Samsung European Wholesale' },
+            { id: 'sup-52', brand: 'Samsung', model: 'Galaxy A56 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 305, source: 'Samsung European Wholesale' },
+            { id: 'sup-53', brand: 'Samsung', model: 'Galaxy A37 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 328, source: 'Samsung European Wholesale' },
+            { id: 'sup-54', brand: 'Samsung', model: 'Galaxy A57 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 399, source: 'Samsung European Wholesale' },
+            { id: 'sup-55', brand: 'Samsung', model: 'Galaxy S25', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 570, source: 'Samsung European Wholesale' },
+            { id: 'sup-56', brand: 'Samsung', model: 'Galaxy S25', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 615, source: 'Samsung European Wholesale' },
+            { id: 'sup-57', brand: 'Samsung', model: 'Galaxy S25 Edge', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 590, source: 'Samsung European Wholesale' },
+            { id: 'sup-58', brand: 'Samsung', model: 'Galaxy S26', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 680, source: 'Samsung European Wholesale' },
+            { id: 'sup-59', brand: 'Samsung', model: 'Galaxy S26', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 755, source: 'Samsung European Wholesale' },
+            { id: 'sup-60', brand: 'Samsung', model: 'Galaxy S25 Ultra', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 830, source: 'Samsung European Wholesale' },
+            { id: 'sup-61', brand: 'Samsung', model: 'Galaxy S25 Ultra', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 930, source: 'Samsung European Wholesale' },
+            { id: 'sup-62', brand: 'Samsung', model: 'Galaxy S26 Ultra', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 990, source: 'Samsung European Wholesale' },
+            { id: 'sup-63', brand: 'Samsung', model: 'Galaxy S26 Ultra', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 1030, source: 'Samsung European Wholesale' },
+
+            // Samsung Asian
+            { id: 'sup-149', brand: 'Samsung', model: 'Galaxy A06', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 75, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-150', brand: 'Samsung', model: 'Galaxy A06 (4GB)', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 84, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-151', brand: 'Samsung', model: 'Galaxy A06 (6GB)', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 90, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-152', brand: 'Samsung', model: 'Galaxy A06 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 92, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-153', brand: 'Samsung', model: 'Galaxy A07', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 80, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-154', brand: 'Samsung', model: 'Galaxy A07', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 90, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-155', brand: 'Samsung', model: 'Galaxy F06 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 98, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-156', brand: 'Samsung', model: 'Galaxy M17 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 122, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-157', brand: 'Samsung', model: 'Galaxy A14', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 95, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-158', brand: 'Samsung', model: 'Galaxy A16', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 100, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-159', brand: 'Samsung', model: 'Galaxy A17', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 119, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-160', brand: 'Samsung', model: 'Galaxy A17', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 152, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-161', brand: 'Samsung', model: 'Galaxy A26 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 164, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-162', brand: 'Samsung', model: 'Galaxy A26 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 185, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-163', brand: 'Samsung', model: 'Galaxy M36 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 145, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-164', brand: 'Samsung', model: 'Galaxy A36 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 205, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-165', brand: 'Samsung', model: 'Galaxy A36 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 235, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-166', brand: 'Samsung', model: 'Galaxy A56 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 260, source: 'Samsung Asian Wholesale' },
+            { id: 'sup-167', brand: 'Samsung', model: 'Galaxy A56 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 294, source: 'Samsung Asian Wholesale' },
 
             // Redmi / Xiaomi
-            { id: 'sup-64', brand: 'Xiaomi', model: 'Redmi A5', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 70 },
-            { id: 'sup-65', brand: 'Xiaomi', model: 'Redmi A5', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 77 },
-            { id: 'sup-66', brand: 'Xiaomi', model: 'Redmi A7 Pro', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 97 },
-            { id: 'sup-67', brand: 'Xiaomi', model: 'Redmi 15C', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 87 },
-            { id: 'sup-68', brand: 'Xiaomi', model: 'Redmi 15C 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 93 },
-            { id: 'sup-69', brand: 'Xiaomi', model: 'Redmi 15C (4+4)', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 96 },
-            { id: 'sup-70', brand: 'Xiaomi', model: 'Redmi 15C', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 108 },
-            { id: 'sup-71', brand: 'Xiaomi', model: 'Redmi 15C 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 110 },
-            { id: 'sup-72', brand: 'Xiaomi', model: 'Redmi 15', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 109 },
-            { id: 'sup-73', brand: 'Xiaomi', model: 'Redmi 15', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 126 },
-            { id: 'sup-74', brand: 'Xiaomi', model: 'Redmi Note 12 Pro Plus 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 190 },
-            { id: 'sup-75', brand: 'Xiaomi', model: 'Redmi Note 13 Pro Plus 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 230 },
-            { id: 'sup-76', brand: 'Xiaomi', model: 'Redmi Note 14', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 108 },
-            { id: 'sup-77', brand: 'Xiaomi', model: 'Redmi Note 14', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 127 },
-            { id: 'sup-78', brand: 'Xiaomi', model: 'Redmi Note 14 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 152 },
-            { id: 'sup-79', brand: 'Xiaomi', model: 'Redmi Note 14 Pro 4G', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 180 },
-            { id: 'sup-80', brand: 'Xiaomi', model: 'Redmi Note 14 Pro 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 208 },
-            { id: 'sup-81', brand: 'Xiaomi', model: 'Redmi Note 14 Pro Plus', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 243 },
-            { id: 'sup-82', brand: 'Xiaomi', model: 'Redmi Note 15', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 155 },
-            { id: 'sup-83', brand: 'Xiaomi', model: 'Redmi Note 15 Pro 4G', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 203 },
-            { id: 'sup-84', brand: 'Xiaomi', model: 'Redmi Note 15 Pro 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 242 },
-            { id: 'sup-85', brand: 'Xiaomi', model: 'Redmi Note 15 Pro Plus 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 289 },
+            { id: 'sup-64', brand: 'Xiaomi', model: 'Redmi A5', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 70, source: 'Xiaomi Wholesale' },
+            { id: 'sup-65', brand: 'Xiaomi', model: 'Redmi A5', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 77, source: 'Xiaomi Wholesale' },
+            { id: 'sup-66', brand: 'Xiaomi', model: 'Redmi A7 Pro', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 97, source: 'Xiaomi Wholesale' },
+            { id: 'sup-67', brand: 'Xiaomi', model: 'Redmi 15C', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 87, source: 'Xiaomi Wholesale' },
+            { id: 'sup-68', brand: 'Xiaomi', model: 'Redmi 15C 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 93, source: 'Xiaomi Wholesale' },
+            { id: 'sup-69', brand: 'Xiaomi', model: 'Redmi 15C (4+4)', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 96, source: 'Xiaomi Wholesale' },
+            { id: 'sup-70', brand: 'Xiaomi', model: 'Redmi 15C', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 108, source: 'Xiaomi Wholesale' },
+            { id: 'sup-71', brand: 'Xiaomi', model: 'Redmi 15C 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 110, source: 'Xiaomi Wholesale' },
+            { id: 'sup-72', brand: 'Xiaomi', model: 'Redmi 15', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 109, source: 'Xiaomi Wholesale' },
+            { id: 'sup-73', brand: 'Xiaomi', model: 'Redmi 15', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 126, source: 'Xiaomi Wholesale' },
+            { id: 'sup-74', brand: 'Xiaomi', model: 'Redmi Note 12 Pro Plus 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 190, source: 'Xiaomi Wholesale' },
+            { id: 'sup-75', brand: 'Xiaomi', model: 'Redmi Note 13 Pro Plus 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 230, source: 'Xiaomi Wholesale' },
+            { id: 'sup-76', brand: 'Xiaomi', model: 'Redmi Note 14', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 108, source: 'Xiaomi Wholesale' },
+            { id: 'sup-77', brand: 'Xiaomi', model: 'Redmi Note 14', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 127, source: 'Xiaomi Wholesale' },
+            { id: 'sup-78', brand: 'Xiaomi', model: 'Redmi Note 14 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 152, source: 'Xiaomi Wholesale' },
+            { id: 'sup-79', brand: 'Xiaomi', model: 'Redmi Note 14 Pro 4G', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 180, source: 'Xiaomi Wholesale' },
+            { id: 'sup-80', brand: 'Xiaomi', model: 'Redmi Note 14 Pro 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 208, source: 'Xiaomi Wholesale' },
+            { id: 'sup-81', brand: 'Xiaomi', model: 'Redmi Note 14 Pro Plus', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 243, source: 'Xiaomi Wholesale' },
+            { id: 'sup-82', brand: 'Xiaomi', model: 'Redmi Note 15', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 155, source: 'Xiaomi Wholesale' },
+            { id: 'sup-83', brand: 'Xiaomi', model: 'Redmi Note 15 Pro 4G', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 203, source: 'Xiaomi Wholesale' },
+            { id: 'sup-84', brand: 'Xiaomi', model: 'Redmi Note 15 Pro 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 242, source: 'Xiaomi Wholesale' },
+            { id: 'sup-85', brand: 'Xiaomi', model: 'Redmi Note 15 Pro Plus 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 289, source: 'Xiaomi Wholesale' },
 
             // POCO
-            { id: 'sup-86', brand: 'POCO', model: 'Poco C71', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 67 },
-            { id: 'sup-87', brand: 'POCO', model: 'POCO C71', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 78 },
-            { id: 'sup-88', brand: 'POCO', model: 'Poco M4 5G', storage: '64GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 78 },
-            { id: 'sup-89', brand: 'POCO', model: 'Poco C85', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 88 },
-            { id: 'sup-90', brand: 'POCO', model: 'Poco X4 Pro 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 190 },
-            { id: 'sup-91', brand: 'POCO', model: 'Poco M8 5G', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 220 },
+            { id: 'sup-86', brand: 'POCO', model: 'Poco C71', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 67, source: 'POCO Wholesale' },
+            { id: 'sup-87', brand: 'POCO', model: 'POCO C71', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 78, source: 'POCO Wholesale' },
+            { id: 'sup-88', brand: 'POCO', model: 'Poco M4 5G', storage: '64GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 78, source: 'POCO Wholesale' },
+            { id: 'sup-89', brand: 'POCO', model: 'Poco C85', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 88, source: 'POCO Wholesale' },
+            { id: 'sup-90', brand: 'POCO', model: 'Poco X4 Pro 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 190, source: 'POCO Wholesale' },
+            { id: 'sup-91', brand: 'POCO', model: 'Poco M8 5G', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 220, source: 'POCO Wholesale' },
 
             // Realme
-            { id: 'sup-92', brand: 'Realme', model: 'Realme Note 70T', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 80 },
-            { id: 'sup-93', brand: 'Realme', model: 'Realme C75', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 113 },
-            { id: 'sup-94', brand: 'Realme', model: 'Realme C71', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 108 },
-            { id: 'sup-95', brand: 'Realme', model: 'Realme 14X 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 120 },
-            { id: 'sup-96', brand: 'Realme', model: 'Realme P3 Lite', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 106 },
-            { id: 'sup-97', brand: 'Realme', model: 'Realme C61', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 95 },
+            { id: 'sup-92', brand: 'Realme', model: 'Realme Note 70T', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 80, source: 'Realme Wholesale' },
+            { id: 'sup-93', brand: 'Realme', model: 'Realme C75', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 113, source: 'Realme Wholesale' },
+            { id: 'sup-94', brand: 'Realme', model: 'Realme C71', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 108, source: 'Realme Wholesale' },
+            { id: 'sup-95', brand: 'Realme', model: 'Realme 14X 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 120, source: 'Realme Wholesale' },
+            { id: 'sup-96', brand: 'Realme', model: 'Realme P3 Lite', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 106, source: 'Realme Wholesale' },
+            { id: 'sup-97', brand: 'Realme', model: 'Realme C61', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 95, source: 'Realme Wholesale' },
 
             // Oppo
-            { id: 'sup-98', brand: 'Oppo', model: 'Oppo A5X', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 80 },
-            { id: 'sup-99', brand: 'Oppo', model: 'Oppo A6X', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 97 },
-            { id: 'sup-100', brand: 'Oppo', model: 'Oppo A6', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 157 },
-            { id: 'sup-101', brand: 'Oppo', model: 'Oppo A5 Pro 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 150 },
-            { id: 'sup-102', brand: 'Oppo', model: 'Oppo A6 Pro 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 185 },
-            { id: 'sup-103', brand: 'Oppo', model: 'Oppo Reno 13FS 5G', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 250 },
-            { id: 'sup-104', brand: 'Oppo', model: 'Oppo Reno 8 Lite 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 210 },
-            { id: 'sup-105', brand: 'Oppo', model: 'Oppo Reno 13F 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 195 },
-            { id: 'sup-106', brand: 'Oppo', model: 'Oppo Reno 15F 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 285 },
+            { id: 'sup-98', brand: 'Oppo', model: 'Oppo A5X', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 80, source: 'Oppo Wholesale' },
+            { id: 'sup-99', brand: 'Oppo', model: 'Oppo A6X', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 97, source: 'Oppo Wholesale' },
+            { id: 'sup-100', brand: 'Oppo', model: 'Oppo A6', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 157, source: 'Oppo Wholesale' },
+            { id: 'sup-101', brand: 'Oppo', model: 'Oppo A5 Pro 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 150, source: 'Oppo Wholesale' },
+            { id: 'sup-102', brand: 'Oppo', model: 'Oppo A6 Pro 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 185, source: 'Oppo Wholesale' },
+            { id: 'sup-103', brand: 'Oppo', model: 'Oppo Reno 13FS 5G', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 250, source: 'Oppo Wholesale' },
+            { id: 'sup-104', brand: 'Oppo', model: 'Oppo Reno 8 Lite 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 210, source: 'Oppo Wholesale' },
+            { id: 'sup-105', brand: 'Oppo', model: 'Oppo Reno 13F 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 195, source: 'Oppo Wholesale' },
+            { id: 'sup-106', brand: 'Oppo', model: 'Oppo Reno 15F 5G', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 285, source: 'Oppo Wholesale' },
 
             // Honor / Vivo / ZTE / Moto
-            { id: 'sup-107', brand: 'Honor', model: 'Honor 400 Smart 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 105 },
-            { id: 'sup-108', brand: 'Honor', model: 'Honor X5c Plus', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 95 },
-            { id: 'sup-109', brand: 'Honor', model: 'Honor X5c Plus', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 75 },
-            { id: 'sup-110', brand: 'Honor', model: 'Honor X8c', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 125 },
-            { id: 'sup-111', brand: 'Honor', model: 'Honor Magic7 Lite', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 215 },
-            { id: 'sup-112', brand: 'Vivo', model: 'Vivo Y19s', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 110 },
-            { id: 'sup-113', brand: 'ZTE', model: 'ZTE A35E', storage: '32GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 50 },
-            { id: 'sup-114', brand: 'ZTE', model: 'ZTE A35E', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 58 },
-            { id: 'sup-115', brand: 'ZTE', model: 'ZTE A36', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 64 },
-            { id: 'sup-116', brand: 'ZTE', model: 'ZTE A76 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 88 },
-            { id: 'sup-117', brand: 'ZTE', model: 'ZTE V70 Vita', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 87 },
-            { id: 'sup-118', brand: 'ZTE', model: 'ZTE V70 Max', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 75 },
-            { id: 'sup-119', brand: 'ZTE', model: 'ZTE Nubia Music 2', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 75 },
-            { id: 'sup-120', brand: 'Motorola', model: 'Moto G06', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 72 },
-            { id: 'sup-121', brand: 'Motorola', model: 'Moto G06', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 90 },
-            { id: 'sup-122', brand: 'Motorola', model: 'Moto G15', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 80 },
-            { id: 'sup-123', brand: 'Motorola', model: 'Moto G15 Power', storage: '512GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 115 },
+            { id: 'sup-107', brand: 'Honor', model: 'Honor 400 Smart 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 105, source: 'Honor Wholesale' },
+            { id: 'sup-108', brand: 'Honor', model: 'Honor X5c Plus', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 95, source: 'Honor Wholesale' },
+            { id: 'sup-109', brand: 'Honor', model: 'Honor X5c Plus', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 75, source: 'Honor Wholesale' },
+            { id: 'sup-110', brand: 'Honor', model: 'Honor X8c', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 125, source: 'Honor Wholesale' },
+            { id: 'sup-111', brand: 'Honor', model: 'Honor Magic7 Lite', storage: '256GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 215, source: 'Honor Wholesale' },
+            { id: 'sup-112', brand: 'Vivo', model: 'Vivo Y19s', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 110, source: 'Vivo Wholesale' },
+            { id: 'sup-113', brand: 'ZTE', model: 'ZTE A35E', storage: '32GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 50, source: 'ZTE Wholesale' },
+            { id: 'sup-114', brand: 'ZTE', model: 'ZTE A35E', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 58, source: 'ZTE Wholesale' },
+            { id: 'sup-115', brand: 'ZTE', model: 'ZTE A36', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 64, source: 'ZTE Wholesale' },
+            { id: 'sup-116', brand: 'ZTE', model: 'ZTE A76 5G', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 88, source: 'ZTE Wholesale' },
+            { id: 'sup-117', brand: 'ZTE', model: 'ZTE V70 Vita', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 87, source: 'ZTE Wholesale' },
+            { id: 'sup-118', brand: 'ZTE', model: 'ZTE V70 Max', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 75, source: 'ZTE Wholesale' },
+            { id: 'sup-119', brand: 'ZTE', model: 'ZTE Nubia Music 2', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 75, source: 'ZTE Wholesale' },
+            { id: 'sup-120', brand: 'Motorola', model: 'Moto G06', storage: '64GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 72, source: 'Motorola Wholesale' },
+            { id: 'sup-121', brand: 'Motorola', model: 'Moto G06', storage: '256GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 90, source: 'Motorola Wholesale' },
+            { id: 'sup-122', brand: 'Motorola', model: 'Moto G15', storage: '128GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 80, source: 'Motorola Wholesale' },
+            { id: 'sup-123', brand: 'Motorola', model: 'Moto G15 Power', storage: '512GB', network: '4G', condition: 'Brand New', category: 'Smartphones', supplierPrice: 115, source: 'Motorola Wholesale' },
 
             // Classic Phones
-            { id: 'sup-124', brand: 'BlackBerry', model: 'BlackBerry Leap', storage: '16GB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 50 },
-            { id: 'sup-125', brand: 'Qubo', model: 'Qubo X10', storage: '32MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 27 },
-            { id: 'sup-126', brand: 'Qubo', model: 'Qubo New 4G', storage: '64MB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 28 },
-            { id: 'sup-127', brand: 'Qubo', model: 'Qubo X28 4G', storage: '128MB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 33 },
-            { id: 'sup-128', brand: 'Nokia', model: 'Nokia 105', storage: '4MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 9 },
-            { id: 'sup-129', brand: 'Nokia', model: 'Nokia 106', storage: '4MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 9 },
-            { id: 'sup-130', brand: 'Nokia', model: 'Nokia 150', storage: '4MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 16 },
-            { id: 'sup-131', brand: 'Nokia', model: 'Nokia 2720 Flip', storage: '512MB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 23 },
-            { id: 'sup-132', brand: 'Nexo', model: 'Nexo Flip Dual', storage: '32MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 23 },
-            { id: 'sup-133', brand: 'Astro', model: 'Astro Flip 4G', storage: '64MB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 28 },
-            { id: 'sup-134', brand: 'Astro', model: 'Astro SR (Base)', storage: '32MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 17 },
+            { id: 'sup-124', brand: 'BlackBerry', model: 'BlackBerry Leap', storage: '16GB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 50, source: 'Classic Phones Wholesale' },
+            { id: 'sup-125', brand: 'Qubo', model: 'Qubo X10', storage: '32MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 27, source: 'Classic Phones Wholesale' },
+            { id: 'sup-126', brand: 'Qubo', model: 'Qubo New 4G', storage: '64MB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 28, source: 'Classic Phones Wholesale' },
+            { id: 'sup-127', brand: 'Qubo', model: 'Qubo X28 4G', storage: '128MB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 33, source: 'Classic Phones Wholesale' },
+            { id: 'sup-128', brand: 'Nokia', model: 'Nokia 105', storage: '4MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 9, source: 'Classic Phones Wholesale' },
+            { id: 'sup-129', brand: 'Nokia', model: 'Nokia 106', storage: '4MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 9, source: 'Classic Phones Wholesale' },
+            { id: 'sup-130', brand: 'Nokia', model: 'Nokia 150', storage: '4MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 16, source: 'Classic Phones Wholesale' },
+            { id: 'sup-131', brand: 'Nokia', model: 'Nokia 2720 Flip', storage: '512MB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 23, source: 'Classic Phones Wholesale' },
+            { id: 'sup-132', brand: 'Nexo', model: 'Nexo Flip Dual', storage: '32MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 23, source: 'Classic Phones Wholesale' },
+            { id: 'sup-133', brand: 'Astro', model: 'Astro Flip 4G', storage: '64MB', network: '4G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 28, source: 'Classic Phones Wholesale' },
+            { id: 'sup-134', brand: 'Astro', model: 'Astro SR (Base)', storage: '32MB', network: '2G', condition: 'Brand New', category: 'Classic Phones', supplierPrice: 17, source: 'Classic Phones Wholesale' },
 
             // Tablets
-            { id: 'sup-135', brand: 'Samsung', model: 'Samsung Tab A11', storage: '64GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 112 },
-            { id: 'sup-136', brand: 'Samsung', model: 'Samsung Tab A11', storage: '128GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 135 },
-            { id: 'sup-137', brand: 'Samsung', model: 'Samsung Tab A11 Plus', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Tablets', supplierPrice: 195 },
-            { id: 'sup-138', brand: 'Qubo', model: 'Qubo Tab T106', storage: '128GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 120 },
-            { id: 'sup-139', brand: 'Modio', model: 'Modio M30', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Tablets', supplierPrice: 85 },
-            { id: 'sup-140', brand: 'Modio', model: 'Modio M730 7"', storage: '256GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 55 },
-            { id: 'sup-141', brand: 'ZTE', model: 'ZTE Tab X1001', storage: '64GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 98 },
-            { id: 'sup-142', brand: 'ZTE', model: 'ZTE Tab X1101', storage: '128GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 130 },
-            { id: 'sup-143', brand: 'Lenovo', model: 'Lenovo Idea Tab (Pen)', storage: '256GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 180 },
-            { id: 'sup-144', brand: 'Corn', model: 'Corn Tab T12 Pro', storage: '128GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 100 },
-            { id: 'sup-145', brand: 'Doogee', model: 'Doogee T10W', storage: '128GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 95 },
-            { id: 'sup-146', brand: 'Xiaomi', model: 'Redmi Pad 2', storage: '128GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 129 },
-            { id: 'sup-147', brand: 'Xiaomi', model: 'Redmi Pad 2', storage: '256GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 160 },
-            { id: 'sup-148', brand: 'Apple', model: 'iPad 11', storage: '128GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 315 }
+            { id: 'sup-135', brand: 'Samsung', model: 'Samsung Tab A11', storage: '64GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 112, source: 'Tablets Wholesale' },
+            { id: 'sup-136', brand: 'Samsung', model: 'Samsung Tab A11', storage: '128GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 135, source: 'Tablets Wholesale' },
+            { id: 'sup-137', brand: 'Samsung', model: 'Samsung Tab A11 Plus', storage: '128GB', network: '5G', condition: 'Brand New', category: 'Tablets', supplierPrice: 195, source: 'Tablets Wholesale' },
+            { id: 'sup-138', brand: 'Qubo', model: 'Qubo Tab T106', storage: '128GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 120, source: 'Tablets Wholesale' },
+            { id: 'sup-139', brand: 'Modio', model: 'Modio M30', storage: '512GB', network: '5G', condition: 'Brand New', category: 'Tablets', supplierPrice: 85, source: 'Tablets Wholesale' },
+            { id: 'sup-140', brand: 'Modio', model: 'Modio M730 7"', storage: '256GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 55, source: 'Tablets Wholesale' },
+            { id: 'sup-141', brand: 'ZTE', model: 'ZTE Tab X1001', storage: '64GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 98, source: 'Tablets Wholesale' },
+            { id: 'sup-142', brand: 'ZTE', model: 'ZTE Tab X1101', storage: '128GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 130, source: 'Tablets Wholesale' },
+            { id: 'sup-143', brand: 'Lenovo', model: 'Lenovo Idea Tab (Pen)', storage: '256GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 180, source: 'Tablets Wholesale' },
+            { id: 'sup-144', brand: 'Corn', model: 'Corn Tab T12 Pro', storage: '128GB', network: '4G SIM', condition: 'Brand New', category: 'Tablets', supplierPrice: 100, source: 'Tablets Wholesale' },
+            { id: 'sup-145', brand: 'Doogee', model: 'Doogee T10W', storage: '128GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 95, source: 'Tablets Wholesale' },
+            { id: 'sup-146', brand: 'Xiaomi', model: 'Redmi Pad 2', storage: '128GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 129, source: 'Tablets Wholesale' },
+            { id: 'sup-147', brand: 'Xiaomi', model: 'Redmi Pad 2', storage: '256GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 160, source: 'Tablets Wholesale' },
+            { id: 'sup-148', brand: 'Apple', model: 'iPad 11', storage: '128GB', network: 'Wi-Fi', condition: 'Brand New', category: 'Tablets', supplierPrice: 315, source: 'Tablets Wholesale' }
         ];
 
         function App() {
@@ -881,7 +902,7 @@
                     const words = query.split(/\s+/);
 
                     list = list.filter(item => {
-                        const fullText = `${item.brand} ${item.model} ${item.storage} ${item.condition} ${item.category} ${item.network}`.toLowerCase();
+                        const fullText = `${item.brand} ${item.model} ${item.storage} ${item.condition} ${item.category} ${item.network} ${item.source}`.toLowerCase();
                         const cleanText = fullText.replace(/[^a-z0-9]/g, '');
                         const cleanQuery = query.replace(/[^a-z0-9]/g, '');
                         
@@ -943,12 +964,12 @@
                 const words = query.split(/\s+/);
 
                 return supplierDatabase.filter(item => {
-                    const fullText = `${item.brand} ${item.model} ${item.storage} ${item.condition}`.toLowerCase();
+                    const fullText = `${item.brand} ${item.model} ${item.storage} ${item.condition} ${item.source}`.toLowerCase();
                     const cleanText = fullText.replace(/[^a-z0-9]/g, '');
                     const cleanQuery = query.replace(/[^a-z0-9]/g, '');
                     if (cleanText.includes(cleanQuery)) return true;
                     return words.every(w => fullText.includes(w));
-                }).slice(0, 6);
+                }).slice(0, 8);
             }, [marketSearchTerm]);
 
             // Save/Watchlist controls
@@ -1015,6 +1036,8 @@
                     ? (marketSearchStats.recommendedSellPrice || listing.price)
                     : Math.round(buyVal * (1 + globalTargetROI / 100));
 
+                const priceOriginLabel = listing.store ? `Marketplace: ${listing.store}` : `Wholesale Source: ${listing.source || 'Local Supplier Catalog'}`;
+
                 setModalBuyPrice(buyVal);
                 setModalExpectedSellPrice(recSellVal);
                 setModalLocalROI(globalTargetROI);
@@ -1027,8 +1050,8 @@
                     buyDate: new Date().toISOString().split('T')[0],
                     reinvestment: false,
                     notes: listing.store 
-                        ? `Sourced from ${listing.store}. Condition: ${listing.condition}. Colour: ${listing.colour}.`
-                        : `Sourced from Wholesale Supplier. Brand: ${listing.brand}. Condition: ${listing.condition}. Category: ${listing.category}.`
+                        ? `Sourced from ${listing.store}. Condition: ${listing.condition}. Colour: ${listing.colour}. Price Source: ${listing.store}`
+                        : `Sourced from Wholesale Supplier (${listing.source || 'Supplier List'}). Brand: ${listing.brand}. Condition: ${listing.condition}. Category: ${listing.category}.`
                 });
 
                 setIsAddModalOpen(true);
@@ -1161,7 +1184,7 @@
                                     <Icons.Eye /> Market Search
                                 </button>
                                 <button onClick={() => setActiveTab('mobile-prices')} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'mobile-prices' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}>
-                                    <Icons.Smartphone />  Mobile Prices
+                                    <Icons.Smartphone /> 📱 Mobile Prices
                                 </button>
                             </nav>
                         </div>
@@ -1817,7 +1840,10 @@
                                                         <div key={listing.id} class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700/80 transition-all flex flex-col justify-between">
                                                             <div class="space-y-3">
                                                                 <div class="flex justify-between items-start">
-                                                                    <span class="text-xs font-mono text-slate-500">{listing.store}</span>
+                                                                    <div class="flex flex-col">
+                                                                        <span class="text-[10px] font-bold text-slate-500 uppercase">Price Source</span>
+                                                                        <span class="text-xs font-mono font-bold text-indigo-400">{listing.store}</span>
+                                                                    </div>
                                                                     <div class="flex gap-2">
                                                                         <button onClick={() => handleToggleCompare(listing.id)} class={`p-1.5 rounded-lg border text-xs font-bold transition-colors ${isCompared ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' : 'bg-slate-950 border-slate-800 text-slate-500 hover:text-slate-200'}`}>
                                                                             ⚖️ Compare
@@ -1896,7 +1922,11 @@
                                                             <div key={sup.id} class="bg-slate-900/80 border border-indigo-500/30 p-4 rounded-2xl space-y-3 relative overflow-hidden">
                                                                 <div class="flex justify-between items-start">
                                                                     <div>
-                                                                        <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">{sup.brand} • Wholesale</span>
+                                                                        <div class="flex items-center gap-1.5 mb-1">
+                                                                            <span class="text-[9px] font-extrabold text-indigo-300 uppercase bg-indigo-500/20 px-2 py-0.5 rounded border border-indigo-500/30">
+                                                                                Price Source: {sup.source}
+                                                                            </span>
+                                                                        </div>
                                                                         <h4 class="text-base font-bold text-white mt-0.5">{sup.model}</h4>
                                                                         <p class="text-xs text-slate-400">{sup.storage} • {sup.condition}</p>
                                                                     </div>
@@ -1955,7 +1985,7 @@
                                                     <div key={listing.id} class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 flex flex-col justify-between">
                                                         <div class="space-y-3">
                                                             <div class="flex justify-between items-center text-xs text-slate-500 font-mono">
-                                                                <span>{listing.store}</span>
+                                                                <span>Price Source: {listing.store || listing.source}</span>
                                                                 <button onClick={() => handleToggleWatchlist(listing)} class="text-amber-400">
                                                                     <Icons.Star fill="currentColor" />
                                                                 </button>
@@ -2039,10 +2069,10 @@
                                                 </thead>
                                                 <tbody class="divide-y divide-slate-800 font-sans text-slate-300">
                                                     <tr>
-                                                        <td class="py-3 px-4 font-bold text-slate-500 uppercase tracking-wider text-[10px]">Market Store</td>
+                                                        <td class="py-3 px-4 font-bold text-slate-500 uppercase tracking-wider text-[10px]">Price Source</td>
                                                         {selectedCompareIds.map(id => {
                                                             const item = mockDatabasePhones.find(p => p.id === id);
-                                                            return <td key={id} class="py-3 px-4 font-mono font-bold text-white">{item?.store}</td>;
+                                                            return <td key={id} class="py-3 px-4 font-mono font-bold text-indigo-400">{item?.store}</td>;
                                                         })}
                                                     </tr>
                                                     <tr>
@@ -2230,6 +2260,11 @@
                                                         </div>
 
                                                         <div>
+                                                            <div class="flex items-center gap-1.5 mb-1">
+                                                                <span class="text-[9px] font-extrabold text-indigo-300 uppercase bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
+                                                                    Price Source: {item.source}
+                                                                </span>
+                                                            </div>
                                                             <h4 class="text-lg font-bold text-white">{item.model}</h4>
                                                             <div class="flex items-center gap-2 mt-1">
                                                                 <span class="text-xs font-semibold text-slate-300">{item.storage}</span>
@@ -2272,7 +2307,7 @@
                                                                 <Icons.Copy /> Price
                                                             </button>
                                                             <button 
-                                                                onClick={() => copyToClipboard(`${item.brand} ${item.model} ${item.storage} (${item.condition}) - ${item.supplierPrice}€`, "Copied Specs")} 
+                                                                onClick={() => copyToClipboard(`${item.brand} ${item.model} ${item.storage} (${item.condition}) [${item.source}] - ${item.supplierPrice}€`, "Copied Specs")} 
                                                                 class="py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-lg font-bold flex items-center justify-center gap-1 transition-colors"
                                                             >
                                                                 <Icons.Copy /> Specs
@@ -2469,176 +2504,4 @@
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Model Name *</label>
-                                            <input required name="model" type="text" defaultValue={selectedPhone.model} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1">IMEI</label>
-                                            <input name="imei" type="text" defaultValue={selectedPhone.imei || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
-                                        </div>
-                                    </div>
-                                    <div class="grid grid-cols-3 gap-3">
-                                        <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Buy Price *</label>
-                                            <input 
-                                                required 
-                                                type="number" 
-                                                step="0.01"
-                                                value={modalBuyPrice}
-                                                onChange={(e) => setModalBuyPrice(e.target.value)}
-                                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" 
-                                            />
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Expected Sale *</label>
-                                            <input 
-                                                required 
-                                                type="number" 
-                                                step="0.01"
-                                                value={modalExpectedSellPrice}
-                                                onChange={(e) => setModalExpectedSellPrice(e.target.value)}
-                                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" 
-                                            />
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Actual Sold Price</label>
-                                            <input name="actualSellPrice" type="number" step="0.01" defaultValue={selectedPhone.actualSellPrice || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
-                                        </div>
-                                    </div>
-
-                                    {/* Auto Price Suggestion UI Container */}
-                                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4">
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Auto Price Suggestion</span>
-                                            <span class="text-xs font-mono font-bold text-indigo-400">Target ROI: {modalLocalROI}%</span>
-                                        </div>
-                                        
-                                        <div class="flex items-baseline justify-between">
-                                            <div>
-                                                <span class="text-2xl font-black text-white">{modalPricingAssessment.suggestedPrice.toFixed(2)}€</span>
-                                                <p class="text-[10px] text-slate-500 mt-0.5">Expected Profit: {modalPricingAssessment.expectedProfitSuggest.toFixed(2)}€</p>
-                                            </div>
-                                            <button 
-                                                type="button"
-                                                onClick={() => setModalExpectedSellPrice(modalPricingAssessment.suggestedPrice.toFixed(2))}
-                                                class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition-all shadow-lg shadow-indigo-600/10"
-                                            >
-                                                Apply Suggestion
-                                            </button>
-                                        </div>
-
-                                        <div class="space-y-1.5">
-                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Quick Adjust ROI</label>
-                                            <div class="grid grid-cols-6 gap-1">
-                                                {[20, 25, 30, 35, 40, 50].map(val => (
-                                                    <button
-                                                        key={val}
-                                                        type="button"
-                                                        onClick={() => setModalLocalROI(val)}
-                                                        class={`py-1 text-xs font-bold rounded transition-all border ${modalLocalROI === val ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300' : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'}`}
-                                                    >
-                                                        {val}%
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div class={`p-3 rounded-xl border flex flex-col gap-1 transition-all ${modalPricingAssessment.smartColorStyles.border} ${modalPricingAssessment.smartColorStyles.bg}`}>
-                                            <div class="flex justify-between items-center text-xs font-bold">
-                                                <span class="text-slate-400">Ledger Assessment</span>
-                                                <span class={modalPricingAssessment.smartColorStyles.text}>{modalPricingAssessment.smartColorStyles.status}</span>
-                                            </div>
-                                            <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-800/40 text-xs">
-                                                <div>
-                                                    <span class="text-slate-500 block">Expected Profit</span>
-                                                    <span class="font-bold text-white">{modalPricingAssessment.actualExpectedProfit.toFixed(2)}€</span>
-                                                </div>
-                                                <div>
-                                                    <span class="text-slate-500 block">Expected ROI</span>
-                                                    <span class={`font-bold ${modalPricingAssessment.smartColorStyles.text}`}>{modalPricingAssessment.actualExpectedROI.toFixed(1)}%</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Purchase Date</label>
-                                            <input required name="buyDate" type="date" defaultValue={selectedPhone.buyDate} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-semibold text-slate-400 mb-1">Sell Date (blank if unsold)</label>
-                                            <input name="sellDate" type="date" defaultValue={selectedPhone.sellDate || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Notes</label>
-                                        <textarea name="notes" defaultValue={selectedPhone.notes || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
-                                    </div>
-                                    <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
-                                        <input type="checkbox" name="reinvestment" id="chk2" defaultChecked={selectedPhone.reinvestment} class="w-4 h-4 text-indigo-600 rounded bg-slate-950 border-slate-800 focus:ring-0" />
-                                        <label for="chk2" class="text-xs text-slate-300 font-bold cursor-pointer">Reinvestment Buy</label>
-                                    </div>
-                                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
-                                        <button type="button" onClick={() => setIsEditModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm hover:bg-slate-800 transition-colors">Cancel</button>
-                                        <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-colors">Save Changes</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* SELL CONFIRM MODAL */}
-                    {isSellModalOpen && selectedPhone && (
-                        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="bg-slate-900 border border-slate-800 w-full max-sm rounded-2xl overflow-hidden shadow-2xl">
-                                <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
-                                    <h3 class="text-lg font-bold">Record Sale Details</h3>
-                                    <button onClick={() => setIsSellModalOpen(false)} class="text-slate-400 hover:text-white">✕</button>
-                                </header>
-                                <form onSubmit={(e) => {
-                                    e.preventDefault();
-                                    const fd = new FormData(e.target);
-                                    const price = Number(fd.get('actualSellPrice'));
-                                    const date = fd.get('sellDate');
-
-                                    const updated = phones.map(p => {
-                                        if (p.id === selectedPhone.id) {
-                                            return {
-                                                ...p,
-                                                actualSellPrice: price,
-                                                sellDate: date,
-                                                sellSequence: Date.now()
-                                            };
-                                        }
-                                        return p;
-                                    });
-                                    updatePhonesAndPersist(updated);
-                                    setIsSellModalOpen(false);
-                                    triggerToast(`Sold ${selectedPhone.model} for ${price}€!`, 'success');
-                                }} class="p-6 space-y-4">
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Actual Sold Price (€) *</label>
-                                        <input required name="actualSellPrice" type="number" step="0.01" defaultValue={selectedPhone.expectedSellPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Sell Date *</label>
-                                        <input required name="sellDate" type="date" defaultValue={new Date().toISOString().split('T')[0]} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
-                                    </div>
-                                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
-                                        <button type="button" onClick={() => setIsSellModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm hover:bg-slate-800 transition-colors">Cancel</button>
-                                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold hover:bg-emerald-800 transition-colors">Complete Sale</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html>
-```
+                                            <input required name="model" type="text" defaultValue={selectedPhone.model} class="w-full bg-slate-950 border border-slate-800 rounded
