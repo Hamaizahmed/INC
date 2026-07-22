@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -165,6 +166,17 @@
                 return local ? JSON.parse(local) : defaultPhones;
             });
 
+            // Auto Price Suggestion: Global target ROI config
+            const [globalTargetROI, setGlobalTargetROI] = useState(() => {
+                const stored = localStorage.getItem('flipflow_global_roi');
+                return stored ? Number(stored) : 35;
+            });
+
+            // Modal Reactive Input States (For live auto-calculations)
+            const [modalBuyPrice, setModalBuyPrice] = useState("");
+            const [modalExpectedSellPrice, setModalExpectedSellPrice] = useState("");
+            const [modalLocalROI, setModalLocalROI] = useState(35);
+
             const [toasts, setToasts] = useState([]);
             const [activeTab, setActiveTab] = useState('dashboard');
             const [syncLoading, setSyncLoading] = useState(false);
@@ -178,6 +190,15 @@
             const [isEditModalOpen, setIsEditModalOpen] = useState(false);
             const [isSellModalOpen, setIsSellModalOpen] = useState(false);
             const [selectedPhone, setSelectedPhone] = useState(null);
+
+            // Sync with local storage
+            useEffect(() => {
+                localStorage.setItem('flipflow_inventory', JSON.stringify(phones));
+            }, [phones]);
+
+            useEffect(() => {
+                localStorage.setItem('flipflow_global_roi', globalTargetROI.toString());
+            }, [globalTargetROI]);
 
             const triggerToast = (message, type = 'info') => {
                 const id = Date.now();
@@ -447,6 +468,59 @@
                 }
             };
 
+            // Calculated smart parameters for the currently active modal (Add or Edit)
+            const modalPricingAssessment = useMemo(() => {
+                const buyVal = Number(modalBuyPrice) || 0;
+                const expectedVal = Number(modalExpectedSellPrice) || 0;
+                
+                const suggestedPrice = buyVal * (1 + modalLocalROI / 100);
+                const expectedProfitSuggest = suggestedPrice - buyVal;
+
+                const actualExpectedProfit = expectedVal - buyVal;
+                const actualExpectedROI = buyVal > 0 ? (actualExpectedProfit / buyVal) * 100 : 0;
+
+                let smartColorStyles = {
+                    border: 'border-slate-800',
+                    bg: 'bg-slate-900/40',
+                    text: 'text-slate-400',
+                    status: 'Pending inputs...'
+                };
+
+                if (buyVal > 0 && expectedVal > 0) {
+                    const diff = expectedVal - suggestedPrice;
+                    if (diff < -0.01) {
+                        smartColorStyles = {
+                            border: 'border-amber-500/20',
+                            bg: 'bg-amber-500/5',
+                            text: 'text-amber-400',
+                            status: 'Below target ROI'
+                        };
+                    } else if (Math.abs(diff) <= 0.01) {
+                        smartColorStyles = {
+                            border: 'border-emerald-500/20',
+                            bg: 'bg-emerald-500/5',
+                            text: 'text-emerald-400',
+                            status: 'Target reached'
+                        };
+                    } else {
+                        smartColorStyles = {
+                            border: 'border-purple-500/20',
+                            bg: 'bg-purple-500/5',
+                            text: 'text-purple-400',
+                            status: 'Above target ROI'
+                        };
+                    }
+                }
+
+                return {
+                    suggestedPrice,
+                    expectedProfitSuggest,
+                    actualExpectedProfit,
+                    actualExpectedROI,
+                    smartColorStyles
+                };
+            }, [modalBuyPrice, modalExpectedSellPrice, modalLocalROI]);
+
             const exportCSV = () => {
                 let csvContent = "data:text/csv;charset=utf-8,";
                 csvContent += "Phone Model,IMEI,Buy Price,Expected Sell Price,Actual Sell Price,Buy Date,Sell Date,Reinvestment,Notes\n";
@@ -556,7 +630,7 @@
                                 </div>
                             </div>
 
-                            <nav class="space-y-1.5">
+                            <nav class="space-y-1.5 font-sans">
                                 <button onClick={() => setActiveTab('dashboard')} class={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`}>
                                     <Icons.BarChart /> Dashboard
                                 </button>
@@ -574,6 +648,31 @@
 
                         {/* Direct Cloud Settings Bar */}
                         <div class="mt-8 pt-6 border-t border-slate-800/60 space-y-3">
+                            {/* Target ROI Config Panel */}
+                            <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800/60">
+                                <div class="flex items-center justify-between text-xs font-semibold text-slate-400">
+                                    <span>TARGET ROI SETUP</span>
+                                    <span class="text-indigo-400 font-bold">{globalTargetROI}%</span>
+                                </div>
+                                <input 
+                                    type="range" 
+                                    min="10" 
+                                    max="100" 
+                                    step="5"
+                                    value={globalTargetROI}
+                                    onChange={(e) => {
+                                        const val = Number(e.target.value);
+                                        setGlobalTargetROI(val);
+                                        triggerToast(`Default target ROI updated to ${val}%`, 'info');
+                                    }}
+                                    class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500 mt-2.5"
+                                />
+                                <div class="flex justify-between text-[9px] text-slate-500 font-bold mt-1 uppercase">
+                                    <span>10% Min</span>
+                                    <span>100% Max</span>
+                                </div>
+                            </div>
+
                             <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800/60">
                                 <div class="flex items-center justify-between text-xs font-semibold text-slate-400">
                                     <span>CLOUD STATUS</span>
@@ -611,7 +710,15 @@
                                 <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white capitalize">{activeTab} View</h2>
                                 <p class="text-slate-400 text-sm">Managing phone resale inventory with cloud database sync.</p>
                             </div>
-                            <button onClick={() => setIsAddModalOpen(true)} class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-xl text-sm shadow-md hover:from-indigo-600 hover:to-purple-700 transition-all">
+                            <button 
+                                onClick={() => {
+                                    setModalBuyPrice("");
+                                    setModalExpectedSellPrice("");
+                                    setModalLocalROI(globalTargetROI);
+                                    setIsAddModalOpen(true);
+                                }} 
+                                class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-xl text-sm shadow-md hover:from-indigo-600 hover:to-purple-700 transition-all"
+                            >
                                 <Icons.Plus /> Register Purchase
                             </button>
                         </header>
@@ -850,7 +957,16 @@
                                                                 </span>
                                                             </td>
                                                             <td class="py-4 px-5 text-right space-x-2">
-                                                                <button onClick={() => { setSelectedPhone(phone); setIsEditModalOpen(true); }} class="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-slate-800 rounded-lg transition-colors inline-block">
+                                                                <button 
+                                                                    onClick={() => { 
+                                                                        setSelectedPhone(phone); 
+                                                                        setModalBuyPrice(phone.buyPrice);
+                                                                        setModalExpectedSellPrice(phone.expectedSellPrice);
+                                                                        setModalLocalROI(globalTargetROI);
+                                                                        setIsEditModalOpen(true); 
+                                                                    }} 
+                                                                    class="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-slate-800 rounded-lg transition-colors inline-block"
+                                                                >
                                                                     <Icons.Edit />
                                                                 </button>
                                                                 <button onClick={() => handleDeletePhone(phone.id)} class="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-slate-800 rounded-lg transition-colors inline-block">
@@ -982,7 +1098,7 @@
                     {/* ADD MODAL */}
                     {isAddModalOpen && (
                         <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden">
+                            <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
                                 <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
                                     <h3 class="text-lg font-bold">Register New Purchase</h3>
                                     <button onClick={() => setIsAddModalOpen(false)} class="text-slate-400 hover:text-white">✕</button>
@@ -993,8 +1109,8 @@
                                     handleAddPhone({
                                         model: fd.get('model'),
                                         imei: fd.get('imei'),
-                                        buyPrice: Number(fd.get('buyPrice')),
-                                        expectedSellPrice: Number(fd.get('expectedSellPrice')),
+                                        buyPrice: Number(modalBuyPrice),
+                                        expectedSellPrice: Number(modalExpectedSellPrice),
                                         actualSellPrice: null,
                                         buyDate: fd.get('buyDate'),
                                         sellDate: null,
@@ -1002,42 +1118,112 @@
                                         notes: fd.get('notes')
                                     });
                                     setIsAddModalOpen(false);
-                                }} class="p-6 space-y-4">
+                                }} class="p-6 space-y-4 max-h-[90vh] overflow-y-auto">
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Model Name *</label>
-                                            <input required name="model" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                            <input required name="model" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                         </div>
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">IMEI</label>
-                                            <input name="imei" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                            <input name="imei" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Buy Price (€) *</label>
-                                            <input required name="buyPrice" type="number" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                            <input 
+                                                required 
+                                                type="number" 
+                                                step="0.01"
+                                                value={modalBuyPrice}
+                                                onChange={(e) => setModalBuyPrice(e.target.value)}
+                                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" 
+                                            />
                                         </div>
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Expected Sale Price (€) *</label>
-                                            <input required name="expectedSellPrice" type="number" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                            <input 
+                                                required 
+                                                type="number" 
+                                                step="0.01"
+                                                value={modalExpectedSellPrice}
+                                                onChange={(e) => setModalExpectedSellPrice(e.target.value)}
+                                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" 
+                                            />
                                         </div>
                                     </div>
+
+                                    {/* Auto Price Suggestion UI Container */}
+                                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Auto Price Suggestion</span>
+                                            <span class="text-xs font-mono font-bold text-indigo-400">Target ROI: {modalLocalROI}%</span>
+                                        </div>
+                                        
+                                        <div class="flex items-baseline justify-between">
+                                            <div>
+                                                <span class="text-2xl font-black text-white">{modalPricingAssessment.suggestedPrice.toFixed(2)}€</span>
+                                                <p class="text-[10px] text-slate-500 mt-0.5">Expected Profit: {modalPricingAssessment.expectedProfitSuggest.toFixed(2)}€</p>
+                                            </div>
+                                            <button 
+                                                type="button"
+                                                onClick={() => setModalExpectedSellPrice(modalPricingAssessment.suggestedPrice.toFixed(2))}
+                                                class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition-all shadow-lg shadow-indigo-600/10"
+                                            >
+                                                Apply Suggestion
+                                            </button>
+                                        </div>
+
+                                        <div class="space-y-1.5">
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Quick Adjust ROI</label>
+                                            <div class="grid grid-cols-6 gap-1">
+                                                {[20, 25, 30, 35, 40, 50].map(val => (
+                                                    <button
+                                                        key={val}
+                                                        type="button"
+                                                        onClick={() => setModalLocalROI(val)}
+                                                        class={`py-1 text-xs font-bold rounded transition-all border ${modalLocalROI === val ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300' : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'}`}
+                                                    >
+                                                        {val}%
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div class={`p-3 rounded-xl border flex flex-col gap-1 transition-all ${modalPricingAssessment.smartColorStyles.border} ${modalPricingAssessment.smartColorStyles.bg}`}>
+                                            <div class="flex justify-between items-center text-xs font-bold">
+                                                <span class="text-slate-400">Ledger Assessment</span>
+                                                <span class={modalPricingAssessment.smartColorStyles.text}>{modalPricingAssessment.smartColorStyles.status}</span>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-800/40 text-xs">
+                                                <div>
+                                                    <span class="text-slate-500 block">Expected Profit</span>
+                                                    <span class="font-bold text-white">{modalPricingAssessment.actualExpectedProfit.toFixed(2)}€</span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-slate-500 block">Expected ROI</span>
+                                                    <span class={`font-bold ${modalPricingAssessment.smartColorStyles.text}`}>{modalPricingAssessment.actualExpectedROI.toFixed(1)}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-400 mb-1">Purchase Date *</label>
-                                        <input required name="buyDate" type="date" defaultValue={new Date().toISOString().split('T')[0]} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                        <input required name="buyDate" type="date" defaultValue={new Date().toISOString().split('T')[0]} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-400 mb-1">Internal Notes</label>
-                                        <textarea name="notes" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white"></textarea>
+                                        <textarea name="notes" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
                                     </div>
                                     <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
-                                        <input type="checkbox" name="reinvestment" id="chk" class="w-4 h-4 text-indigo-600 rounded bg-slate-950 border-slate-800" />
+                                        <input type="checkbox" name="reinvestment" id="chk" class="w-4 h-4 text-indigo-600 rounded bg-slate-950 border-slate-800 focus:ring-0" />
                                         <label for="chk" class="text-xs text-slate-300 font-bold cursor-pointer">Reinvestment Buy (Immediately subtracts from Cash Balance)</label>
                                     </div>
                                     <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
-                                        <button type="button" onClick={() => setIsAddModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm">Cancel</button>
-                                        <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold">Register Unit</button>
+                                        <button type="button" onClick={() => setIsAddModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm hover:bg-slate-800 transition-colors">Cancel</button>
+                                        <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-colors">Register Unit</button>
                                     </div>
                                 </form>
                             </div>
@@ -1047,7 +1233,7 @@
                     {/* EDIT MODAL */}
                     {isEditModalOpen && selectedPhone && (
                         <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden">
+                            <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
                                 <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
                                     <h3 class="text-lg font-bold">Edit Phone Details</h3>
                                     <button onClick={() => setIsEditModalOpen(false)} class="text-slate-400 hover:text-white">✕</button>
@@ -1059,8 +1245,8 @@
                                         ...selectedPhone,
                                         model: fd.get('model'),
                                         imei: fd.get('imei'),
-                                        buyPrice: Number(fd.get('buyPrice')),
-                                        expectedSellPrice: Number(fd.get('expectedSellPrice')),
+                                        buyPrice: Number(modalBuyPrice),
+                                        expectedSellPrice: Number(modalExpectedSellPrice),
                                         actualSellPrice: fd.get('actualSellPrice') ? Number(fd.get('actualSellPrice')) : null,
                                         buyDate: fd.get('buyDate'),
                                         sellDate: fd.get('sellDate') || null,
@@ -1068,52 +1254,122 @@
                                         notes: fd.get('notes')
                                     });
                                     setIsEditModalOpen(false);
-                                }} class="p-6 space-y-4">
+                                }} class="p-6 space-y-4 max-h-[90vh] overflow-y-auto">
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Model Name *</label>
-                                            <input required name="model" type="text" defaultValue={selectedPhone.model} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                            <input required name="model" type="text" defaultValue={selectedPhone.model} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                         </div>
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">IMEI</label>
-                                            <input name="imei" type="text" defaultValue={selectedPhone.imei || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                            <input name="imei" type="text" defaultValue={selectedPhone.imei || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-3 gap-3">
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Buy Price *</label>
-                                            <input required name="buyPrice" type="number" defaultValue={selectedPhone.buyPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                            <input 
+                                                required 
+                                                type="number" 
+                                                step="0.01"
+                                                value={modalBuyPrice}
+                                                onChange={(e) => setModalBuyPrice(e.target.value)}
+                                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" 
+                                            />
                                         </div>
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Expected Sale *</label>
-                                            <input required name="expectedSellPrice" type="number" defaultValue={selectedPhone.expectedSellPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                            <input 
+                                                required 
+                                                type="number" 
+                                                step="0.01"
+                                                value={modalExpectedSellPrice}
+                                                onChange={(e) => setModalExpectedSellPrice(e.target.value)}
+                                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" 
+                                            />
                                         </div>
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Actual Sold Price</label>
-                                            <input name="actualSellPrice" type="number" defaultValue={selectedPhone.actualSellPrice || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                            <input name="actualSellPrice" type="number" step="0.01" defaultValue={selectedPhone.actualSellPrice || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                         </div>
                                     </div>
+
+                                    {/* Auto Price Suggestion UI Container */}
+                                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Auto Price Suggestion</span>
+                                            <span class="text-xs font-mono font-bold text-indigo-400">Target ROI: {modalLocalROI}%</span>
+                                        </div>
+                                        
+                                        <div class="flex items-baseline justify-between">
+                                            <div>
+                                                <span class="text-2xl font-black text-white">{modalPricingAssessment.suggestedPrice.toFixed(2)}€</span>
+                                                <p class="text-[10px] text-slate-500 mt-0.5">Expected Profit: {modalPricingAssessment.expectedProfitSuggest.toFixed(2)}€</p>
+                                            </div>
+                                            <button 
+                                                type="button"
+                                                onClick={() => setModalExpectedSellPrice(modalPricingAssessment.suggestedPrice.toFixed(2))}
+                                                class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition-all shadow-lg shadow-indigo-600/10"
+                                            >
+                                                Apply Suggestion
+                                            </button>
+                                        </div>
+
+                                        <div class="space-y-1.5">
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Quick Adjust ROI</label>
+                                            <div class="grid grid-cols-6 gap-1">
+                                                {[20, 25, 30, 35, 40, 50].map(val => (
+                                                    <button
+                                                        key={val}
+                                                        type="button"
+                                                        onClick={() => setModalLocalROI(val)}
+                                                        class={`py-1 text-xs font-bold rounded transition-all border ${modalLocalROI === val ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300' : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'}`}
+                                                    >
+                                                        {val}%
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div class={`p-3 rounded-xl border flex flex-col gap-1 transition-all ${modalPricingAssessment.smartColorStyles.border} ${modalPricingAssessment.smartColorStyles.bg}`}>
+                                            <div class="flex justify-between items-center text-xs font-bold">
+                                                <span class="text-slate-400">Ledger Assessment</span>
+                                                <span class={modalPricingAssessment.smartColorStyles.text}>{modalPricingAssessment.smartColorStyles.status}</span>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-800/40 text-xs">
+                                                <div>
+                                                    <span class="text-slate-500 block">Expected Profit</span>
+                                                    <span class="font-bold text-white">{modalPricingAssessment.actualExpectedProfit.toFixed(2)}€</span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-slate-500 block">Expected ROI</span>
+                                                    <span class={`font-bold ${modalPricingAssessment.smartColorStyles.text}`}>{modalPricingAssessment.actualExpectedROI.toFixed(1)}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Purchase Date</label>
-                                            <input required name="buyDate" type="date" defaultValue={selectedPhone.buyDate} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                            <input required name="buyDate" type="date" defaultValue={selectedPhone.buyDate} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                         </div>
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Sell Date (blank if unsold)</label>
-                                            <input name="sellDate" type="date" defaultValue={selectedPhone.sellDate || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+                                            <input name="sellDate" type="date" defaultValue={selectedPhone.sellDate || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" />
                                         </div>
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-400 mb-1">Notes</label>
-                                        <textarea name="notes" defaultValue={selectedPhone.notes || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white"></textarea>
+                                        <textarea name="notes" defaultValue={selectedPhone.notes || ""} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
                                     </div>
                                     <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
-                                        <input type="checkbox" name="reinvestment" id="chk2" defaultChecked={selectedPhone.reinvestment} class="w-4 h-4 text-indigo-600 rounded bg-slate-950 border-slate-800" />
+                                        <input type="checkbox" name="reinvestment" id="chk2" defaultChecked={selectedPhone.reinvestment} class="w-4 h-4 text-indigo-600 rounded bg-slate-950 border-slate-800 focus:ring-0" />
                                         <label for="chk2" class="text-xs text-slate-300 font-bold cursor-pointer">Reinvestment Buy</label>
                                     </div>
                                     <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
-                                        <button type="button" onClick={() => setIsEditModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm">Cancel</button>
-                                        <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold">Save Changes</button>
+                                        <button type="button" onClick={() => setIsEditModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm hover:bg-slate-800 transition-colors">Cancel</button>
+                                        <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-colors">Save Changes</button>
                                     </div>
                                 </form>
                             </div>
@@ -1123,7 +1379,7 @@
                     {/* SELL CONFIRM MODAL */}
                     {isSellModalOpen && selectedPhone && (
                         <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="bg-slate-900 border border-slate-800 w-full max-sm rounded-2xl overflow-hidden">
+                            <div class="bg-slate-900 border border-slate-800 w-full max-sm rounded-2xl overflow-hidden shadow-2xl">
                                 <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
                                     <h3 class="text-lg font-bold">Record Sale Details</h3>
                                     <button onClick={() => setIsSellModalOpen(false)} class="text-slate-400 hover:text-white">✕</button>
@@ -1151,15 +1407,15 @@
                                 }} class="p-6 space-y-4">
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-400 mb-1">Actual Sold Price (€) *</label>
-                                        <input required name="actualSellPrice" type="number" defaultValue={selectedPhone.expectedSellPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
+                                        <input required name="actualSellPrice" type="number" step="0.01" defaultValue={selectedPhone.expectedSellPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-400 mb-1">Sell Date *</label>
                                         <input required name="sellDate" type="date" defaultValue={new Date().toISOString().split('T')[0]} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
                                     </div>
                                     <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
-                                        <button type="button" onClick={() => setIsSellModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm">Cancel</button>
-                                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold">Complete Sale</button>
+                                        <button type="button" onClick={() => setIsSellModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm hover:bg-slate-800 transition-colors">Cancel</button>
+                                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold hover:bg-emerald-800 transition-colors">Complete Sale</button>
                                     </div>
                                 </form>
                             </div>
