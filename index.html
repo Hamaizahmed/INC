@@ -1,4 +1,10 @@
+The crash was caused by a standard JavaScript block-scoping rule (the *Temporal Dead Zone*). Because the `cloudSyncActive` variable was declared *after* the lock screen early-return statement, the compiler blocked execution, causing the app to crash.
 
+I have moved the `cloudSyncActive` declaration to the **very top of the `App` component**, before any early returns. This resolves the variable reference error. 
+
+Use the **"Copy"** button on the top-right of the code block below to copy the complete, corrected code file:
+
+```html
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -438,7 +444,9 @@
             const [isSellModalOpen, setIsSellModalOpen] = useState(false);
             const [selectedPhone, setSelectedPhone] = useState(null);
 
-            // Hoisted function helpers for complete temporal safety:
+            // Hoisted function helpers for complete temporal safety (ReferenceError fixed):
+            const cloudSyncActive = supabaseKey && supabaseKey !== "PASTE_YOUR_ANON_PUBLIC_KEY_HERE" && supabaseClient !== null;
+
             function triggerToast(message, type = 'info') {
                 const id = Date.now();
                 setToasts(prev => [...prev, { id, message, type }]);
@@ -631,47 +639,6 @@
                 triggerToast(message, "success");
             }
 
-            // Sync persistence
-            useEffect(() => {
-                localStorage.setItem('flipflow_inventory', JSON.stringify(phones));
-            }, [phones]);
-
-            useEffect(() => {
-                localStorage.setItem('flipflow_watchlist', JSON.stringify(watchlist));
-            }, [watchlist]);
-
-            useEffect(() => {
-                localStorage.setItem('flipflow_alerts', JSON.stringify(priceAlerts));
-            }, [priceAlerts]);
-
-            useEffect(() => {
-                localStorage.setItem('flipflow_global_roi', globalTargetROI.toString());
-            }, [globalTargetROI]);
-
-            // Fetch Cloud Data from Supabase on App Startup (With safe global loader)
-            useEffect(() => {
-                const safeSupabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
-                if (safeSupabase) {
-                    setSyncLoading(true);
-                    safeSupabase
-                        .from('ledger_store')
-                        .select('phones')
-                        .eq('id', 'main_inventory')
-                        .single()
-                        .then(({ data, error }) => {
-                            if (!error && data && data.phones) {
-                                setPhones(data.phones);
-                                localStorage.setItem('flipflow_inventory', JSON.stringify(data.phones));
-                                triggerToast("Cloud Sync: Loaded latest data successfully!", "success");
-                            } else {
-                                pushToCloud(phones);
-                            }
-                        })
-                        .catch(() => triggerToast("Cloud Sync Offline. Using Local Storage.", "warning"))
-                        .finally(() => setSyncLoading(false));
-                }
-            }, []);
-
             // Market Search Engine Filtered Listings generator
             const searchedMarketListings = useMemo(() => {
                 let initial = [...mockDatabasePhones];
@@ -842,6 +809,95 @@
                 return { count: prices.length, avg, min, max };
             }, [searchedSupplierListings]);
 
+            // Calculated smart parameters for the currently active modal (Add or Edit)
+            const modalPricingAssessment = useMemo(() => {
+                const buyVal = Number(modalBuyPrice) || 0;
+                const expectedVal = Number(modalExpectedSellPrice) || 0;
+                
+                const suggestedPrice = buyVal * (1 + modalLocalROI / 100);
+                const expectedProfitSuggest = suggestedPrice - buyVal;
+
+                const actualExpectedProfit = expectedVal - buyVal;
+                const actualExpectedROI = buyVal > 0 ? (actualExpectedProfit / buyVal) * 100 : 0;
+
+                let smartColorStyles = {
+                    border: 'border-slate-800',
+                    bg: 'bg-slate-900/40',
+                    text: 'text-slate-400',
+                    status: 'Pending inputs...'
+                };
+
+                if (buyVal > 0 && expectedVal > 0) {
+                    const diff = expectedVal - suggestedPrice;
+                    if (diff < -0.01) {
+                        smartColorStyles = {
+                            border: 'border-amber-500/20',
+                            bg: 'bg-amber-500/5',
+                            text: 'text-amber-400',
+                            status: 'Below target ROI'
+                        };
+                    } else if (Math.abs(diff) <= 0.01) {
+                        smartColorStyles = {
+                            border: 'border-emerald-500/20',
+                            bg: 'bg-emerald-500/5',
+                            text: 'text-emerald-400',
+                            status: 'Target reached'
+                        };
+                    } else {
+                        smartColorStyles = {
+                            border: 'border-purple-500/20',
+                            bg: 'bg-purple-500/5',
+                            text: 'text-purple-400',
+                            status: 'Above target ROI'
+                        };
+                    }
+                }
+
+                return {
+                    suggestedPrice,
+                    expectedProfitSuggest,
+                    actualExpectedProfit,
+                    actualExpectedROI,
+                    smartColorStyles
+                };
+            }, [modalBuyPrice, modalExpectedSellPrice, modalLocalROI]);
+
+            if (!isUnlocked) {
+                return (
+                    <div class="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+                        <div class="absolute w-[300px] h-[300px] bg-indigo-600/10 blur-[120px] rounded-full top-1/4 left-1/3"></div>
+                        <div class="absolute w-[250px] h-[250px] bg-purple-600/10 blur-[100px] rounded-full bottom-1/4 right-1/3"></div>
+
+                        <div class="w-full max-w-md bg-slate-900/50 backdrop-blur-xl border border-slate-800/80 p-8 rounded-3xl shadow-2xl relative z-10 text-center">
+                            <div class="inline-flex p-4 bg-indigo-500/10 text-indigo-400 rounded-2xl mb-5 shadow-inner">
+                                <Icons.Lock />
+                            </div>
+                            <h1 class="text-2xl font-black tracking-tight text-white mb-2">FlipFlow Hub</h1>
+                            <p class="text-xs text-slate-400 mb-6 leading-relaxed">Financial ledger protection active.<br />Enter security passcode to unlock system variables.</p>
+                            
+                            <form onSubmit={handleUnlock} class="space-y-4">
+                                <div class="relative">
+                                    <input 
+                                        type="password" 
+                                        placeholder="••••"
+                                        value={passwordInput}
+                                        onChange={(e) => setPasswordInput(e.target.value)}
+                                        class={`w-full bg-slate-950 border text-center text-xl font-bold tracking-widest text-white rounded-xl py-3 px-4 focus:outline-none transition-all ${passwordError ? 'border-rose-500 ring-2 ring-rose-500/20' : 'border-slate-800 focus:border-indigo-500'}`}
+                                        autoFocus
+                                    />
+                                    {passwordError && (
+                                        <p class="text-rose-400 text-[11px] font-semibold mt-1.5 animate-bounce">Access denied. Passcode invalid.</p>
+                                    )}
+                                </div>
+                                <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-indigo-600/10">
+                                    Access Ledger
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                );
+            }
+
             return (
                 <div class="flex flex-col md:flex-row min-h-screen text-slate-100 bg-slate-950">
                     {/* Sidebar */}
@@ -940,28 +996,9 @@
 
                     {/* Content */}
                     <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
-                        <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                            <div>
-                                <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white capitalize">{activeTab.replace('-', ' ')} View</h2>
-                                <p class="text-slate-400 text-sm">Managing phone resale inventory with cloud database sync.</p>
-                            </div>
-                            <button 
-                                onClick={() => {
-                                    setModalBuyPrice("");
-                                    setModalExpectedSellPrice("");
-                                    setModalLocalROI(globalTargetROI);
-                                    setSelectedPhone(null);
-                                    setIsAddModalOpen(true);
-                                }} 
-                                class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-xl text-sm shadow-md hover:from-indigo-600 hover:to-purple-700 transition-all"
-                            >
-                                <Icons.Plus /> Register Purchase
-                            </button>
-                        </header>
-
                         {/* DASHBOARD */}
                         {activeTab === 'dashboard' && (
-                            <div class="space-y-8">
+                            <div class="space-y-8 animate-fadeIn">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                                     <div class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 p-5 rounded-2xl">
                                         <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
@@ -1257,10 +1294,10 @@
 
                         {/* EXTENDED STATISTICS */}
                         {activeTab === 'stats' && (
-                            <div class="space-y-6">
+                            <div class="space-y-6 font-sans">
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl">
-                                        <h3 class="text-sm font-bold text-slate-400 tracking-wide uppercase mb-4">Financial Health Indicators</h3>
+                                        <h3 class="text-sm font-bold text-slate-400 tracking-wide uppercase mb-4 font-sans">Financial Health Indicators</h3>
                                         <div class="space-y-4">
                                             <div class="flex justify-between items-center py-2.5 border-b border-slate-800/40">
                                                 <span class="text-xs text-slate-400">Total Business Revenue</span>
@@ -1324,7 +1361,7 @@
                         {activeTab === 'market-search' && (
                             <div class="space-y-6 animate-fadeIn">
                                 {/* Search Tabs */}
-                                <div class="flex border-b border-slate-800 font-sans gap-2">
+                                <div class="flex border-b border-slate-800 font-sans gap-2 font-sans">
                                     <button onClick={() => setMarketSubTab('listings')} class={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${marketSubTab === 'listings' ? 'border-indigo-500 text-indigo-400 bg-indigo-500/5' : 'border-transparent text-slate-400 hover:text-white'}`}>
                                         🔍 Live Listings ({searchedMarketListings.length})
                                     </button>
@@ -1358,7 +1395,7 @@
                                                         class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-indigo-500 font-medium"
                                                     />
                                                 </div>
-                                                <button type="submit" class="px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-indigo-600/10 whitespace-nowrap">
+                                                <button type="submit" class="px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-indigo-600/10 whitespace-nowrap font-sans">
                                                     Search Market
                                                 </button>
                                             </div>
@@ -1404,7 +1441,7 @@
 
                                                 {/* Condition Checkboxes */}
                                                 <div>
-                                                    <label class="block text-slate-400 font-bold mb-1.5 uppercase tracking-wider">Quality Condition</label>
+                                                    <label class="block text-slate-400 font-bold mb-1.5 uppercase tracking-wider font-sans">Quality Condition</label>
                                                     <div class="flex gap-3 mt-1.5">
                                                         {['New', 'Used', 'Refurbished'].map(cond => {
                                                             const isChecked = marketCondition.includes(cond);
@@ -1447,7 +1484,7 @@
                                             {/* Supplementary filters row */}
                                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3 border-t border-slate-800/40 text-xs">
                                                 <div>
-                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Device Color</label>
+                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider font-sans">Device Color</label>
                                                     <select value={marketColour} onChange={(e) => setMarketColour(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none">
                                                         <option value="All">All Colors</option>
                                                         <option value="Black">Black</option>
@@ -1458,7 +1495,7 @@
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Sort Results</label>
+                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider font-sans">Sort Results</label>
                                                     <select value={marketSort} onChange={(e) => setMarketSort(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none">
                                                         <option value="Lowest Price">Lowest Price</option>
                                                         <option value="Highest Price">Highest Price</option>
@@ -1467,7 +1504,7 @@
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Sourcing Country</label>
+                                                    <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider font-sans">Sourcing Country</label>
                                                     <select value={marketCountry} onChange={(e) => setMarketCountry(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none">
                                                         <option value="Spain">Spain</option>
                                                         <option value="Germany">Germany</option>
@@ -1483,19 +1520,19 @@
                                             <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
                                                 <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center">
                                                     <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Lowest Price</span>
-                                                    <span class="text-xl font-bold text-white mt-1 block">{marketSearchStats.min}€</span>
+                                                    <span class="text-xl font-bold text-white mt-1 block font-mono">{marketSearchStats.min}€</span>
                                                 </div>
                                                 <div class="bg-indigo-950/20 border border-indigo-900/30 p-4 rounded-xl text-center">
                                                     <span class="text-[10px] text-indigo-400 uppercase tracking-wider block font-bold">Average Price</span>
-                                                    <span class="text-xl font-bold text-indigo-300 mt-1 block">{marketSearchStats.avg}€</span>
+                                                    <span class="text-xl font-bold text-indigo-300 mt-1 block font-mono">{marketSearchStats.avg}€</span>
                                                 </div>
                                                 <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center">
                                                     <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Highest Price</span>
-                                                    <span class="text-xl font-bold text-white mt-1 block">{marketSearchStats.max}€</span>
+                                                    <span class="text-xl font-bold text-white mt-1 block font-mono">{marketSearchStats.max}€</span>
                                                 </div>
                                                 <div class="bg-emerald-950/20 border border-emerald-900/30 p-4 rounded-xl text-center lg:col-span-2">
                                                     <span class="text-[10px] text-emerald-400 uppercase tracking-wider block font-bold">Buying Assistant — Recommended Max Buy Price</span>
-                                                    <span class="text-xl font-black text-emerald-300 mt-1 block">Below {marketSearchStats.maxBuyPrice}€</span>
+                                                    <span class="text-xl font-black text-emerald-300 mt-1 block font-mono">Below {marketSearchStats.maxBuyPrice}€</span>
                                                     <span class="text-[9px] text-slate-500 mt-1 block">To maintain default target ROI of {globalTargetROI}%</span>
                                                 </div>
                                             </div>
@@ -1511,21 +1548,21 @@
                                                     <p class="text-xs text-slate-400">Supplier Price: <span class="text-white font-bold">{matchedLocalSupplierPhone.supplierPrice}€</span> • Average Online Retail Price: <span class="text-indigo-400 font-bold">{marketSearchStats.avg}€</span></p>
                                                 </div>
 
-                                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center w-full md:w-auto">
+                                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center w-full md:w-auto font-mono">
                                                     <div class="bg-slate-950 p-2 rounded-xl border border-slate-800">
-                                                        <span class="text-[9px] text-slate-500 block uppercase font-bold">Suggested Sell Price</span>
+                                                        <span class="text-[9px] text-slate-500 block uppercase font-bold font-sans">Suggested Sell Price</span>
                                                         <span class="text-sm font-bold text-emerald-400">{Math.round(matchedLocalSupplierPhone.supplierPrice * (1 + globalTargetROI / 100))}€</span>
                                                     </div>
                                                     <div class="bg-slate-950 p-2 rounded-xl border border-slate-800">
-                                                        <span class="text-[9px] text-slate-500 block uppercase font-bold">Expected Profit</span>
+                                                        <span class="text-[9px] text-slate-500 block uppercase font-bold font-sans">Expected Profit</span>
                                                         <span class="text-sm font-bold text-white">{Math.round(matchedLocalSupplierPhone.supplierPrice * (globalTargetROI / 100))}€</span>
                                                     </div>
                                                     <div class="bg-slate-950 p-2 rounded-xl border border-slate-800">
-                                                        <span class="text-[9px] text-slate-500 block uppercase font-bold">ROI %</span>
+                                                        <span class="text-[9px] text-slate-500 block uppercase font-bold font-sans">ROI %</span>
                                                         <span class="text-sm font-bold text-indigo-400">{globalTargetROI}%</span>
                                                     </div>
                                                     <div class="bg-slate-950 p-2 rounded-xl border border-slate-800">
-                                                        <span class="text-[9px] text-slate-500 block uppercase font-bold">Potential Arbitrage</span>
+                                                        <span class="text-[9px] text-slate-500 block uppercase font-bold font-sans">Potential Arbitrage</span>
                                                         <span class="text-sm font-extrabold text-amber-400">+{marketSearchStats.avg - matchedLocalSupplierPhone.supplierPrice}€</span>
                                                     </div>
                                                 </div>
@@ -1596,9 +1633,9 @@
                                                                     <span class="font-bold text-amber-400">★ {listing.rating} / 5</span>
                                                                 </div>
 
-                                                                <div class="pt-2">
+                                                                <div class="pt-2 font-mono">
                                                                     <div class="text-2xl font-black text-white">{listing.price}€</div>
-                                                                    <span class="text-[10px] text-slate-500 block mt-0.5">Shipping: {listing.shipping === 0 ? "Free" : `${listing.shipping}€`} • Warranty: {listing.warranty}</span>
+                                                                    <span class="text-[10px] text-slate-500 block mt-0.5 font-sans">Shipping: {listing.shipping === 0 ? "Free" : `${listing.shipping}€`} • Warranty: {listing.warranty}</span>
                                                                 </div>
                                                             </div>
 
@@ -1631,7 +1668,7 @@
                                                 Your Watchlist is empty. Star listings inside search panel to save them.
                                             </div>
                                         ) : (
-                                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 animate-fadeIn">
                                                 {watchlist.map(listing => (
                                                     <div key={listing.id} class="bg-slate-900/50 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 flex flex-col justify-between">
                                                         <div class="space-y-3">
@@ -1659,17 +1696,17 @@
 
                                 {/* TAB 3: PRICE ALERTS */}
                                 {marketSubTab === 'alerts' && (
-                                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
                                         <div class="bg-slate-900/40 border border-slate-800/80 p-5 rounded-2xl h-fit">
                                             <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-4">Set Price Threshold Alarm</h3>
                                             <form onSubmit={handleCreateAlert} class="space-y-4">
                                                 <div>
                                                     <label class="block text-xs font-semibold text-slate-400 mb-1">Target Phone Model *</label>
-                                                    <input required type="text" placeholder="e.g. Galaxy S24" value={newAlertModel} onChange={(e) => setNewAlertModel(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                                                    <input required name="alert_model" type="text" placeholder="e.g. Galaxy S24" value={newAlertModel} onChange={(e) => setNewAlertModel(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
                                                 </div>
                                                 <div>
                                                     <label class="block text-xs font-semibold text-slate-400 mb-1">Trigger Price Level (€) *</label>
-                                                    <input required type="number" placeholder="420" value={newAlertTarget} onChange={(e) => setNewAlertTarget(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                                                    <input required name="alert_price" type="number" placeholder="420" value={newAlertTarget} onChange={(e) => setNewAlertTarget(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
                                                 </div>
                                                 <button type="submit" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all">
                                                     Activate Alert Rule
@@ -1684,13 +1721,13 @@
                                             ) : (
                                                 <div class="divide-y divide-slate-800">
                                                     {priceAlerts.map(alert => (
-                                                        <div key={alert.id} class="flex justify-between items-center py-3">
+                                                        <div key={alert.id} class="flex justify-between items-center py-3 font-sans">
                                                             <div>
                                                                 <h4 class="text-sm font-bold text-white">{alert.model}</h4>
-                                                                <p class="text-[10px] text-slate-500 mt-0.5">Created: {alert.dateCreated}</p>
+                                                                <p class="text-[10px] text-slate-500 mt-0.5 font-mono">Created: {alert.dateCreated}</p>
                                                             </div>
                                                             <div class="flex items-center gap-4">
-                                                                <span class="text-xs font-bold text-emerald-400">Trigger under {alert.targetPrice}€</span>
+                                                                <span class="text-xs font-bold text-emerald-400 font-mono">Trigger under {alert.targetPrice}€</span>
                                                                 <button onClick={() => handleDeleteAlert(alert.id)} class="p-1 text-slate-500 hover:text-rose-500 transition-colors">
                                                                     <Icons.Trash />
                                                                 </button>
@@ -1705,7 +1742,7 @@
 
                                 {/* TAB 4: COMPARE MATRIX */}
                                 {marketSubTab === 'compare' && (
-                                    <div class="bg-slate-900/30 border border-slate-800/80 p-5 overflow-hidden">
+                                    <div class="bg-slate-900/30 border border-slate-800/80 rounded-2xl p-5 overflow-hidden animate-fadeIn">
                                         <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-4">Comparison Matrix</h3>
                                         <div class="overflow-x-auto">
                                             <table class="w-full text-left border-collapse text-xs">
@@ -1730,7 +1767,7 @@
                                                         <td class="py-3 px-4 font-bold text-slate-500 uppercase tracking-wider text-[10px]">Price (Sourcing)</td>
                                                         {selectedCompareIds.map(id => {
                                                             const item = mockDatabasePhones.find(p => p.id === id);
-                                                            return <td key={id} class="py-3 px-4 font-bold text-lg text-emerald-400">{item?.price}€</td>;
+                                                            return <td key={id} class="py-3 px-4 font-bold text-lg text-emerald-400 font-mono">{item?.price}€</td>;
                                                         })}
                                                     </tr>
                                                     <tr>
@@ -1758,7 +1795,7 @@
                                             </table>
                                         </div>
                                         <div class="flex justify-end gap-3 mt-5 pt-4 border-t border-slate-800">
-                                            <button onClick={() => setSelectedCompareIds([])} class="px-4 py-2 border border-slate-800 rounded-xl text-xs font-bold text-slate-400 transition-colors">
+                                            <button onClick={() => setSelectedCompareIds([])} class="px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-xl text-xs font-bold text-slate-400 transition-colors">
                                                 Clear Compare Board
                                             </button>
                                         </div>
@@ -1802,7 +1839,7 @@
                                     {/* Advanced Catalog Filters */}
                                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3 border-t border-slate-800/40 text-xs">
                                         <div>
-                                            <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Manufacturer</label>
+                                            <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider font-sans">Manufacturer</label>
                                             <select value={supplierBrand} onChange={(e) => setSupplierSearchBrand(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none text-slate-300">
                                                 <option value="">All Brands</option>
                                                 <option value="Apple">Apple</option>
@@ -1818,7 +1855,7 @@
                                             </select>
                                         </div>
                                         <div>
-                                            <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Category</label>
+                                            <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider font-sans">Category</label>
                                             <select value={supplierCategory} onChange={(e) => setSupplierSearchCategory(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none text-slate-300">
                                                 <option value="">All Categories</option>
                                                 <option value="Phones">Phones</option>
@@ -1827,10 +1864,9 @@
                                             </select>
                                         </div>
                                         <div>
-                                            <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Storage</label>
+                                            <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider font-sans">Storage</label>
                                             <select value={supplierStorage} onChange={(e) => setSupplierSearchStorage(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none text-slate-300">
                                                 <option value="">All Storage</option>
-                                                <option value="32GB">32GB</option>
                                                 <option value="64GB">64GB</option>
                                                 <option value="128GB">128GB</option>
                                                 <option value="256GB">256GB</option>
@@ -1838,7 +1874,7 @@
                                             </select>
                                         </div>
                                         <div>
-                                            <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider">Sort List</label>
+                                            <label class="block text-slate-500 font-bold mb-1 uppercase tracking-wider font-sans">Sort List</label>
                                             <select value={supplierSort} onChange={(e) => setSupplierSort(e.target.value)} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 focus:outline-none text-slate-300">
                                                 <option value="Lowest Price">Lowest Price</option>
                                                 <option value="Highest Price">Highest Price</option>
@@ -1853,19 +1889,19 @@
                                 {searchedSupplierListings.length > 0 && (
                                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center">
-                                            <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Matching Products</span>
+                                            <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold font-sans">Matching Products</span>
                                             <span class="text-lg font-bold text-white mt-1 block">{supplierStatsMetrics.count} Items</span>
                                         </div>
-                                        <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center">
-                                            <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Lowest Cost</span>
+                                        <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center font-mono">
+                                            <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold font-sans">Lowest Cost</span>
                                             <span class="text-lg font-bold text-emerald-400 mt-1 block">{supplierStatsMetrics.min}€</span>
                                         </div>
-                                        <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center">
-                                            <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Average Cost</span>
+                                        <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center font-mono">
+                                            <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold font-sans">Average Cost</span>
                                             <span class="text-lg font-bold text-indigo-400 mt-1 block">{supplierStatsMetrics.avg}€</span>
                                         </div>
-                                        <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center">
-                                            <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Highest Cost</span>
+                                        <div class="bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl text-center font-mono">
+                                            <span class="text-[10px] text-slate-500 uppercase tracking-wider block font-bold font-sans">Highest Cost</span>
                                             <span class="text-lg font-bold text-rose-400 mt-1 block">{supplierStatsMetrics.max}€</span>
                                         </div>
                                     </div>
@@ -1889,7 +1925,7 @@
 
                                                     <div>
                                                         <h4 class="text-lg font-bold text-white">{item.model}</h4>
-                                                        <div class="flex gap-2 items-center text-xs text-slate-400 mt-1">
+                                                        <div class="flex gap-2 items-center text-xs text-slate-400 mt-1 font-sans">
                                                             <span>{item.storage}</span>
                                                             <span class="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
                                                             <span>{item.network}</span>
@@ -1898,8 +1934,8 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="pt-2">
-                                                        <span class="text-xs text-slate-500 block uppercase font-bold">Supplier Cost</span>
+                                                    <div class="pt-2 font-mono">
+                                                        <span class="text-xs text-slate-500 block uppercase font-bold font-sans">Supplier Cost</span>
                                                         <div class="text-2xl font-black text-white">{item.supplierPrice}€</div>
                                                     </div>
                                                 </div>
@@ -1909,26 +1945,26 @@
                                                     <div class="grid grid-cols-3 gap-1">
                                                         <button 
                                                             onClick={() => handleClipboardCopy(`${item.supplierPrice}€`, "Supplier Price copied!")}
-                                                            class="py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-[10px] font-bold text-slate-300 hover:bg-slate-800 flex items-center justify-center gap-1"
+                                                            class="py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-[10px] font-bold text-slate-300 hover:bg-slate-800 flex items-center justify-center gap-1 font-sans"
                                                         >
                                                             <Icons.Copy /> Price
                                                         </button>
                                                         <button 
                                                             onClick={() => handleClipboardCopy(`${item.brand} ${item.model} ${item.storage}`, "Model Details copied!")}
-                                                            class="py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-[10px] font-bold text-slate-300 hover:bg-slate-800 flex items-center justify-center gap-1"
+                                                            class="py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-[10px] font-bold text-slate-300 hover:bg-slate-800 flex items-center justify-center gap-1 font-sans"
                                                         >
                                                             <Icons.Copy /> Model
                                                         </button>
                                                         <button 
                                                             onClick={() => handleClipboardCopy(`${item.brand} ${item.model} ${item.storage}\nCost: ${item.supplierPrice}€\nCondition: ${item.condition}`, "Full details copied!")}
-                                                            class="py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-[10px] font-bold text-slate-300 hover:bg-slate-800 flex items-center justify-center gap-1"
+                                                            class="py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-[10px] font-bold text-slate-300 hover:bg-slate-800 flex items-center justify-center gap-1 font-sans"
                                                         >
                                                             <Icons.Copy /> All
                                                         </button>
                                                     </div>
                                                     <button 
                                                         onClick={() => handleAddListingToInventory(item)}
-                                                        class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1"
+                                                        class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1 font-sans"
                                                     >
                                                         <Icons.Plus /> Register Sourced Unit
                                                     </button>
@@ -1945,7 +1981,7 @@
                     {selectedSupplierDetail && (
                         <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                             <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl">
-                                <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
+                                <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center font-sans">
                                     <h3 class="text-lg font-bold">Supplier Product Profile</h3>
                                     <button onClick={() => setSelectedSupplierDetail(null)} class="text-slate-400 hover:text-white">✕</button>
                                 </header>
@@ -1974,33 +2010,33 @@
                                         </div>
                                         <div>
                                             <span class="text-slate-500 uppercase tracking-wider block">Supplier Cost</span>
-                                            <span class="font-black text-lg text-emerald-400 mt-0.5 block">{selectedSupplierDetail.supplierPrice}€</span>
+                                            <span class="font-black text-lg text-emerald-400 mt-0.5 block font-mono">{selectedSupplierDetail.supplierPrice}€</span>
                                         </div>
                                     </div>
 
                                     {/* Smart Suggestions module based on Target ROI */}
                                     <div class="bg-indigo-950/20 border border-indigo-900/30 p-4 rounded-xl space-y-2">
-                                        <div class="flex justify-between items-center">
+                                        <div class="flex justify-between items-center text-xs font-sans">
                                             <span class="text-xs font-bold text-indigo-300">Arbitrage Assessment Suggestions</span>
                                             <span class="text-xs text-indigo-400 font-bold">Target ROI: {globalTargetROI}%</span>
                                         </div>
-                                        <div class="grid grid-cols-3 gap-2 text-center text-xs mt-2 pt-2 border-t border-indigo-900/30">
+                                        <div class="grid grid-cols-3 gap-2 text-center text-xs mt-2 pt-2 border-t border-indigo-900/30 font-mono">
                                             <div>
-                                                <span class="text-slate-400 block text-[10px]">Suggested Selling</span>
+                                                <span class="text-slate-400 block text-[10px] font-sans">Suggested Selling</span>
                                                 <span class="font-bold text-white block mt-1">{Math.round(selectedSupplierDetail.supplierPrice * (1 + globalTargetROI / 100))}€</span>
                                             </div>
                                             <div>
-                                                <span class="text-slate-400 block text-[10px]">Expected Profit</span>
+                                                <span class="text-slate-400 block text-[10px] font-sans">Expected Profit</span>
                                                 <span class="font-bold text-emerald-400 block mt-1">+{Math.round(selectedSupplierDetail.supplierPrice * (globalTargetROI / 100))}€</span>
                                             </div>
                                             <div>
-                                                <span class="text-slate-400 block text-[10px]">Expected ROI</span>
-                                                <span class="font-bold text-indigo-300 block mt-1">{globalTargetROI}%</span>
+                                                <span class="text-slate-400 block text-[10px] font-sans">Expected ROI</span>
+                                                <span class="font-bold text-indigo-300 block mt-1 font-sans">{globalTargetROI}%</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
+                                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-800 font-sans">
                                         <button onClick={() => setSelectedSupplierDetail(null)} class="px-4 py-2 border border-slate-800 rounded-xl text-xs font-bold text-slate-400">Close Profile</button>
                                         <button 
                                             onClick={() => {
@@ -2017,19 +2053,9 @@
                         </div>
                     )}
 
-                    {/* TOAST SYSTEM */}
-                    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full font-sans">
-                        {toasts.map(t => (
-                            <div key={t.id} class="p-4 bg-slate-900 border border-slate-800 text-slate-200 rounded-xl shadow-2xl flex items-start gap-3">
-                                <span class="mt-0.5"><Icons.Info /></span>
-                                <div class="text-xs font-semibold">{t.message}</div>
-                            </div>
-                        ))}
-                    </div>
-
                     {/* ADD MODAL */}
                     {isAddModalOpen && (
-                        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans">
                             <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
                                 <header class="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
                                     <h3 class="text-lg font-bold">Register New Purchase</h3>
@@ -2050,7 +2076,7 @@
                                         notes: fd.get('notes')
                                     });
                                     setIsAddModalOpen(false);
-                                }} class="p-6 space-y-4 max-h-[90vh] overflow-y-auto font-sans">
+                                }} class="p-6 space-y-4 max-h-[90vh] overflow-y-auto">
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 mb-1">Model Name *</label>
@@ -2095,7 +2121,7 @@
                                         
                                         <div class="flex items-baseline justify-between">
                                             <div>
-                                                <span class="text-2xl font-black text-white">{modalPricingAssessment.suggestedPrice.toFixed(2)}€</span>
+                                                <span class="text-2xl font-black text-white font-mono">{modalPricingAssessment.suggestedPrice.toFixed(2)}€</span>
                                                 <p class="text-[10px] text-slate-500 mt-0.5">Expected Profit: {modalPricingAssessment.expectedProfitSuggest.toFixed(2)}€</p>
                                             </div>
                                             <button 
@@ -2109,7 +2135,7 @@
 
                                         <div class="space-y-1.5">
                                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Quick Adjust ROI</label>
-                                            <div class="grid grid-cols-6 gap-1">
+                                            <div class="grid grid-cols-6 gap-1 font-mono">
                                                 {[20, 25, 30, 35, 40, 50].map(val => (
                                                     <button
                                                         key={val}
@@ -2128,13 +2154,13 @@
                                                 <span class="text-slate-400">Ledger Assessment</span>
                                                 <span class={modalPricingAssessment.smartColorStyles.text}>{modalPricingAssessment.smartColorStyles.status}</span>
                                             </div>
-                                            <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-800/40 text-xs">
+                                            <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-800/40 text-xs font-mono">
                                                 <div>
-                                                    <span class="text-slate-500 block">Expected Profit</span>
+                                                    <span class="text-slate-500 block font-sans">Expected Profit</span>
                                                     <span class="font-bold text-white">{modalPricingAssessment.actualExpectedProfit.toFixed(2)}€</span>
                                                 </div>
                                                 <div>
-                                                    <span class="text-slate-500 block">Expected ROI</span>
+                                                    <span class="text-slate-500 block font-sans">Expected ROI</span>
                                                     <span class={`font-bold ${modalPricingAssessment.smartColorStyles.text}`}>{modalPricingAssessment.actualExpectedROI.toFixed(1)}%</span>
                                                 </div>
                                             </div>
@@ -2235,8 +2261,8 @@
                                         
                                         <div class="flex items-baseline justify-between">
                                             <div>
-                                                <span class="text-2xl font-black text-white">{modalPricingAssessment.suggestedPrice.toFixed(2)}€</span>
-                                                <p class="text-[10px] text-slate-500 mt-0.5">Expected Profit: {modalPricingAssessment.expectedProfitSuggest.toFixed(2)}€</p>
+                                                <span class="text-2xl font-black text-white font-mono">{modalPricingAssessment.suggestedPrice.toFixed(2)}€</span>
+                                                <p class="text-[10px] text-slate-500 mt-0.5 font-sans">Expected Profit: {modalPricingAssessment.expectedProfitSuggest.toFixed(2)}€</p>
                                             </div>
                                             <button 
                                                 type="button"
@@ -2248,8 +2274,8 @@
                                         </div>
 
                                         <div class="space-y-1.5">
-                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Quick Adjust ROI</label>
-                                            <div class="grid grid-cols-6 gap-1">
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider font-sans">Quick Adjust ROI</label>
+                                            <div class="grid grid-cols-6 gap-1 font-mono">
                                                 {[20, 25, 30, 35, 40, 50].map(val => (
                                                     <button
                                                         key={val}
@@ -2268,13 +2294,13 @@
                                                 <span class="text-slate-400">Ledger Assessment</span>
                                                 <span class={modalPricingAssessment.smartColorStyles.text}>{modalPricingAssessment.smartColorStyles.status}</span>
                                             </div>
-                                            <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-800/40 text-xs">
+                                            <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-800/40 text-xs font-mono">
                                                 <div>
-                                                    <span class="text-slate-500 block">Expected Profit</span>
+                                                    <span class="text-slate-500 block font-sans">Expected Profit</span>
                                                     <span class="font-bold text-white">{modalPricingAssessment.actualExpectedProfit.toFixed(2)}€</span>
                                                 </div>
                                                 <div>
-                                                    <span class="text-slate-500 block">Expected ROI</span>
+                                                    <span class="text-slate-500 block font-sans">Expected ROI</span>
                                                     <span class={`font-bold ${modalPricingAssessment.smartColorStyles.text}`}>{modalPricingAssessment.actualExpectedROI.toFixed(1)}%</span>
                                                 </div>
                                             </div>
@@ -2336,16 +2362,16 @@
                                     updatePhonesAndPersist(updated);
                                     setIsSellModalOpen(false);
                                     triggerToast(`Sold ${selectedPhone.model} for ${price}€!`, 'success');
-                                }} class="p-6 space-y-4">
+                                }} class="p-6 space-y-4 font-sans font-mono">
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Actual Sold Price (€) *</label>
+                                        <label class="block text-xs font-semibold text-slate-400 mb-1 font-sans">Actual Sold Price (€) *</label>
                                         <input required name="actualSellPrice" type="number" step="0.01" defaultValue={selectedPhone.expectedSellPrice} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-400 mb-1">Sell Date *</label>
+                                        <label class="block text-xs font-semibold text-slate-400 mb-1 font-sans">Sell Date *</label>
                                         <input required name="sellDate" type="date" defaultValue={new Date().toISOString().split('T')[0]} class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none" />
                                     </div>
-                                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
+                                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-800 font-sans">
                                         <button type="button" onClick={() => setIsSellModalOpen(false)} class="px-4 py-2 border border-slate-800 rounded-xl text-sm hover:bg-slate-800 transition-colors">Cancel</button>
                                         <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold hover:bg-emerald-800 transition-colors">Complete Sale</button>
                                     </div>
